@@ -63,3 +63,6 @@ gradlew.bat
 *.sw*
 .mvn/
 target/
+
+*/dev-db
+*/dev-db/*

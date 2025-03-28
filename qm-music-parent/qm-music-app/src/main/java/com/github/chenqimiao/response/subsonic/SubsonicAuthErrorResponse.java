@@ -2,10 +2,7 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * @author Qimiao Chen
@@ -13,9 +10,7 @@ import lombok.NoArgsConstructor;
  **/
 @JacksonXmlRootElement(localName = "subsonic-response")
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 public class SubsonicAuthErrorResponse {
     // 显式声明 xsi 命名空间属性
     @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
@@ -27,7 +22,6 @@ public class SubsonicAuthErrorResponse {
 
     @JacksonXmlProperty(isAttribute = true, localName = "version")
     private String version = "1.1.1";
-
 
     private Error error;
 

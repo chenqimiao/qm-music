@@ -2,6 +2,7 @@ package com.github.chenqimiao;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Qimiao Chen

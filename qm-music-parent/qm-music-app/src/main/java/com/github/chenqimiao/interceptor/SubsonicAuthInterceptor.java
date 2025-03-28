@@ -28,11 +28,11 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
         String clientVersion = request.getParameter("v");
         // like 'agent'
         String c = request.getParameter("c");
-        boolean necessary = StringUtils.isAnyBlank(username, clientVersion, clientVersion, c);
+        boolean necessary = StringUtils.isNoneBlank(username, clientVersion, clientVersion, c);
         String password = request.getParameter("p");
-        String token = request.getHeader("t");
+        String token = request.getParameter("t");
         String salt = request.getParameter("s");
-        boolean authExtCheck = StringUtils.isBlank(password) || StringUtils.isAnyBlank(token, salt);
+        boolean authExtCheck = StringUtils.isNotBlank(password) || StringUtils.isNoneBlank(token, salt);
         if (!necessary || !authExtCheck) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }

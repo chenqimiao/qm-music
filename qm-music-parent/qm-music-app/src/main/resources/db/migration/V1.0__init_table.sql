@@ -1,6 +1,6 @@
 -- V1__Initial_schema.sql
 CREATE TABLE IF NOT EXISTS user (
-                                    id BIGINT PRIMARY KEY AUTOINCREMENT,
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                                     username VARCHAR(50) NOT NULL UNIQUE,
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(100),
@@ -17,7 +17,7 @@ END;
 
 -- 艺术家表（高频查询场景：按名称搜索）
 CREATE TABLE artist (
-                         id BIGINT PRIMARY KEY AUTOINCREMENT,
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                          name VARCHAR(255) NOT NULL UNIQUE,
                          country_code varCHAR(16),
                          gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
@@ -36,9 +36,9 @@ END;
 
 -- 专辑表（Subsonic API常用过滤：年份/流派）
 CREATE TABLE album (
-                        id BIGINT PRIMARY KEY AUTOINCREMENT,
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title VARCHAR(255) NOT NULL,
-                        artist_id BIGINT NOT NULL,
+                        artist_id INTEGER NOT NULL,
                         release_year CHAR(4),
                         genre VARCHAR(50),
                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
@@ -60,10 +60,10 @@ END;
 CREATE TABLE song (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        title VARCHAR(255) NOT NULL,
-                       album_id BIGINT,
-                       artist_id BIGINT NOT NULL,
-                       duration BIGINT NOT NULL CHECK(duration > 0),
-                       bitrate BIGINT NOT NULL CHECK(bitrate > 0),
+                       album_id INTEGER,
+                       artist_id INTEGER NOT NULL,
+                       duration INTEGER NOT NULL CHECK(duration > 0),
+                       bitrate INTEGER NOT NULL CHECK(bitrate > 0),
                        file_path VARCHAR(512) NOT NULL UNIQUE,
                        file_hash CHAR(64) NOT NULL UNIQUE,
                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
@@ -83,8 +83,8 @@ END;
 
 -- 播放列表（高频访问：用户查询+分页）
 CREATE TABLE playlist (
-                           id BIGINT PRIMARY KEY AUTOINCREMENT,
-                           user_id BIGINT NOT NULL,
+                           id INTEGER PRIMARY KEY AUTOINCREMENT,
+                           user_id INTEGER NOT NULL,
                            name VARCHAR(255) NOT NULL,
                            description VARCHAR(500),
                            visibility INT NOT NULL DEFAULT 0, -- 0-私有 1-公开 2-分享链接

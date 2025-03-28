@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.response.subsonic.SubsonicAuthErrorResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest")
 public class SystemController {
 
-    @GetMapping(value = "/ping")
+    @GetMapping(value = {"/ping","/ping.view"})
     public SubsonicPong ping() {
         return new SubsonicPong();
     }
+
 }

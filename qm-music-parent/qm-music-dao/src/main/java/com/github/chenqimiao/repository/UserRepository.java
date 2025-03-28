@@ -1,5 +1,7 @@
 package com.github.chenqimiao.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,6 +10,13 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class UserRepository {
-    
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public String findPassByUserName(String userName) {
+        String sql = "SELECT `password` FROM user WHERE `username` = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, userName);
+    }
 
 }

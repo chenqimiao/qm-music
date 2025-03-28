@@ -3,12 +3,14 @@ package com.github.chenqimiao.config;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import com.github.chenqimiao.interceptor.SubsonicAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
@@ -18,9 +20,8 @@ import java.util.List;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-
     @Autowired
-    private ContentNegotiationManager customContentNegotiationManager;
+    private SubsonicAuthInterceptor subsonicAuthInterceptor;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -61,6 +62,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .mediaType("text", MediaType.TEXT_PLAIN)
                 // 默认格式（当未指定参数时）
                 .defaultContentType(MediaType.APPLICATION_XML);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(subsonicAuthInterceptor).addPathPatterns("/rest/**");
     }
 
 }

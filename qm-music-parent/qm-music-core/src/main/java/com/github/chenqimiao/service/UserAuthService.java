@@ -6,9 +6,21 @@ package com.github.chenqimiao.service;
  **/
 public interface UserAuthService {
 
-
+    /**
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     boolean authCheck(String username, String password);
 
+    /**
+     *
+     * @param username
+     * @param token
+     * @param salt
+     * @return
+     */
     boolean authCheck(String username, String token, String salt);
 
 }

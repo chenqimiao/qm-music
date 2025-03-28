@@ -17,11 +17,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SubsonicUnauthorizedException.class)
     @ResponseStatus(HttpStatus.OK)
     public SubsonicAuthErrorResponse handleUnauthorized(SubsonicUnauthorizedException e) {
-        return SubsonicAuthErrorResponse.builder()
-                .error(SubsonicAuthErrorResponse.Error.builder()
-                        .code(e.getEnumSubsonicAuthCode().getCode())
-                        .message(e.getEnumSubsonicAuthCode().getMessage())
-                        .build())
-                .build();
+        SubsonicAuthErrorResponse errorResponse = new SubsonicAuthErrorResponse();
+        errorResponse.setError(SubsonicAuthErrorResponse.Error.builder()
+                .code(e.getEnumSubsonicAuthCode().getCode())
+                .message(e.getEnumSubsonicAuthCode().getMessage()).build());
+        return errorResponse;
     }
 }

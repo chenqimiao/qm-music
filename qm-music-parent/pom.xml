@@ -95,6 +95,11 @@
                 <artifactId>flyway-core</artifactId>
                 <version>11.5.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.17.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

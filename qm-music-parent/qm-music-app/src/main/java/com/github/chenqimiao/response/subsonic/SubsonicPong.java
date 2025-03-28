@@ -1,7 +1,9 @@
 package com.github.chenqimiao.response.subsonic;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.github.chenqimiao.constant.ServerConstants;
 import lombok.Getter;
 
 /**
@@ -10,15 +12,6 @@ import lombok.Getter;
  **/
 @JacksonXmlRootElement(localName = "subsonic-response")
 @Getter
-public class SubsonicPong {
-    // 显式声明 xsi 命名空间属性
-    @JacksonXmlProperty(isAttribute = true, localName = "xmlns")
-    private String xsiNamespace = "http://subsonic.org/restapi";
+public class SubsonicPong extends SubsonicResponse{
 
-    // 添加 schemaLocation 属性
-    @JacksonXmlProperty(isAttribute = true, localName = "status")
-    private String status = "ok";
-
-    @JacksonXmlProperty(isAttribute = true, localName = "version")
-    private String version = "1.1.1";
 }

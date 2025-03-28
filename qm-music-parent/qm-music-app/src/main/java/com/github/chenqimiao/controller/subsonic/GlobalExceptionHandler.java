@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.response.subsonic.SubsonicAuthErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.OK)
     public SubsonicAuthErrorResponse handleUnauthorized(SubsonicUnauthorizedException e) {
         SubsonicAuthErrorResponse errorResponse = new SubsonicAuthErrorResponse();
+        errorResponse.setStatus(ServerConstants.STATUS_FAIL);
         errorResponse.setError(SubsonicAuthErrorResponse.Error.builder()
                 .code(e.getEnumSubsonicAuthCode().getCode())
                 .message(e.getEnumSubsonicAuthCode().getMessage()).build());

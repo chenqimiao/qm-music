@@ -34,6 +34,6 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
     @Override
     public boolean authCheck(String username, String token, String salt) {
         String pass = userRepository.findPassByUserName(username);
-        return Objects.equals(MD5Utils.md5(pass + salt), token) ;
+        return Objects.equals(MD5Utils.md5(pass + salt).toLowerCase(), token);
     }
 }

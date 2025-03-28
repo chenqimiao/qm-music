@@ -2,6 +2,7 @@ package controller;
 
 import com.github.chenqimiao.QmMusicApplication;
 import com.github.chenqimiao.constant.ServerConstants;
+import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.util.MD5Utils;
 import junit.framework.Assert;
@@ -67,5 +68,37 @@ public class SystemControllerTest {
         var response = restTemplate.getForEntity(url, SubsonicPong.class);
         SubsonicPong body = response.getBody();
         Assert.assertEquals("auth ok with incorrect token and salt" ,body.getStatus(), ServerConstants.STATUS_FAIL);
+    }
+
+
+    @Test
+    void authWithNotExistUsernameReturnJson() throws Exception {
+        String salt = "my_salt";
+        String token = MD5Utils.md5(defaultPassword + salt);
+        String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", "dasdongs", token, salt);
+        var response = restTemplate.getForEntity(url, SubsonicPong.class);
+        SubsonicPong body = response.getBody();
+        Assert.assertEquals("auth failed with not exist username" ,body.getStatus(), ServerConstants.STATUS_FAIL);
+    }
+
+
+    @Test
+    void authWithNotExistUsernameReturnXml() throws Exception {
+        String salt = "my_salt";
+        String token = MD5Utils.md5(defaultPassword + salt);
+        String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=xml", "dasdongs", token, salt);
+        var response = restTemplate.getForEntity(url, SubsonicPong.class);
+        SubsonicPong body = response.getBody();
+        Assert.assertEquals("auth failed with not exist username" ,body.getStatus(), ServerConstants.STATUS_FAIL);
+    }
+
+    @Test
+    void getLicenseTest() throws Exception {
+        String salt = "my_salt";
+        String token = MD5Utils.md5(defaultPassword + salt);
+        String url = String.format("/rest/getLicense?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token, salt);
+        var response = restTemplate.getForEntity(url, SubsonicLicenseResponse.class);
+        SubsonicLicenseResponse body = response.getBody();
+        Assert.assertEquals("get license error" , body.getLicense().getValid(), Boolean.TRUE);
     }
 }

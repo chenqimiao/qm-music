@@ -1,7 +1,9 @@
 package com.github.chenqimiao.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,9 +16,15 @@ public class UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Nullable
     public String findPassByUserName(String userName) {
         String sql = "SELECT `password` FROM user WHERE `username` = ?";
-        return jdbcTemplate.queryForObject(sql, String.class, userName);
+        try{
+            return jdbcTemplate.queryForObject(sql, String.class, userName);
+
+        }catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
     }
 
 }

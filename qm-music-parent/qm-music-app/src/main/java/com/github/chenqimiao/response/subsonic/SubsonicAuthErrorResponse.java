@@ -2,7 +2,6 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.github.chenqimiao.constant.ServerConstants;
 import lombok.*;
 
 /**
@@ -16,7 +15,9 @@ public class SubsonicAuthErrorResponse extends SubsonicResponse {
 
     private Error error;
 
+
     @Getter
+    @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor

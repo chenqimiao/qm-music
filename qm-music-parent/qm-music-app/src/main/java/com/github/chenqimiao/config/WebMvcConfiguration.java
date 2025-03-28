@@ -3,9 +3,12 @@ package com.github.chenqimiao.config;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
@@ -14,8 +17,15 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+
+    @Autowired
+    private ContentNegotiationManager customContentNegotiationManager;
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+
+        converters.removeIf(converter -> converter.getClass().getName().contains("MappingJackson2HttpMessageConverter"));
 
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
@@ -30,5 +40,27 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         converter.setFastJsonConfig(config);
         converter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON));
         converters.add(0, converter);
+
+//        MappingJackson2XmlHttpMessageConverter xmlConverter = new MappingJackson2XmlHttpMessageConverter();
+//        xmlConverter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_XML));
+//        converters.add(1, xmlConverter);
     }
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer
+                // 启用参数匹配模式（默认参数名为 'f'）
+                .favorParameter(true)
+                // 自定义参数名（例如: /api/data?f=json）
+                .parameterName("f")
+                // 忽略 Accept 头，仅根据参数处理（可选）
+                .ignoreAcceptHeader(true)
+                // 设置支持的媒体类型
+                .mediaType("json", MediaType.APPLICATION_JSON)
+                .mediaType("xml", MediaType.APPLICATION_XML)
+                .mediaType("text", MediaType.TEXT_PLAIN)
+                // 默认格式（当未指定参数时）
+                .defaultContentType(MediaType.APPLICATION_XML);
+    }
+
 }

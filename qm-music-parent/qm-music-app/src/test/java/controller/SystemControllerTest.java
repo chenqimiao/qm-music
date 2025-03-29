@@ -48,6 +48,12 @@ public class SystemControllerTest {
         var response = restTemplate.getForEntity(url, SubsonicPong.class);
         SubsonicPong body = response.getBody();
         Assert.assertEquals("auth failed with correct token and salt" ,body.getStatus(), ServerConstants.STATUS_OK);
+        Assert.assertEquals("auth failed with correct token and salt" ,body.getVersion(), ServerConstants.VERSION);
+
+        var response1 = restTemplate.getForEntity(url, String.class);
+        String expectedStr = "<subsonic-response xmlns=\"" + ServerConstants.XMLNS + "\" status=\"" + ServerConstants.STATUS_OK + "\" version=\"" + ServerConstants.VERSION+ "\"/>";
+        Assert.assertEquals("auth failed with correct token and salt" ,response1.getBody(), expectedStr);
+
     }
 
     @Test

@@ -1,14 +1,12 @@
 package com.github.chenqimiao.response.subsonic;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.*;
 
 /**
  * @author Qimiao Chen
  * @since 2025/3/29 00:43
  **/
-@JacksonXmlRootElement(localName = "subsonic-response")
 @Getter
 @Setter
 @Builder

@@ -20,9 +20,9 @@ public class ArtistRepository {
 
     public List<ArtistDO> findArtistGtUpdateTime(Long timestamp) {
         String sql = """
-                        select * from artist where gmt_modified <= datetime(?, 'unixepoch');
+                        select * from artist where gmt_modify >= ?
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), timestamp / 1000);
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), timestamp);
     }
 
     public List<ArtistDO> findAll() {

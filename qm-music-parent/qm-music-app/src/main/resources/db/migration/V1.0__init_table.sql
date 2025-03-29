@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS user (
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(100),
                                     is_admin INT NOT NULL DEFAULT 0, -- 0-普通用户 1-管理员 2-超级管理员
-                                    gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                                    gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                                    gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                                    gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
     );
 
 CREATE TRIGGER update_user_timestamp AFTER UPDATE ON user
@@ -21,8 +21,8 @@ CREATE TABLE artist (
                          name VARCHAR(255) NOT NULL UNIQUE,
                          first_letter VARCHAR(1) NOT NULL,
                          country_code varCHAR(16),
-                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 
 CREATE INDEX idx_artist_name ON artist(name);
@@ -31,7 +31,7 @@ CREATE TRIGGER IF NOT EXISTS update_artists_gmt_modify
     AFTER UPDATE ON artist
 BEGIN
     UPDATE artist
-    SET gmt_modify = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
     WHERE id = NEW.id;
 END;
 
@@ -42,8 +42,8 @@ CREATE TABLE album (
                         artist_id INTEGER NOT NULL,
                         release_year CHAR(4),
                         genre VARCHAR(50),
-                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                        gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                        gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_album_artist ON album(artist_id);
 CREATE INDEX idx_album_genre_year ON album(genre, release_year);
@@ -52,7 +52,7 @@ CREATE TRIGGER IF NOT EXISTS update_album_gmt_modify
     AFTER UPDATE ON album
 BEGIN
     UPDATE album
-    SET gmt_modify = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
     WHERE id = NEW.id;
 END;
 
@@ -67,8 +67,8 @@ CREATE TABLE song (
                        bitrate INTEGER NOT NULL CHECK(bitrate > 0),
                        file_path VARCHAR(512) NOT NULL UNIQUE,
                        file_hash CHAR(64) NOT NULL UNIQUE,
-                       gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                       gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                       gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                       gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_song_album ON song(album_id);
 CREATE INDEX idx_song_artist ON song(artist_id);
@@ -89,8 +89,8 @@ CREATE TABLE playlist (
                            name VARCHAR(255) NOT NULL,
                            description VARCHAR(500),
                            visibility INT NOT NULL DEFAULT 0, -- 0-私有 1-公开 2-分享链接
-                           gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                           gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                           gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                           gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_playlist_user ON playlist(user_id);
 
@@ -98,7 +98,7 @@ CREATE TRIGGER IF NOT EXISTS update_playlist_gmt_modify
     AFTER UPDATE ON playlist
 BEGIN
     UPDATE playlist
-    SET gmt_modify = STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
     WHERE id = NEW.id;
 END;
 
@@ -109,8 +109,8 @@ CREATE TABLE play_history (
                               song_id INTEGER NOT NULL,
                               client_type VARCHAR(50) NOT NULL,
                               play_count INT DEFAULT 1,
-                              gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                              gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                              gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                              gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_history_user_song ON play_history(user_id, song_id);
 CREATE INDEX idx_history_time ON play_history(gmt_create);
@@ -121,7 +121,15 @@ CREATE TABLE playlist_item (
                                 playlist_id INTEGER NOT NULL,
                                 song_id INTEGER NOT NULL,
                                 sort_order INT NOT NULL,
-                                gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
-                                gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))
+                                gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                                gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE UNIQUE INDEX idx_playlist_order ON playlist_item(playlist_id, sort_order);
+
+CREATE TRIGGER IF NOT EXISTS update_playlist_item_gmt_modify
+    AFTER UPDATE ON playlist_item
+BEGIN
+UPDATE playlist_item
+SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+WHERE id = NEW.id;
+END;

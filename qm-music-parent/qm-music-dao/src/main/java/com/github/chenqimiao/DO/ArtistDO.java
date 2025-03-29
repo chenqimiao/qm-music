@@ -15,5 +15,5 @@ public class ArtistDO {
     private String first_letter;
     private String country_code;
     private Long gmt_create;
-    private Long gmt_modified;
+    private Long gmt_modify;
 }

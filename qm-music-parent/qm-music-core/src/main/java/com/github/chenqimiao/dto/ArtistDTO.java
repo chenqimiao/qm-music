@@ -21,4 +21,6 @@ public class ArtistDTO {
 
     private String firstLetter;
 
+    private Long lastModified;
+
 }

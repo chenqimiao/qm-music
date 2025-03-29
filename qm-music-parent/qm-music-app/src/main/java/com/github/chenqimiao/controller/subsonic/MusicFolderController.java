@@ -44,9 +44,8 @@ public class MusicFolderController {
         ArtistIndexResponse artistIndexResponse = new ArtistIndexResponse();
         ArtistIndexResponse.Indexes indexes = new ArtistIndexResponse.Indexes();
         artistIndexResponse.setIndexes(indexes);
-        indexes.setLastModified(artistIndexRequest.getIfModifiedSince() == null ? System.currentTimeMillis(): artistIndexRequest.getIfModifiedSince());
         indexes.setIgnoredArticles("The El La Los Las Le Les Os As O A");
-        List<ArtistIndexResponse.Index> index = new ArrayList<>();
+        List<ArtistIndexResponse.Index> indexList = new ArrayList<>();
         artistMap.forEach((key, value) -> {
             ArtistIndexResponse.Index idx = new ArtistIndexResponse.Index();
             idx.setName(key);
@@ -59,10 +58,15 @@ public class MusicFolderController {
                 return artistItem;
             }).collect(Collectors.toList());
             idx.setArtists(artistItems);
-            index.add(idx);
+            indexList.add(idx);
         });
-        if(CollectionUtils.isNotEmpty(index)) {
-            indexes.setIndexList(index);
+        if (CollectionUtils.isNotEmpty(indexList)) {
+            long maxLastModified = artistMap.values().stream().flatMap(List::stream).mapToLong(ArtistDTO::getLastModified).max().orElse(System.currentTimeMillis());
+            indexes.setLastModified(maxLastModified);
+            indexes.setIndexList(indexList);
+        }else {
+            indexes.setLastModified(artistIndexRequest.getIfModifiedSince() == null
+                    ? System.currentTimeMillis(): artistIndexRequest.getIfModifiedSince());
         }
         return artistIndexResponse;
     }

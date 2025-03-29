@@ -38,6 +38,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
             artistDTO.setId(artist.getId());
             artistDTO.setName(artist.getName());
             artistDTO.setFirstLetter(artist.getFirst_letter());
+            artistDTO.setLastModified(artist.getGmt_modify());
             return artistDTO;
         }).collect(Collectors.toList());
 

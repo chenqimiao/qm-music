@@ -65,5 +65,4 @@ gradlew.bat
 target/
 
 */dev-db
-*/dev-db/*
-*/dev-db/
+dev-db

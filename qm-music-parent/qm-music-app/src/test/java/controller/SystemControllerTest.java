@@ -100,5 +100,7 @@ public class SystemControllerTest {
         var response = restTemplate.getForEntity(url, SubsonicLicenseResponse.class);
         SubsonicLicenseResponse body = response.getBody();
         Assert.assertEquals("get license error" , body.getLicense().getValid(), Boolean.TRUE);
+        Assert.assertTrue("get license email is null or empty" , body.getLicense().getEmail() != null && !body.getLicense().getEmail().isEmpty());
+
     }
 }

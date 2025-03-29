@@ -25,5 +25,9 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.mocreates</groupId>
+            <artifactId>uid-generator</artifactId>
+        </dependency>
     </dependencies>
 </project>

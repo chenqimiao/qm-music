@@ -1,8 +1,12 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.repository.UserRepository;
+import com.github.chenqimiao.request.subsonic.BaseRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
-import org.springframework.beans.factory.annotation.Value;
+import io.github.mocreates.Sequence;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest")
 public class SystemController {
 
-    @Value("${qm.user.default.email}")
-    private String defaultEmail;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private Sequence sequence;
 
     @GetMapping(value = {"/ping","/ping.view"})
     public SubsonicPong ping() {
@@ -25,10 +32,15 @@ public class SystemController {
 
 
     @GetMapping(value = {"/getLicense"})
-    public SubsonicLicenseResponse getLicense() {
+    public SubsonicLicenseResponse getLicense(BaseRequest baseRequest) {
+        String email = userRepository.findEmailByUserName(baseRequest.getU());
+        if (StringUtils.isBlank(email)) {
+
+            email = "example" + sequence.nextId() + "@example.com";
+        }
         return SubsonicLicenseResponse.builder()
                 .license(SubsonicLicenseResponse.License.builder()
-                        .valid(true).email(defaultEmail).licenseExpires("2099-09-03T14:46:43")
+                        .valid(true).email(email).licenseExpires("2099-09-03T14:46:43")
                         .build())
                 .build();
     }

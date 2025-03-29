@@ -106,6 +106,11 @@
                 <version>3.8.1</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>io.github.mocreates</groupId>
+                <artifactId>uid-generator</artifactId>
+                <version>2.0-RELEASE</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

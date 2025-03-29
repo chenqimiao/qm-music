@@ -27,4 +27,16 @@ public class UserRepository {
         }
     }
 
+
+    @Nullable
+    public String findEmailByUserName(String userName) {
+        String sql = "SELECT `email` FROM user WHERE `username` = ?";
+        try{
+            return jdbcTemplate.queryForObject(sql, String.class, userName);
+
+        }catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+    }
+
 }

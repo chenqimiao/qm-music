@@ -9,7 +9,7 @@ import lombok.Setter;
  **/
 @Getter
 @Setter
-public class BaseRequest {
+public class SubsonicRequest {
 
     private String u;
 

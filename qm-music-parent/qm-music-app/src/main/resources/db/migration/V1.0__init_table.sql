@@ -19,6 +19,7 @@ END;
 CREATE TABLE artist (
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          name VARCHAR(255) NOT NULL UNIQUE,
+                         first_letter VARCHAR(1) NOT NULL,
                          country_code varCHAR(16),
                          gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')),
                          gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))

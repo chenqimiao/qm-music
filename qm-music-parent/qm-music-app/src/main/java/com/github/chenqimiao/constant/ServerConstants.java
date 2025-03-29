@@ -15,6 +15,7 @@ public abstract class ServerConstants {
     public static final String STATUS_FAIL = "failed";
 
     public static final Long FOLDER_ID = 1L;
+
     public static final String FOLDER_NAME = "QM Music Library";
 
 }

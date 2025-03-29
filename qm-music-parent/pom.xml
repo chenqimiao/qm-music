@@ -111,6 +111,16 @@
                 <artifactId>uid-generator</artifactId>
                 <version>2.0-RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>2.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.5.0-M3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

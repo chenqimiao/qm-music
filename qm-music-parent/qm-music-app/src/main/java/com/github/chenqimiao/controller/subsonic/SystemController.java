@@ -1,7 +1,7 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.repository.UserRepository;
-import com.github.chenqimiao.request.subsonic.BaseRequest;
+import com.github.chenqimiao.request.subsonic.SubsonicRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import io.github.mocreates.Sequence;
@@ -32,8 +32,8 @@ public class SystemController {
 
 
     @GetMapping(value = {"/getLicense"})
-    public SubsonicLicenseResponse getLicense(BaseRequest baseRequest) {
-        String email = userRepository.findEmailByUserName(baseRequest.getU());
+    public SubsonicLicenseResponse getLicense(SubsonicRequest subsonicRequest) {
+        String email = userRepository.findEmailByUserName(subsonicRequest.getU());
         if (StringUtils.isBlank(email)) {
 
             email = "example" + sequence.nextId() + "@example.com";

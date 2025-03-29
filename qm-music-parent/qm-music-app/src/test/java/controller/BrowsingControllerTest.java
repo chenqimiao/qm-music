@@ -20,7 +20,7 @@ import java.util.Objects;
  **/
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = QmMusicApplication.class)
 @Slf4j
-public class MusicFolderControllerTest {
+public class BrowsingControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

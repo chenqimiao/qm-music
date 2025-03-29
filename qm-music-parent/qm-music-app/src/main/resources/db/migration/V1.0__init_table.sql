@@ -42,11 +42,17 @@ CREATE TABLE album (
                         artist_id INTEGER NOT NULL,
                         release_year CHAR(4),
                         genre VARCHAR(50),
+                        song_count INTEGER NOT NULL,
+                        duration INTEGER NOT NULL,
+                        artist VARCHAR(128) NOT NULL,
+                        cover_art VARCHAR(128),
                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_album_artist ON album(artist_id);
 CREATE INDEX idx_album_genre_year ON album(genre, release_year);
+CREATE INDEX idx_album_release_year ON album(release_year);
+CREATE INDEX idx_album_gmt_create ON album(gmt_create);
 
 CREATE TRIGGER IF NOT EXISTS update_album_gmt_modify
     AFTER UPDATE ON album

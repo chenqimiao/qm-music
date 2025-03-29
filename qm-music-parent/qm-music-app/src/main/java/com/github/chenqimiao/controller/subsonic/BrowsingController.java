@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  **/
 @RestController
 @RequestMapping(value = "/rest")
-public class MusicFolderController {
+public class BrowsingController {
 
     @Autowired
     private ArtistService artistService;

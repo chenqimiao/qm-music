@@ -1,5 +1,6 @@
 package com.github.chenqimiao.response.subsonic;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
@@ -25,6 +26,8 @@ public class ArtistIndexResponse extends SubsonicResponse {
     public static class Indexes {
 
         @JacksonXmlProperty(localName = "index")
+        @JSONField(name = "index")
+        @JacksonXmlElementWrapper(useWrapping = false)
         private List<Index> indexList;
 
         /**
@@ -51,6 +54,7 @@ public class ArtistIndexResponse extends SubsonicResponse {
 
         @JacksonXmlElementWrapper(useWrapping = false) // 禁用外层包装
         @JacksonXmlProperty(localName = "artist")
+        @JSONField(name = "artist")
         private List<ArtistItem> artists;
 
     }

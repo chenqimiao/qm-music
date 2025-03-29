@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class MusicFolderController {
 
         return SubsonicMusicFolder.builder().musicFolders(
                 Collections.singletonList(SubsonicMusicFolder.MusicFolder.builder()
-                        .id(1L).name("QM Music Library").build()))
+                        .id(ServerConstants.FOLDER_ID).name(ServerConstants.FOLDER_NAME).build()))
                 .build();
     }
 }

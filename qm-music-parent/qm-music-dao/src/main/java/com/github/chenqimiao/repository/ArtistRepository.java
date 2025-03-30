@@ -32,4 +32,15 @@ public class ArtistRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class));
 
     }
+
+
+    public ArtistDO findByArtistId(Integer artistId) {
+        String sql = """
+                    select * from artist where id = ?
+                 """;
+        // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
+        // Integer :单列值  for select count(1) from xxx
+        return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistId);
+
+    }
 }

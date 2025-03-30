@@ -49,6 +49,7 @@ public class AlbumList2Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer songCount;
         @JacksonXmlProperty(isAttribute = true, localName = "created")
+        @JSONField(name = "created")
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // fastjson2 json format
         private Date gmtCreate;

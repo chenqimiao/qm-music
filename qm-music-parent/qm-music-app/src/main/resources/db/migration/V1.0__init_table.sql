@@ -66,11 +66,17 @@ END;
 -- 歌曲表（核心表，结合Subsonic高频访问场景）
 CREATE TABLE song (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       parent INTEGER ,
                        title VARCHAR(255) NOT NULL,
                        album_id INTEGER,
                        artist_id INTEGER NOT NULL,
+                       size INTEGER NOT NULL,
+                       suffix VARCHAR(16),
+                       content_type VARCHAR(16),
+                       cover_art VARCHAR(16),
+                       year INTEGER ,
                        duration INTEGER NOT NULL CHECK(duration > 0),
-                       bitrate INTEGER NOT NULL CHECK(bitrate > 0),
+                       bit_rate INTEGER NOT NULL CHECK(bit_rate > 0),
                        file_path VARCHAR(512) NOT NULL UNIQUE,
                        file_hash CHAR(64) NOT NULL UNIQUE,
                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),

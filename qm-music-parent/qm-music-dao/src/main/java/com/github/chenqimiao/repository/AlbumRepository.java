@@ -23,4 +23,13 @@ public class AlbumRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class));
     }
 
+
+
+    public AlbumDO findByAlbumById(Integer albumId) {
+        String sql = """
+                        select * from album where id = ?
+                     """;
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class), albumId);
+    }
+
 }

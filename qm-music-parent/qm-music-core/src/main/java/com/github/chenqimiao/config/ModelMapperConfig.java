@@ -1,5 +1,6 @@
 package com.github.chenqimiao.config;
 
+import com.github.chenqimiao.util.DateTimeUtils;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -20,12 +20,19 @@ import java.util.Date;
 public class ModelMapperConfig {
 
 
-    private Converter<Date, String> dateToStringConverter = new AbstractConverter<Date, String>() {
+    private final Converter<Date, String> dateToStringConverter = new AbstractConverter<>() {
         @Override
         protected String convert(Date date) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            return date == null ? null : simpleDateFormat.format(date);
+            return date == null ? null : DateTimeUtils.format(date, DateTimeUtils.YMDHMS);
+        }
+    };
+
+
+    private final Converter<Long, Date> longToDateConverter = new AbstractConverter<>() {
+        @Override
+        protected Date convert(Long timestamp) {
+            return new Date(timestamp);
         }
     };
 
@@ -44,6 +51,8 @@ public class ModelMapperConfig {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         modelMapper.addConverter(dateToStringConverter);
+
+        modelMapper.addConverter(longToDateConverter);
 
         return modelMapper;
     }

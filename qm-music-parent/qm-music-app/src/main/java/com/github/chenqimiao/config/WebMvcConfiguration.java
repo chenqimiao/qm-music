@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -41,10 +40,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         converter.setFastJsonConfig(config);
         converter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_JSON));
         converters.add(0, converter);
-
-//        MappingJackson2XmlHttpMessageConverter xmlConverter = new MappingJackson2XmlHttpMessageConverter();
-//        xmlConverter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_XML));
-//        converters.add(1, xmlConverter);
     }
 
     @Override

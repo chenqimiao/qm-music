@@ -1,10 +1,13 @@
 package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,8 +48,10 @@ public class AlbumList2Response extends SubsonicResponse {
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
         private Integer songCount;
-        @JacksonXmlProperty(isAttribute = true)
-        private String created;
+        @JacksonXmlProperty(isAttribute = true, localName = "created")
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // fastjson2 json format
+        private Date gmtCreate;
         @JacksonXmlProperty(isAttribute = true)
         private Integer duration;
         @JacksonXmlProperty(isAttribute = true)

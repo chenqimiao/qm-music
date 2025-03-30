@@ -7,17 +7,17 @@ import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
 import com.github.chenqimiao.response.subsonic.AlbumList2Response;
 import com.github.chenqimiao.service.AlbumService;
-import com.github.chenqimiao.util.DateTimeUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -30,6 +30,10 @@ public class AlbumAndSongController {
     @Autowired
     private AlbumService albumService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
 
     @GetMapping(value = "/getAlbumList2")
     public AlbumList2Response getAlbumList2(AlbumList2Request albumList2Request) {
@@ -55,18 +59,8 @@ public class AlbumAndSongController {
 
         List<AlbumDTO> albums = albumService.getAlbumList2(albumSearchRequest);
         AlbumList2Response albumList2Response = new AlbumList2Response();
-        List<AlbumList2Response.Album> albumList = albums.stream().map(n -> {
-            AlbumList2Response.Album album = new AlbumList2Response.Album();
-            album.setId(n.getId());
-            album.setName(n.getTitle());
-            album.setSongCount(n.getSongCount());
-            album.setCreated(DateTimeUtils.format(new Date(n.getGmtCreate()), DateTimeUtils.YMDTHMS));
-            album.setCoverArt(n.getCoverArt());
-            album.setDuration(n.getDuration());
-            album.setArtist(n.getArtist());
-            album.setArtistId(n.getArtistId());
-            return album;
-        }).collect(Collectors.toList());
+
+        List<AlbumList2Response.Album> albumList  = modelMapper.map(albums, TYPE_LIST_ALBUM);
         if (CollectionUtils.isNotEmpty(albumList)) {
             albumList2Response.setAlbumList2(AlbumList2Response.AlbumList.builder()
                     .albums(albumList).build());

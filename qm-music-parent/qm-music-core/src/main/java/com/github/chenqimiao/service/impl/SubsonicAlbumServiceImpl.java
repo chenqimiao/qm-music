@@ -5,11 +5,14 @@ import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
+import jakarta.annotation.Resource;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -20,6 +23,12 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
 
     @Autowired
     private AlbumRepository albumRepository;
+
+    @Resource
+    private ModelMapper ucModelMapper;
+
+    private static Type TYPE_LIST_ALBUM_DTO = new TypeToken<List<AlbumDTO>>() {}.getType();
+
 
     @Override
     public List<AlbumDTO> getAlbumList2(AlbumSearchRequest albumSearchRequest) {
@@ -44,20 +53,6 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
                 .append(albumSearchRequest.getSortDirection());
 
         List<AlbumDO> albumList = albumRepository.searchAlbumList(stringBuilder.toString());
-
-        return albumList.stream().map(n -> {
-            AlbumDTO albumDTO = new AlbumDTO();
-            albumDTO.setId(n.getId());
-            albumDTO.setTitle(n.getTitle());
-            albumDTO.setArtistId(n.getArtist_id());
-            albumDTO.setReleaseYear(n.getRelease_year());
-            albumDTO.setGenre(n.getGenre());
-            albumDTO.setSongCount(n.getSong_count());
-            albumDTO.setGmtCreate(n.getGmt_create());
-            albumDTO.setDuration(n.getDuration());
-            albumDTO.setArtist(n.getArtist());
-            albumDTO.setCoverArt(n.getCover_art());
-            return albumDTO;
-        }).collect(Collectors.toList());
+        return ucModelMapper.map(albumList, TYPE_LIST_ALBUM_DTO);
     }
 }

@@ -31,7 +31,7 @@ public class MediaRetrievalController {
         if (id.startsWith("al-")){
             file = mediaRetrievalService.getAlbumCoverArt(Integer.valueOf(id.replace("al-","")), size);
         }else if (id.startsWith("ar-")){
-            file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("al-","")), size);
+            file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
         }

@@ -47,8 +47,9 @@ public class AlbumResponse extends SubsonicResponse {
         private Date gmtCreate;
         @JacksonXmlProperty(isAttribute = true)
         private Integer duration;
-        @JacksonXmlProperty(isAttribute = true)
-        private String artist;
+        @JacksonXmlProperty(isAttribute = true, localName = "artist")
+        @JSONField(name = "artist")
+        private String artistName;
         @JacksonXmlProperty(isAttribute = true)
         private Integer artistId;
 

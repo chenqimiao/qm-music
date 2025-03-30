@@ -13,13 +13,13 @@ public class AlbumDO {
     private Integer id;
     private String title;
     private Integer artist_id;
+    private String artist_name;
     private String release_year;
     private String genre;
     private Long gmt_create;
     private Long gmt_modify;
     private Integer song_count;
     private Integer duration;
-    private String artist;
     private String cover_art;
 
 }

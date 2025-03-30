@@ -61,7 +61,7 @@ public class BrowsingController {
             indexList.add(idx);
         });
         if (CollectionUtils.isNotEmpty(indexList)) {
-            long maxLastModified = artistMap.values().stream().flatMap(List::stream).mapToLong(ArtistDTO::getLastModified).max().orElse(System.currentTimeMillis());
+            long maxLastModified = artistMap.values().stream().flatMap(List::stream).mapToLong(ArtistDTO::getGmtModify).max().orElse(System.currentTimeMillis());
             indexes.setLastModified(maxLastModified);
             indexes.setIndexList(indexList);
         }else {

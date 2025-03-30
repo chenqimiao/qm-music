@@ -42,7 +42,7 @@ public class SubsonicSongServiceImpl implements SongService {
     public AlbumAggDTO queryByAlbumId(Integer albumId) {
 
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
-        AlbumDO album = albumRepository.findByAlbumById(albumId);
+        AlbumDO album = albumRepository.findByAlbumId(albumId);
         AlbumDTO albumDTO = ucModelMapper.map(album, AlbumDTO.class);
 
         ArtistDO artistDO = artistRepository.findByArtistId(albumDTO.getArtistId());

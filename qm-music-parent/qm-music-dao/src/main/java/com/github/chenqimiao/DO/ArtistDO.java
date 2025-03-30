@@ -16,4 +16,5 @@ public class ArtistDO {
     private String country_code;
     private Long gmt_create;
     private Long gmt_modify;
+    private String cover_art;
 }

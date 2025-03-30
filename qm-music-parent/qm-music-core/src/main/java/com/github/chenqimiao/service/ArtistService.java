@@ -1,5 +1,6 @@
 package com.github.chenqimiao.service;
 
+import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import org.springframework.lang.Nullable;
 
@@ -17,4 +18,6 @@ public interface ArtistService {
 
     Map<String, List<ArtistDTO>> searchArtistMap(@Nullable Long ifModifiedSince);
 
+
+    ArtistAggDTO queryArtistWithAlbums(Integer artistId);
 }

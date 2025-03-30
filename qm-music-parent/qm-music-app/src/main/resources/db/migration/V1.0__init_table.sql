@@ -21,6 +21,7 @@ CREATE TABLE artist (
                          name VARCHAR(255) NOT NULL UNIQUE,
                          first_letter VARCHAR(1) NOT NULL,
                          country_code varCHAR(16),
+                         cover_art varCHAR(16),
                          gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                          gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
@@ -44,7 +45,7 @@ CREATE TABLE album (
                         genre VARCHAR(50),
                         song_count INTEGER NOT NULL,
                         duration INTEGER NOT NULL,
-                        artist VARCHAR(128) NOT NULL,
+                        artist_name VARCHAR(128) NOT NULL,
                         cover_art VARCHAR(128),
                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))

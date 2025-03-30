@@ -1,9 +1,15 @@
 package com.github.chenqimiao.service.impl;
 
+import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
+import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
+import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
+import jakarta.annotation.Resource;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +28,14 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     @Autowired
     private ArtistRepository artistRepository;
 
+    @Autowired
+    private AlbumRepository albumRepository;
+
+    @Resource
+    private ModelMapper ucModelMapper;
+
+
+
     @Override
     public List<ArtistDTO> searchArtist(Long ifModifiedSince) {
 
@@ -33,15 +47,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
             artistList = artistRepository.findArtistGtUpdateTime(ifModifiedSince);
         }
 
-        return artistList.stream().map(artist -> {
-            ArtistDTO artistDTO = new ArtistDTO();
-            artistDTO.setId(artist.getId());
-            artistDTO.setName(artist.getName());
-            artistDTO.setFirstLetter(artist.getFirst_letter());
-            artistDTO.setLastModified(artist.getGmt_modify());
-            return artistDTO;
-        }).collect(Collectors.toList());
-
+        return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
     }
 
     @Override
@@ -50,5 +56,16 @@ public class SubsonicArtistServiceImpl implements ArtistService {
         Map<String, List<ArtistDTO>> artistMap = artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter,
                 TreeMap::new, Collectors.toList()));
         return artistMap;
+    }
+
+    @Override
+    public ArtistAggDTO queryArtistWithAlbums(Integer artistId) {
+        ArtistDO artistDO = artistRepository.findByArtistId(artistId);
+        ArtistDTO artistDTO = artistDO == null ? null : ucModelMapper.map(artistDO, ArtistDTO.class);
+        List<AlbumDO> albumDOList = albumRepository.findByArtistId(artistId);
+        return ArtistAggDTO.builder()
+                .artist(artistDTO)
+                .albumList(ucModelMapper.map(albumDOList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO))
+                .build();
     }
 }

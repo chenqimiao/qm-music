@@ -18,6 +18,6 @@ public class AlbumDTO {
     private Integer songCount;
     private Long gmtCreate;
     private Integer duration;
-    private String artist;
     private String coverArt;
+    private String artistName;
 }

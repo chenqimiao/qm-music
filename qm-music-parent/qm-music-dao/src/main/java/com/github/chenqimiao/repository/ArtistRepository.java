@@ -2,6 +2,7 @@ package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.ArtistDO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -40,7 +41,12 @@ public class ArtistRepository {
                  """;
         // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
         // Integer :单列值  for select count(1) from xxx
-        return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistId);
+        try{
+            return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistId);
+
+        }catch (EmptyResultDataAccessException e){
+            return null;
+        }
 
     }
 }

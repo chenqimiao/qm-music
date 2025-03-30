@@ -1,17 +1,16 @@
 package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
+import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
 import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -26,8 +25,6 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
 
     @Resource
     private ModelMapper ucModelMapper;
-
-    private static Type TYPE_LIST_ALBUM_DTO = new TypeToken<List<AlbumDTO>>() {}.getType();
 
 
     @Override
@@ -53,6 +50,6 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
                 .append(albumSearchRequest.getSortDirection());
 
         List<AlbumDO> albumList = albumRepository.searchAlbumList(stringBuilder.toString());
-        return ucModelMapper.map(albumList, TYPE_LIST_ALBUM_DTO);
+        return ucModelMapper.map(albumList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
     }
 }

@@ -3,11 +3,17 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
+import com.github.chenqimiao.repository.AlbumRepository;
+import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
+import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.MediaFetcherService;
+import com.github.chenqimiao.util.FileUtils;
+import com.github.chenqimiao.util.FirstLetterUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +48,12 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
 
     @Autowired
     private SongRepository songRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ArtistRepository artistRepository;
+    @Autowired
+    private AlbumRepository albumRepository;
 
 
     @Override
@@ -75,7 +87,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
                         }
 
                         MusicMeta musicMeta = MusicFileReader.readMusicMeta(path.toFile());
-                        this.save(musicMeta);
+                        this.save(musicMeta, path);
                     });
         } catch (IOException e) {
             log.error("文件遍历io异常", e);
@@ -86,16 +98,50 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
 
     }
 
-    private void save(MusicMeta musicMeta) {
+    @SneakyThrows
+    private void save(MusicMeta musicMeta, Path path) {
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
-        String albumArtist = musicAlbumMeta.getAlbumArtist();
 
-//        ArtistDO albumDO = new ArtistDO();
-//        albumDO.setName();
-//        albumDO.set
+        ArtistDO artistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+        if (artistDO == null){
+            artistDO = new ArtistDO();
+            artistDO.setName(musicAlbumMeta.getAlbumArtist());
+            artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
+            artistRepository.save(artistDO);
+            artistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+        }
+
+        AlbumDO albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
+
+        if (albumDO ==null) {
+            albumDO = new AlbumDO();
+            albumDO.setTitle(musicAlbumMeta.getAlbum());
+            albumDO.setArtist_id(artistDO.getId());
+            albumDO.setRelease_year(musicAlbumMeta.getOriginalYear());
+            albumDO.setGenre(musicAlbumMeta.getMusicbrainzReleaseType());
+            albumDO.setSong_count(0);
+            albumDO.setDuration(1234);
+            albumDO.setArtist_name(artistDO.getName());
+            albumRepository.save(albumDO);
+            albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
+        }
+
         SongDO songDO = new SongDO();
-        // TODO ..
-
+        songDO.setParent(1);
+        songDO.setTitle(musicMeta.getTitle());
+        songDO.setAlbum_id(albumDO.getId());
+        songDO.setArtist_id(artistDO.getId());
+        songDO.setDuration(musicMeta.getTrackLength());
+        songDO.setSuffix(FileUtils.getFileExtension(path));
+        songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
+        songDO.setFile_path(path.toAbsolutePath().toString());
+        songDO.setFile_hash(FileUtils.getFileExtension(path));
+        songDO.setSize(Files.size(path));
+        songDO.setYear(musicAlbumMeta.getOriginalYear());
+        songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
+        songDO.setArtist_name(artistDO.getName());
+        songRepository.save(songDO);
+        
     }
 
 

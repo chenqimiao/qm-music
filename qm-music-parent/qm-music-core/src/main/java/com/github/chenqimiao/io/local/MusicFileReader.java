@@ -36,8 +36,9 @@ public abstract class MusicFileReader {
                 //.originalYear(tag.getFirst(FieldKey.ORIGINAL_YEAR))
                 .lyrics(tag.getFirst(FieldKey.LYRICS))
                 .comment(tag.getFirst(FieldKey.COMMENT))
-
-
+                .format(f.getAudioHeader().getFormat())
+                .bitRate(f.getAudioHeader().getBitRate())
+                .trackLength(f.getAudioHeader().getTrackLength())
                 .build();
     }
 

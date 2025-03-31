@@ -73,4 +73,24 @@ public class ArtistRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
                  artistName , offset, pageSize);
     }
+
+    public int save(ArtistDO artistDO) {
+        String sql = """
+                     insert into artist (name, first_letter) values (?, ?)
+                     """;
+        return jdbcTemplate.update(sql, artistDO.getName(), artistDO.getFirst_letter());
+    }
+
+    public ArtistDO queryByName(String artistName) {
+        String sql = """
+                        select * from artist where name = '?' limit ? ?;
+                     """;
+         try {
+             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
+                     artistName);
+         }catch (EmptyResultDataAccessException e){
+             return null;
+         }
+
+    }
 }

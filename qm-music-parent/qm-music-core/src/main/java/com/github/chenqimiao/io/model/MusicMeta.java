@@ -34,4 +34,10 @@ public class MusicMeta {
     private MusicAlbumMeta musicAlbumMeta;
 
     private String artist;
+
+    private String format;
+
+    private String bitRate;
+
+    private Integer trackLength;
 }

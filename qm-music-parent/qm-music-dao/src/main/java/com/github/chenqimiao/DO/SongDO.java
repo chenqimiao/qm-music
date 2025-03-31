@@ -26,4 +26,5 @@ public class SongDO {
     private Long gmt_modify;
     private Long size;
     private String year;
+    private String artist_name;
 }

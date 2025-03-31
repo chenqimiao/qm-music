@@ -1,5 +1,6 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,5 +39,4 @@ public class UserRepository {
             return null;
         }
     }
-
 }

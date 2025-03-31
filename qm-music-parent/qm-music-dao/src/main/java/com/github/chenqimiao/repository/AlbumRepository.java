@@ -55,5 +55,25 @@ public class AlbumRepository {
                 albumName, offset, pageSize);
     }
 
+    public AlbumDO queryByName(String albumName) {
+        String sql = """
+                        select * from album where name = '?' 
+                     """;
+        try {
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
+                    albumName);
+        }catch (EmptyResultDataAccessException e){
+            return null;
+        }
+    }
+
+    public void save(AlbumDO albumDO) {
+        String sql = """
+                       insert into album(title, artist_id, release_year, genre,duration, artist_name) values('?',?,'?','?',?,'?')
+                     """;
+         jdbcTemplate.update(sql, albumDO.getTitle(), albumDO.getArtist_id(), albumDO.getRelease_year(),
+                albumDO.getGenre(), albumDO.getDuration(), albumDO.getArtist_name());
+    }
+
 
 }

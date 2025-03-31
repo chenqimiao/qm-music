@@ -31,4 +31,5 @@ public class MusicAlbumMeta {
      * 专辑类型 : 合集（album;compilation）...
      */
     private String musicbrainzReleaseType;
+
 }

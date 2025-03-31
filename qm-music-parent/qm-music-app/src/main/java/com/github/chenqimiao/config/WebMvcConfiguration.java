@@ -55,6 +55,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .mediaType("json", MediaType.APPLICATION_JSON)
                 .mediaType("xml", MediaType.APPLICATION_XML)
                 .mediaType("text", MediaType.TEXT_PLAIN)
+                .mediaType("file", MediaType.APPLICATION_OCTET_STREAM)
                 // 默认格式（当未指定参数时）
                 .defaultContentType(MediaType.APPLICATION_XML);
     }

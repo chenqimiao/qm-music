@@ -1,9 +1,13 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
 import com.github.chenqimiao.service.MediaRetrievalService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Qimiao Chen
@@ -60,6 +67,20 @@ public class MediaRetrievalController {
                        .text(lyric)
                .build());
        return lyricsResponse;
+    }
+
+
+    @RequestMapping(value = "/stream")
+    @SneakyThrows
+    public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Integer songId,
+                                                      Integer maxBitRate, String format,
+                                                      Integer estimateContentLength) {
+
+        SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentLength(songStream.getSize()); // 手动设置长度
+        return new ResponseEntity<>(new InputStreamResource(songStream.getSongStream()), headers, HttpStatus.OK);
     }
 
 }

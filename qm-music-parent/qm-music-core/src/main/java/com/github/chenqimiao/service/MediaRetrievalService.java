@@ -1,6 +1,10 @@
 package com.github.chenqimiao.service;
 
+import com.github.chenqimiao.dto.SongStreamDTO;
+import org.modelmapper.internal.asm.tree.IincInsnNode;
+
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * @author Qimiao Chen
@@ -17,4 +21,6 @@ public interface MediaRetrievalService {
     File getArtistCoverArt(Integer artistId, Integer size);
 
     String getLyrics(String artistName, String songTitle);
+
+    SongStreamDTO getSongStream(Integer songId, Integer maxBitRate, String format, Integer estimateContentLength);
 }

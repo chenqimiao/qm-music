@@ -32,14 +32,14 @@ public class MediaRetrievalController {
     @Autowired
     private MediaRetrievalService mediaRetrievalService;
 
-    @RequestMapping(value = "/getCoverArt", produces = MediaType.IMAGE_JPEG_VALUE)
+    @RequestMapping(value = "/getCoverArt")
     @SneakyThrows
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
                                               @RequestParam(value = "size", required = false) Integer size) {
         File file = null;
-        if (id.startsWith("al-")){
-            file = mediaRetrievalService.getAlbumCoverArt(Integer.valueOf(id.replace("al-","")), size);
-        }else if (id.startsWith("ar-")){
+        if (id.startsWith("al-2")){
+            file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
+        }else if (id.startsWith("ar-2")){
             file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
@@ -70,7 +70,7 @@ public class MediaRetrievalController {
     }
 
 
-    @RequestMapping(value = "/stream",  produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(value = "/stream")
     @SneakyThrows
     public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Integer songId,
                                                       Integer maxBitRate, String format,

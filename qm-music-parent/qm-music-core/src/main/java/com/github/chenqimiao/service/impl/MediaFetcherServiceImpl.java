@@ -16,6 +16,7 @@ import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,8 +68,9 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
             Path path = Paths.get(filePath);
             return !Files.exists(path);
         }).map(SongDO::getId).collect(Collectors.toList());
-
-        songRepository.deleteByIds(toBeRemoveSongIds);
+        if (CollectionUtils.isNotEmpty(toBeRemoveSongIds)) {
+            songRepository.deleteByIds(toBeRemoveSongIds);
+        }
 
         Set<String> songSet = songs.stream().filter(song -> !toBeRemoveSongIds.contains(song.getId()))
                 .map(n -> n.getFile_path()).collect(Collectors.toSet());
@@ -141,7 +143,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
         songDO.setArtist_name(artistDO.getName());
         songRepository.save(songDO);
-        
+
     }
 
 

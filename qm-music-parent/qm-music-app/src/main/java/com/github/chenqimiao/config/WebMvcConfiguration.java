@@ -45,12 +45,12 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
-                // 启用参数匹配模式（默认参数名为 'f'）
+                // 启用参数匹配模式（默认参数名为 'format'）
                 .favorParameter(true)
                 // 自定义参数名（例如: /api/data?f=json）
                 .parameterName("f")
                 // 忽略 Accept 头，仅根据参数处理（可选）
-                .ignoreAcceptHeader(true)
+                //.ignoreAcceptHeader(true)
                 // 设置支持的媒体类型
                 .mediaType("json", MediaType.APPLICATION_JSON)
                 .mediaType("xml", MediaType.APPLICATION_XML)

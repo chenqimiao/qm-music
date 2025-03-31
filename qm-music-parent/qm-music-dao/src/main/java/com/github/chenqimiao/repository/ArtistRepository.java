@@ -68,10 +68,10 @@ public class ArtistRepository {
 
     public List<ArtistDO> searchByName(String artistName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from artist where name like '%?%' limit ? ?;
+                        select * from artist where name like ? limit ? ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
-                 artistName , offset, pageSize);
+                 '%' + artistName + '%' , offset, pageSize);
     }
 
     public int save(ArtistDO artistDO) {
@@ -83,7 +83,7 @@ public class ArtistRepository {
 
     public ArtistDO queryByName(String artistName) {
         String sql = """
-                        select * from artist where name = '?' limit ? ?;
+                        select * from artist where name = ?;
                      """;
          try {
              return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ArtistDO.class),

@@ -49,15 +49,15 @@ public class AlbumRepository {
 
     public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from album where name like '%?%' limit ? ?;
+                        select * from album where name like ? limit ? ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
-                albumName, offset, pageSize);
+                "%" + albumName + "%", offset, pageSize);
     }
 
     public AlbumDO queryByName(String albumName) {
         String sql = """
-                        select * from album where name = '?' 
+                        select * from album where title = ?
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
@@ -69,10 +69,11 @@ public class AlbumRepository {
 
     public void save(AlbumDO albumDO) {
         String sql = """
-                       insert into album(title, artist_id, release_year, genre,duration, artist_name) values('?',?,'?','?',?,'?')
+                       insert into album(title, artist_id, release_year, genre,duration, artist_name,song_count) 
+                       values(?,?,?,?,?,?,?)
                      """;
          jdbcTemplate.update(sql, albumDO.getTitle(), albumDO.getArtist_id(), albumDO.getRelease_year(),
-                albumDO.getGenre(), albumDO.getDuration(), albumDO.getArtist_name());
+                albumDO.getGenre(), albumDO.getDuration(), albumDO.getArtist_name(), albumDO.getSong_count());
     }
 
 

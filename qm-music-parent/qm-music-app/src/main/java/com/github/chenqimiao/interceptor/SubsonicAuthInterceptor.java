@@ -6,6 +6,7 @@ import com.github.chenqimiao.service.UserAuthService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * @since 2025/3/28 16:55
  **/
 @Component
+@Slf4j
 public class SubsonicAuthInterceptor implements HandlerInterceptor {
 
     @Resource
@@ -23,6 +25,7 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        log.info("request uri :{}, param: {}", request.getRequestURI(), request.getQueryString());
         String username = request.getParameter("u");
 
         String clientVersion = request.getParameter("v");

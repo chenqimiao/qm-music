@@ -46,7 +46,7 @@ public class SongRepository {
     public SongDO findByTitleAndArtistName(String songTitle, String artistName) {
 
         String sql = """
-                        select * from song where title = '?' and artist_mame= '?'
+                        select * from song where title = ? and artist_name= ?
                      """;
         List<SongDO> songs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), songTitle, artistName);
 
@@ -59,10 +59,10 @@ public class SongRepository {
 
     public List<SongDO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from song where title like '%?%' limit ? ?;
+                        select * from song where title like ? limit ? ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class),
-                songTitle, offset, pageSize);
+                "%"+songTitle +"%", offset, pageSize);
     }
 
 
@@ -86,14 +86,13 @@ public class SongRepository {
         String sql =  """
                         insert into song(parent, title, album_id, artist_id, artist_name, 
                         size, suffix, content_type, year, duration, bit_rate, file_path, file_hash)
-                          values(?, '?', ?, ?, '?', ?, '?', '?', '?', ?, ?, '?', '?')
+                          values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                      """;
-        jdbcTemplate.update(sql, songDO.getParent(), songDO.getTitle(),
-                songDO.getAlbum_id(), songDO.getArtist_id(),
-                songDO.getArtist_id(), songDO.getArtist_name(),
-                songDO.getSize(), songDO.getSuffix(), songDO.getContent_type(),
-                songDO.getYear(), songDO.getDuration(), songDO.getBit_rate(),
-                songDO.getFile_path(), songDO.getFile_hash()
-        );
+
+                jdbcTemplate.update(sql, songDO.getParent(), songDO.getTitle(),
+                        songDO.getAlbum_id(),songDO.getArtist_id(), songDO.getArtist_name(),
+                        songDO.getSize(), songDO.getSuffix(), songDO.getContent_type(),
+                        songDO.getYear(), songDO.getDuration(), songDO.getBit_rate(),
+                        songDO.getFile_path(), songDO.getFile_hash()  );
     }
 }

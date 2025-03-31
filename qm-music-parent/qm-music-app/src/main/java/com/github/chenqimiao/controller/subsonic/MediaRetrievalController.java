@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Qimiao Chen
@@ -37,10 +34,13 @@ public class MediaRetrievalController {
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
                                               @RequestParam(value = "size", required = false) Integer size) {
         File file = null;
-        if (id.startsWith("al-2")){
-            file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
-        }else if (id.startsWith("ar-2")){
-            file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
+        byte[] coverArt = null;
+        if (id.startsWith("al-")){
+            // file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
+            coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
+
+        }else if (id.startsWith("ar-")){
+            //file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
             byte[] songCoverArtByte = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);

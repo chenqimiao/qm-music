@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -62,6 +63,23 @@ public class SongRepository {
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class),
                 songTitle, offset, pageSize);
+    }
+
+
+    public List<SongDO> findAll() {
+        String sql = """
+                        select * from song ;
+                     """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class));
+    }
+
+    public void deleteByIds(List<Integer> ids) {
+        String sql = """
+                       delete from song where id in (?)
+                     """;
+         jdbcTemplate.update(sql, String.join(",", ids.stream()
+                 .map(Object::toString)  // 将 Integer 转为 String
+                 .collect(Collectors.joining(","))));
     }
 
 }

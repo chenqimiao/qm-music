@@ -1,10 +1,9 @@
 package com.github.chenqimiao.service;
 
+import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
-import org.modelmapper.internal.asm.tree.IincInsnNode;
 
 import java.io.File;
-import java.io.InputStream;
 
 /**
  * @author Qimiao Chen
@@ -14,7 +13,7 @@ public interface MediaRetrievalService {
 
     File getSongCoverArt(Integer songId, Integer size);
 
-    byte[] getSongCoverArtByte(Integer songId, Integer size);
+    CoverStreamDTO getSongCoverStreamDTO(Integer songId, Integer size);
 
     File getAlbumCoverArt(Integer albumId, Integer size);
 

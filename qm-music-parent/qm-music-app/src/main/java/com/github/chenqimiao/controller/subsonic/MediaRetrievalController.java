@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
 import com.github.chenqimiao.service.MediaRetrievalService;
@@ -32,16 +33,16 @@ public class MediaRetrievalController {
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
                                               @RequestParam(value = "size", required = false) Integer size) {
         File file = null;
-        byte[] coverArt = null;
+        CoverStreamDTO songCoverStreamDTO = null;
         if (id.startsWith("al-")){
             // file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
-            coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id.replace("al-","")), size);
+            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id.replace("al-", "")), size);
 
         }else if (id.startsWith("ar-")){
             //file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
-             coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
+            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id), size);
         }
         // 将File对象转换为Path
 //        Path path = file.toPath();
@@ -51,7 +52,9 @@ public class MediaRetrievalController {
 //               // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
 //                .body(Files.readAllBytes(path));
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(coverArt);
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(songCoverStreamDTO.getMimeType()))
+                .body(songCoverStreamDTO.getCover());
     }
 
 

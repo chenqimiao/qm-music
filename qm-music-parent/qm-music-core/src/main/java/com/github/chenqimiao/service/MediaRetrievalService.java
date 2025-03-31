@@ -10,6 +10,8 @@ public interface MediaRetrievalService {
 
     File getSongCoverArt(Integer songId, Integer size);
 
+    byte[] getSongCoverArtByte(Integer songId, Integer size);
+
     File getAlbumCoverArt(Integer albumId, Integer size);
 
     File getArtistCoverArt(Integer artistId, Integer size);

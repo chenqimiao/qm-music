@@ -1,10 +1,19 @@
 package com.github.chenqimiao.service.impl;
 
+import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.io.local.MusicFileReader;
+import com.github.chenqimiao.io.model.MusicAlbumMeta;
+import com.github.chenqimiao.io.model.MusicMeta;
+import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
+import org.jaudiotagger.tag.images.Artwork;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Qimiao Chen
@@ -13,14 +22,35 @@ import java.nio.file.Path;
 @Service("subsonicMediaRetrievalService")
 public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService {
 
+    @Autowired
+    private SongRepository songRepository;
+
     @Override
     public File getSongCoverArt(Integer songId, Integer size) {
-       return null;
+        SongDO songDO = songRepository.findBySongId(songId);
+        String filePath = songDO.getFile_path();
+        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
+        MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
+        List<Artwork> artworks = musicAlbumMeta.getArtworks();
+        // todo
+        return null;
+    }
+
+    @Override
+    public byte[] getSongCoverArtByte(Integer songId, Integer size) {
+        SongDO songDO = songRepository.findBySongId(songId);
+        String filePath = songDO.getFile_path();
+        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
+        MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
+        List<Artwork> artworks = musicAlbumMeta.getArtworks();
+        if (artworks.isEmpty()) {
+            return null;
+        }
+        return artworks.getFirst().getBinaryData();
     }
 
     @Override
     public File getAlbumCoverArt(Integer albumId, Integer size) {
-
        return null;
     }
 

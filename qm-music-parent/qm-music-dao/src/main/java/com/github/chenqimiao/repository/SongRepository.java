@@ -2,6 +2,7 @@ package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,19 @@ public class SongRepository {
                         select * from song where album_id = ?
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), alumId);
+    }
+
+    public SongDO findBySongId(Integer songId) {
+
+        try {
+            String sql = """
+                        select * from song where id = ?
+                     """;
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(SongDO.class), songId);
+        }catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
 }

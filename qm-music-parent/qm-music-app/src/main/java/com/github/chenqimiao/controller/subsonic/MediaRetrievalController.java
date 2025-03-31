@@ -33,7 +33,9 @@ public class MediaRetrievalController {
         }else if (id.startsWith("ar-")){
             file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
-            file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
+            //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
+            byte[] songCoverArtByte = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
+            return ResponseEntity.ok().body(songCoverArtByte);
         }
         // 将File对象转换为Path
         Path path = file.toPath();

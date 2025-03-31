@@ -6,8 +6,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -37,6 +39,19 @@ public class SongRepository {
             return null;
         }
 
+    }
+
+    public SongDO findByTitleAndArtistName(String songTitle, String artistName) {
+
+        String sql = """
+                        select * from song where title = ? and artist_mame= ?
+                     """;
+        List<SongDO> songs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), songTitle, artistName);
+
+        if (CollectionUtils.isEmpty(songs)) {
+            return null;
+        }
+        return songs.get(0);
     }
 
 }

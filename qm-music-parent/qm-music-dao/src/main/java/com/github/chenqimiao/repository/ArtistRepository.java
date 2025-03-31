@@ -49,4 +49,20 @@ public class ArtistRepository {
         }
 
     }
+
+
+    public ArtistDO findByName(String artistName) {
+        String sql = """
+                    select * from artist where name = ?
+                 """;
+        // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
+        // Integer :单列值  for select count(1) from xxx
+        try{
+            return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistName);
+
+        }catch (EmptyResultDataAccessException e){
+            return null;
+        }
+
+    }
 }

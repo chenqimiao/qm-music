@@ -1,9 +1,11 @@
 package com.github.chenqimiao.service.impl;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
+import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
 import org.jaudiotagger.tag.images.Artwork;
@@ -24,6 +26,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Autowired
     private SongRepository songRepository;
+
+    @Autowired
+    private ArtistRepository artistRepository;
 
     @Override
     public File getSongCoverArt(Integer songId, Integer size) {
@@ -57,5 +62,16 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     @Override
     public File getArtistCoverArt(Integer artistId, Integer size) {
         return null;
+    }
+
+    @Override
+    public String getLyrics(String artistName, String songTitle) {
+        SongDO song = songRepository.findByTitleAndArtistName(songTitle, artistName);
+        if (song == null) {
+            return null;
+        }
+        String filePath = song.getFile_path();
+        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
+        return musicMeta.getLyrics();
     }
 }

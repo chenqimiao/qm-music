@@ -16,4 +16,5 @@ public interface MediaRetrievalService {
 
     File getArtistCoverArt(Integer artistId, Integer size);
 
+    String getLyrics(String artistName, String songTitle);
 }

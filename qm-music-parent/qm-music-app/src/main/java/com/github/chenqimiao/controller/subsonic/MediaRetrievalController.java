@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.response.subsonic.LyricsResponse;
 import com.github.chenqimiao.service.MediaRetrievalService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class MediaRetrievalController {
 
     @RequestMapping(value = "/getCoverArt", produces = MediaType.IMAGE_JPEG_VALUE)
     @SneakyThrows
-    public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id, @RequestParam("size") Integer size) {
+    public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
+                                              @RequestParam(value = "size", required = false) Integer size) {
         File file = null;
         if (id.startsWith("al-")){
             file = mediaRetrievalService.getAlbumCoverArt(Integer.valueOf(id.replace("al-","")), size);
@@ -45,4 +47,19 @@ public class MediaRetrievalController {
                // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
                 .body(Files.readAllBytes(path));
     }
+
+
+    @RequestMapping(value = "/getLyrics")
+    public LyricsResponse getLyrics(@RequestParam(name ="artist") String artistName
+                                    , @RequestParam("title") String songTitle) {
+       String lyric = mediaRetrievalService.getLyrics(artistName, songTitle);
+       LyricsResponse lyricsResponse = new LyricsResponse();
+       lyricsResponse.setLyrics(LyricsResponse.Lyrics
+               .builder()
+                       .artistName(artistName)
+                       .text(lyric)
+               .build());
+       return lyricsResponse;
+    }
+
 }

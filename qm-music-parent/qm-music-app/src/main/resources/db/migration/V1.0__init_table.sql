@@ -71,6 +71,7 @@ CREATE TABLE song (
                        title VARCHAR(255) NOT NULL,
                        album_id INTEGER,
                        artist_id INTEGER NOT NULL,
+                       artist_name varchar(32) NOT NULL,
                        size INTEGER NOT NULL,
                        suffix VARCHAR(16),
                        content_type VARCHAR(16),

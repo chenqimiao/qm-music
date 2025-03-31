@@ -35,7 +35,7 @@ public class MediaRetrievalController {
         byte[] coverArt = null;
         if (id.startsWith("al-")){
             // file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
-            coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
+            coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id.replace("al-","")), size);
 
         }else if (id.startsWith("ar-")){
             //file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
@@ -50,7 +50,8 @@ public class MediaRetrievalController {
 //               // .contentType(MediaType.APPLICATION_PDF)
 //               // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
 //                .body(Files.readAllBytes(path));
-        return ResponseEntity.ok().body(coverArt);
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(coverArt);
     }
 
 

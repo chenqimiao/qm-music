@@ -70,7 +70,7 @@ public class MediaRetrievalController {
     }
 
 
-    @RequestMapping(value = "/stream")
+    @RequestMapping(value = "/stream",  produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @SneakyThrows
     public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Integer songId,
                                                       Integer maxBitRate, String format,

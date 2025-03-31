@@ -16,4 +16,7 @@ public interface SongService {
 
 
     List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset);
+
+
+    SongDTO queryBySongId(Integer songId);
 }

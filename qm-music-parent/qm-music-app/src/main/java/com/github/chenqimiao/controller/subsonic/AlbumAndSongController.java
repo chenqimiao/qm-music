@@ -9,6 +9,7 @@ import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.AlbumList2Response;
 import com.github.chenqimiao.response.subsonic.AlbumResponse;
 import com.github.chenqimiao.response.subsonic.SearchResult2Response;
+import com.github.chenqimiao.response.subsonic.SongResponse;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.SongService;
@@ -134,6 +135,19 @@ public class AlbumAndSongController {
                 );
         return response;
 
+    }
+
+
+
+    @GetMapping("getSong")
+    public SongResponse getSong(@RequestParam("id") Integer songId) {
+
+        SongDTO songDTO = songService.queryBySongId(songId);
+
+        SongResponse response = new SongResponse();
+
+        response.setSong(modelMapper.map(songDTO, SongResponse.Song.class));
+        return response;
     }
 }
 

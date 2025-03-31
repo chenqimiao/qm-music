@@ -74,4 +74,11 @@ public class SubsonicSongServiceImpl implements SongService {
         List<SongDO> songs = songRepository.searchByTitle(songTitle, pageSize, offset);
         return ucModelMapper.map(songs, ModelMapperTypeConfig.TYPE_LIST_SONG_DTO);
     }
+
+    @Override
+    public SongDTO queryBySongId(Integer songId) {
+        SongDO song = songRepository.findBySongId(songId);
+
+        return song == null ? null: ucModelMapper.map(song, SongDTO.class);
+    }
 }

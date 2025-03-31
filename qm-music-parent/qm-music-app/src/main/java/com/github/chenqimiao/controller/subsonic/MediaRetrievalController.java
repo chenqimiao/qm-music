@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * @author Qimiao Chen
@@ -43,16 +41,16 @@ public class MediaRetrievalController {
             //file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
-            byte[] songCoverArtByte = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
-            return ResponseEntity.ok().body(songCoverArtByte);
+             coverArt = mediaRetrievalService.getSongCoverArtByte(Integer.valueOf(id), size);
         }
         // 将File对象转换为Path
-        Path path = file.toPath();
-        // 直接读取所有字节
-        return ResponseEntity.ok()
-               // .contentType(MediaType.APPLICATION_PDF)
-               // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
-                .body(Files.readAllBytes(path));
+//        Path path = file.toPath();
+//        // 直接读取所有字节
+//        return ResponseEntity.ok()
+//               // .contentType(MediaType.APPLICATION_PDF)
+//               // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
+//                .body(Files.readAllBytes(path));
+        return ResponseEntity.ok().body(coverArt);
     }
 
 

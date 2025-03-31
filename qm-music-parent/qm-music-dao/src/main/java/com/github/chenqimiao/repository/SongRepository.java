@@ -1,5 +1,6 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -44,7 +45,7 @@ public class SongRepository {
     public SongDO findByTitleAndArtistName(String songTitle, String artistName) {
 
         String sql = """
-                        select * from song where title = ? and artist_mame= ?
+                        select * from song where title = '?' and artist_mame= '?'
                      """;
         List<SongDO> songs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), songTitle, artistName);
 
@@ -52,6 +53,15 @@ public class SongRepository {
             return null;
         }
         return songs.get(0);
+    }
+
+
+    public List<SongDO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
+        String sql = """
+                        select * from song where title like '%?%' limit ? ?;
+                     """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class),
+                songTitle, offset, pageSize);
     }
 
 }

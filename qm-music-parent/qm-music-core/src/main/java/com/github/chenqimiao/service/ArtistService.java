@@ -1,5 +1,6 @@
 package com.github.chenqimiao.service;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import org.springframework.lang.Nullable;
@@ -20,4 +21,7 @@ public interface ArtistService {
 
 
     ArtistAggDTO queryArtistWithAlbums(Integer artistId);
+
+    List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset);
+
 }

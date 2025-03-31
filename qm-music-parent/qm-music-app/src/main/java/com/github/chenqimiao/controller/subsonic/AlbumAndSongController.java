@@ -1,16 +1,16 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.dto.AlbumAggDTO;
-import com.github.chenqimiao.dto.AlbumDTO;
-import com.github.chenqimiao.dto.SongAggDTO;
-import com.github.chenqimiao.dto.SongDTO;
+import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
+import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.AlbumList2Response;
 import com.github.chenqimiao.response.subsonic.AlbumResponse;
+import com.github.chenqimiao.response.subsonic.SearchResult2Response;
 import com.github.chenqimiao.service.AlbumService;
+import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.SongService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +43,13 @@ public class AlbumAndSongController {
     @Autowired
     private SongService songService;
 
+    @Autowired
+    private ArtistService artistService;
+
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
+
+
 
     @GetMapping(value = "/getAlbumList2")
     public AlbumList2Response getAlbumList2(AlbumList2Request albumList2Request) {
@@ -100,6 +105,35 @@ public class AlbumAndSongController {
         album.setSongs(songList);
         albumResponse.setAlbum(album);
         return albumResponse;
+    }
+
+
+
+    public static Type TYPE_LIST_ALBUM_2 = new TypeToken<List<SearchResult2Response.Album>>() {}.getType();
+
+    public static Type TYPE_LIST_ARTIST_2 = new TypeToken<List<SearchResult2Response.ArtistItem>>() {}.getType();
+
+    public static Type TYPE_LIST_SONG_2 = new TypeToken<List<SearchResult2Response.Song>>() {}.getType();
+
+    @GetMapping("search2")
+    public SearchResult2Response search2(SearchRequest searchRequest) {
+        List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                , searchRequest.getArtistOffset());
+        List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                , searchRequest.getArtistOffset());
+        List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
+                , searchRequest.getArtistOffset());
+
+        SearchResult2Response response = new SearchResult2Response();
+        response.setSearchResult2(SearchResult2Response.SearchResult2
+                .builder()
+                .artists(modelMapper.map(artists, TYPE_LIST_ARTIST_2))
+                        .albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2))
+                        .songs(modelMapper.map(songs, TYPE_LIST_SONG_2))
+                        .build()
+                );
+        return response;
+
     }
 }
 

@@ -1,6 +1,9 @@
 package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.AlbumAggDTO;
+import com.github.chenqimiao.dto.SongDTO;
+
+import java.util.List;
 
 /**
  * @author Qimiao Chen
@@ -10,4 +13,7 @@ public interface SongService {
 
 
     AlbumAggDTO queryByAlbumId(Integer albumId);
+
+
+    List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset);
 }

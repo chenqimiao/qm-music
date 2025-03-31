@@ -35,7 +35,6 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     private ModelMapper ucModelMapper;
 
 
-
     @Override
     public List<ArtistDTO> searchArtist(Long ifModifiedSince) {
 
@@ -67,5 +66,11 @@ public class SubsonicArtistServiceImpl implements ArtistService {
                 .artist(artistDTO)
                 .albumList(ucModelMapper.map(albumDOList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO))
                 .build();
+    }
+
+    @Override
+    public List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset) {
+        List<ArtistDO> artistDOS = artistRepository.searchByName(artistName, pageSize, offset);
+        return ucModelMapper.map(artistDOS, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
     }
 }

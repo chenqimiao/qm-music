@@ -1,6 +1,7 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
+import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -46,6 +47,13 @@ public class AlbumRepository {
     }
 
 
+    public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
+        String sql = """
+                        select * from album where name like '%?%' limit ? ?;
+                     """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
+                albumName, offset, pageSize);
+    }
 
 
 }

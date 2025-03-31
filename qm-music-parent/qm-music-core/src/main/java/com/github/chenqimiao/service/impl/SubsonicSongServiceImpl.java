@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
@@ -66,5 +67,11 @@ public class SubsonicSongServiceImpl implements SongService {
 
         return AlbumAggDTO.builder().album(albumDTO).songs(songAggDTOS).build();
 
+    }
+
+    @Override
+    public List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
+        List<SongDO> songs = songRepository.searchByTitle(songTitle, pageSize, offset);
+        return ucModelMapper.map(songs, ModelMapperTypeConfig.TYPE_LIST_SONG_DTO);
     }
 }

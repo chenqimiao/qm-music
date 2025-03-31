@@ -2,6 +2,7 @@ package com.github.chenqimiao.config;
 
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
+import com.github.chenqimiao.dto.SongDTO;
 import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;
@@ -16,5 +17,7 @@ public abstract class ModelMapperTypeConfig {
     public static Type TYPE_LIST_ALBUM_DTO = new TypeToken<List<AlbumDTO>>() {}.getType();
 
     public static Type TYPE_LIST_ARTIST_DTO = new TypeToken<List<ArtistDTO>>() {}.getType();
+
+    public static Type TYPE_LIST_SONG_DTO = new TypeToken<List<SongDTO>>() {}.getType();
 
 }

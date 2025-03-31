@@ -53,7 +53,7 @@ public class ArtistRepository {
 
     public ArtistDO findByName(String artistName) {
         String sql = """
-                    select * from artist where name = ?
+                    select * from artist where name = '?'
                  """;
         // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
         // Integer :单列值  for select count(1) from xxx
@@ -64,5 +64,13 @@ public class ArtistRepository {
             return null;
         }
 
+    }
+
+    public List<ArtistDO> searchByName(String artistName, Integer pageSize, Integer offset) {
+        String sql = """
+                        select * from artist where name like '%?%' limit ? ?;
+                     """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
+                 artistName , offset, pageSize);
     }
 }

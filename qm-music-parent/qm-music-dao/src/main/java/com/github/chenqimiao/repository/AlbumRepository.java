@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -29,15 +28,15 @@ public class AlbumRepository {
 
 
     public List<AlbumDO> searchAlbumList(String suffix) {
-        String sql = "select * from album " + suffix;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class));
+        String sql = "select * from album ? " ;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class), suffix);
     }
 
 
 
     public AlbumDO findByAlbumId(Integer albumId) {
         String sql = """
-                        select * from album where id = ?
+                        select * from album where `id` = ?
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class), albumId);
@@ -49,7 +48,7 @@ public class AlbumRepository {
 
     public List<AlbumDO> findByArtistId(Integer artistId) {
         String sql = """
-                        select * from album where artist_id = ?
+                        select * from album where `artist_id` = ?
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class), artistId);
     }
@@ -57,7 +56,7 @@ public class AlbumRepository {
 
     public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from album where name like :albumName limit :offset, :pageSize;
+                        select * from album where `name` like :albumName limit :offset, :pageSize;
                      """;
         Map<String, Object> params = new HashMap<>();
         params.put("albumName", "%" + albumName + "%");
@@ -69,7 +68,7 @@ public class AlbumRepository {
 
     public AlbumDO queryByName(String albumName) {
         String sql = """
-                        select * from album where title = :title
+                        select * from album where `title` = :title
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
@@ -82,7 +81,8 @@ public class AlbumRepository {
     public void save(AlbumDO albumDO) {
 
         String sql = """
-                    insert into album(title, artist_id, release_year, genre, duration, artist_name,song_count)
+                    insert into album(`title`, `artist_id`, `release_year`, 
+                                      `genre`, `duration`, `artist_name`, `song_count`)
                     values(:title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count)
                 """;
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(albumDO);

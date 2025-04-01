@@ -15,13 +15,14 @@ import java.util.List;
  **/
 @Component
 public class ArtistRepository {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
 
     public List<ArtistDO> findArtistGtUpdateTime(Long timestamp) {
         String sql = """
-                        select * from artist where gmt_modify >= ?
+                        select * from artist where `gmt_modify` >= ?
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), timestamp);
     }
@@ -37,7 +38,7 @@ public class ArtistRepository {
 
     public ArtistDO findByArtistId(Integer artistId) {
         String sql = """
-                    select * from artist where id = ?
+                    select * from artist where `id` = ?
                  """;
         // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
         // Integer :单列值  for select count(1) from xxx
@@ -53,7 +54,7 @@ public class ArtistRepository {
 
     public ArtistDO findByName(String artistName) {
         String sql = """
-                    select * from artist where name = '?'
+                    select * from artist where `name` = '?'
                  """;
         // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
         // Integer :单列值  for select count(1) from xxx
@@ -68,7 +69,7 @@ public class ArtistRepository {
 
     public List<ArtistDO> searchByName(String artistName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from artist where name like ? limit ?, ?;
+                        select * from artist where `name` like ? limit ?, ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
                  '%' + artistName + '%' , offset, pageSize);
@@ -76,14 +77,14 @@ public class ArtistRepository {
 
     public int save(ArtistDO artistDO) {
         String sql = """
-                     insert OR IGNORE into artist (name, first_letter) values (?, ?)
+                     insert OR IGNORE into artist (`name`, `first_letter`) values (?, ?)
                      """;
         return jdbcTemplate.update(sql, artistDO.getName(), artistDO.getFirst_letter());
     }
 
     public ArtistDO queryByName(String artistName) {
         String sql = """
-                        select * from artist where name = ?;
+                        select * from artist where `name` = ?;
                      """;
          try {
              return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ArtistDO.class),

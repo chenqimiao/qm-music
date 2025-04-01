@@ -10,11 +10,15 @@ import java.util.Date;
  * @author Qimiao Chen
  * @since 2025/3/29 22:18
  **/
-public class DateTimeUtils {
+public abstract class DateTimeUtils {
 
-    public static final DateTimeFormatter YMDHMS = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final String yyyyMMddHHmmss = "yyyy-MM-dd HH:mm:ss";
 
-    public static final DateTimeFormatter YMDTHMS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    public static final String yyyyMMddTHHmmss = "yyyy-MM-dd'T'HH:mm:ss";
+
+    public static final DateTimeFormatter YMDHMS = DateTimeFormatter.ofPattern(yyyyMMddHHmmss);
+
+    public static final DateTimeFormatter YMDTHMS = DateTimeFormatter.ofPattern(yyyyMMddTHHmmss);
 
 
     public static String format(Date date, DateTimeFormatter formatter) {

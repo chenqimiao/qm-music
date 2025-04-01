@@ -8,23 +8,14 @@ public abstract class AudioContentTypeDetector {
     public static String mapFormatToMimeType(String format) {
         if (format == null) return "application/octet-stream";
         String lowerFormat = format.toLowerCase();
-        switch (lowerFormat) {
-            case "mpeg-1 layer iii":
-            case "mp3":
-                return "audio/mpeg";
-            case "flac":
-                return "audio/flac";
-            case "wav":
-            case "wave":
-                return "audio/wav";
-            case "aac":
-                return "audio/aac";
-            case "ogg vorbis":
-                return "audio/ogg";
-            case "m4a":
-                return "audio/mp4";
-            default:
-                return "application/octet-stream";
-        }
+        return switch (lowerFormat) {
+            case "mpeg-1 layer iii", "mp3" -> "audio/mpeg";
+            case "flac" -> "audio/flac";
+            case "wav", "wave" -> "audio/wav";
+            case "aac" -> "audio/aac";
+            case "ogg vorbis" -> "audio/ogg";
+            case "m4a" -> "audio/mp4";
+            default -> "application/octet-stream";
+        };
     }
 }

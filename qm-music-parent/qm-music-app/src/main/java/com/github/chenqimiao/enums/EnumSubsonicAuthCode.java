@@ -28,7 +28,7 @@ public enum EnumSubsonicAuthCode {
 
     private final String message;
 
-    public static EnumSubsonicAuthCode parseObjByCode(Integer code){
+    public static EnumSubsonicAuthCode parseObjByCode(String code){
         Optional<EnumSubsonicAuthCode> instance = Arrays.stream(values()).filter(obj -> obj.getCode().equals(code)).findFirst();
         return instance.orElse(null);
     }

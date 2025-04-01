@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * @author Qimiao Chen
  * @since 2025/3/28 15:54
@@ -72,9 +76,19 @@ public class SystemController {
         return scanStatusResponse;
     }
 
+    private final Object lock = new Object();
+    private final static Set<Object> lockCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
     @GetMapping(value = "refresh")
     public SubsonicResponse refresh() {
-        mediaFetcherService.fetchMusic(musicDir);
+        try {
+            if (lockCache.add(lock)) {
+                // 并发控制
+                mediaFetcherService.fetchMusic(musicDir);
+            }
+        }finally {
+            lockCache.remove(lock);
+        }
         return new SubsonicPong();
     }
 

@@ -228,7 +228,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             // 转码
             return SongStreamDTO.builder()
                     .songStream(FFmpegStreamUtils.streamByMemory(filePath
-                            , maxBitRate
+                            , maxBitRate * 1000
                             , format))
                     .filePath(filePath)
                     .mimeType("audio/mpeg")

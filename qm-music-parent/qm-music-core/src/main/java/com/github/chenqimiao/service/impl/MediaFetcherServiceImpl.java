@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -152,34 +153,39 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         }
 
 
+        AlbumDO albumDO = null;
+        if (StringUtils.isNotBlank(musicAlbumMeta.getAlbum())) {
+             albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
 
-        AlbumDO albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
-
-        if (albumDO ==null) {
-            albumDO = new AlbumDO();
-            albumDO.setTitle(musicAlbumMeta.getAlbum());
-            albumDO.setArtist_id(albumArtist != null? albumArtist.getId() : null);
-            albumDO.setRelease_year(musicAlbumMeta.getOriginalYear());
-            albumDO.setGenre(musicAlbumMeta.getMusicbrainzReleaseType());
-            albumDO.setSong_count(0);
-            albumDO.setDuration(1234);
-            albumDO.setArtist_name(albumArtist != null ? albumArtist.getName() : null);
-            albumRepository.save(albumDO);
-            albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
+            if (albumDO ==null) {
+                albumDO = new AlbumDO();
+                albumDO.setTitle(musicAlbumMeta.getAlbum());
+                albumDO.setArtist_id(albumArtist != null ? albumArtist.getId() : null);
+                albumDO.setRelease_year(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
+                        : musicAlbumMeta.getOriginalYear());
+                albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
+                albumDO.setSong_count(0);
+                albumDO.setDuration(1234);
+                albumDO.setArtist_name(albumArtist != null ? albumArtist.getName() : null);
+                albumRepository.save(albumDO);
+                albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
+            }
         }
+
 
         SongDO songDO = new SongDO();
         songDO.setParent(1);
         songDO.setTitle(musicMeta.getTitle());
-        songDO.setAlbum_id(albumDO.getId());
-        songDO.setArtist_id(songArtist.getId());
+        songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(null));
+        songDO.setArtist_id(Optional.ofNullable(songArtist).map(ArtistDO::getId).orElse(null));
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
         songDO.setFile_path(path.toAbsolutePath().normalize().toString());
         songDO.setFile_hash(MD5Utils.calculateMD5(path));
         songDO.setSize(Files.size(path));
-        songDO.setYear(musicAlbumMeta.getOriginalYear());
+        songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
+                : musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
         songDO.setArtist_name(songArtist.getName());
 

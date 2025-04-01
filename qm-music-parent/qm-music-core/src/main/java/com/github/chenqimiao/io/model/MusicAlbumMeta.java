@@ -24,6 +24,8 @@ public class MusicAlbumMeta {
 
     private String originalYear;
 
+    private String year;
+
     @JSONField(serialize = false)
     private List<Artwork> artworks;
 

@@ -39,12 +39,10 @@ public abstract class MusicFileReader {
                         // 按需获取byte[]
                         .artworks(tag.getArtworkList())
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
-                        .originalYear(tag.getFirst(FieldKey.ALBUM_YEAR))
+                        .originalYear(tag.getFirst(FieldKey.ORIGINAL_YEAR))
+                        .year(tag.getFirst(FieldKey.YEAR))
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
-                        .genre(
-                                StringUtils.isNotBlank(tag.getFirst("ALBUMGENRE")) ?
-                                        tag.getFirst("ALBUMGENRE")
-                                        : tag.getFirst(FieldKey.GENRE))
+                        .genre(tag.getFirst("ALBUMGENRE"))
                         .build()
                 )
                 .artist(tag.getFirst(FieldKey.ARTIST))

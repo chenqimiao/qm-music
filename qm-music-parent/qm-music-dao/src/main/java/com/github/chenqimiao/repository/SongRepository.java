@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -22,6 +24,9 @@ public class SongRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public List<SongDO> findByAlbumId(Integer alumId) {
         String sql = """
@@ -110,15 +115,11 @@ public class SongRepository {
                                          artist_name, size, suffix, content_type,
                                          year, duration, bit_rate,file_path, 
                                          file_hash, file_last_modified)
-                          values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                          values(:parent, :title, :album_id, :artist_id, 
+                                 :artist_name, :size, :suffix, :content_type, :year, 
+                                 :duration, :bit_rate, :file_path, :file_hash, :file_last_modified)
                      """;
-
-                jdbcTemplate.update(sql, songDO.getParent(), songDO.getTitle(),
-                        songDO.getAlbum_id(),songDO.getArtist_id(), songDO.getArtist_name(),
-                        songDO.getSize(), songDO.getSuffix(), songDO.getContent_type(),
-                        songDO.getYear(), songDO.getDuration(), songDO.getBit_rate(),
-                        songDO.getFile_path(), songDO.getFile_hash(),
-                        songDO.getFile_last_modified());
+                namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
     }
 
 

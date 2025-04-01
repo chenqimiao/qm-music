@@ -6,9 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -18,6 +23,9 @@ import java.util.List;
 public class AlbumRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
     public List<AlbumDO> searchAlbumList(String suffix) {
@@ -49,15 +57,19 @@ public class AlbumRepository {
 
     public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from album where name like ? limit ?, ?;
+                        select * from album where name like :albumName limit :offset, :pageSize;
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
-                "%" + albumName + "%", offset, pageSize);
+        Map<String, Object> params = new HashMap<>();
+        params.put("albumName", "%" + albumName + "%");
+        params.put("offset", offset);
+        params.put("pageSize", pageSize);
+
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
     }
 
     public AlbumDO queryByName(String albumName) {
         String sql = """
-                        select * from album where title = ?
+                        select * from album where title = :title
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
@@ -68,12 +80,13 @@ public class AlbumRepository {
     }
 
     public void save(AlbumDO albumDO) {
+
         String sql = """
-                       insert into album(title, artist_id, release_year, genre,duration, artist_name,song_count) 
-                       values(?,?,?,?,?,?,?)
-                     """;
-         jdbcTemplate.update(sql, albumDO.getTitle(), albumDO.getArtist_id(), albumDO.getRelease_year(),
-                albumDO.getGenre(), albumDO.getDuration(), albumDO.getArtist_name(), albumDO.getSong_count());
+                    insert into album(title, artist_id, release_year, genre, duration, artist_name,song_count)
+                    values(:title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count)
+                """;
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(albumDO);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
 
 

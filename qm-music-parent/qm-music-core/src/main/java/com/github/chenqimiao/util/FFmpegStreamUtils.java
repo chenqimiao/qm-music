@@ -77,7 +77,7 @@ public abstract class FFmpegStreamUtils {
     public static InputStream streamByMemory(String inputPath, Integer maxBitRate,
                                              String outputFormat) throws Exception {
         try (FileSystem fs = Jimfs.newFileSystem(Configuration.forCurrentPlatform())) {
-            Path outputPath = fs.getPath("output." + outputFormat);
+            Path outputPath = fs.getPath(System.currentTimeMillis() + "output." + outputFormat);
 
             new Encoder().encode(
                     new MultimediaObject(new File(inputPath)),

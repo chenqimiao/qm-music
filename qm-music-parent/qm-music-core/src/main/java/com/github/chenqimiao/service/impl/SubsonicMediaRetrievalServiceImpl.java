@@ -10,6 +10,7 @@ import com.github.chenqimiao.io.model.MusicMeta;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
+import com.github.chenqimiao.util.FileUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,10 +117,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                         .build();
             }
         }
-        return CoverStreamDTO.builder()
-                .cover(fallback.getBinaryData())
-                .mimeType(fallback.getMimeType())
-                .build();
+        if (fallback != null) {
+            return CoverStreamDTO.builder()
+                    .cover(fallback.getBinaryData())
+                    .mimeType(fallback.getMimeType())
+                    .build();
+        }
+        return CoverStreamDTO.builder().build();
     }
 
 
@@ -153,13 +158,17 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                         .build();
             }
         }
-        return CoverStreamDTO.builder()
-                .cover(fallback.getBinaryData())
-                .mimeType(fallback.getMimeType())
-                .build();
+        if (fallback != null) {
+            return CoverStreamDTO.builder()
+                    .cover(fallback.getBinaryData())
+                    .mimeType(fallback.getMimeType())
+                    .build();
+        }
+        return CoverStreamDTO.builder().build();
     }
 
     @Override
+    @SneakyThrows
     public String getLyrics(String artistName, String songTitle) {
         SongDO song = songRepository.findByTitleAndArtistName(songTitle, artistName);
         if (song == null) {
@@ -167,7 +176,19 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         }
         String filePath = song.getFile_path();
         MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
-        return musicMeta.getLyrics();
+        String lyrics = musicMeta.getLyrics();
+        if (StringUtils.isNotBlank(lyrics)) {
+            return lyrics;
+        }
+
+        String lrcFile = FileUtils.replaceFileExtension(filePath, ".lrc");
+        Path path = Paths.get(lrcFile);
+        if (Files.exists(path)) {
+            lyrics = Files.readString(Path.of(lrcFile));
+            return lyrics;
+        }
+
+        return "";
     }
 
     @Override

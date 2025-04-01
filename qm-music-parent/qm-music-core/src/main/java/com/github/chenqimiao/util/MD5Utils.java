@@ -7,12 +7,19 @@ package com.github.chenqimiao.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 
 public abstract class MD5Utils {
+
+    private static final int BUFFER_SIZE = 1 << 20; // 1MB 缓冲区（根据磁盘性能调整）
+
 
     private static final ThreadLocal<MessageDigest> MD5_DIGEST = ThreadLocal.withInitial(() -> {
         try {
@@ -81,10 +88,20 @@ public abstract class MD5Utils {
         return new String(hexChars);
     }
 
-    public static void main(String[] args) throws Exception {
-        // 测试用例
-        System.out.println(md5("hello world"));  // 5eb63bbbe01eeed093cb22bb8f5acdc3
-        System.out.println(md5(new byte[0]));    // d41d8cd98f00b204e9800998ecf8427e
-        System.out.println(md5File(new File("test.txt")));
+    public static String calculateMD5(Path filePath) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        HexFormat hex = HexFormat.of();
+
+        try (FileChannel channel = FileChannel.open(filePath, StandardOpenOption.READ)) {
+            ByteBuffer buffer = ByteBuffer.allocateDirect(BUFFER_SIZE); // 直接内存（减少拷贝）
+            while (channel.read(buffer) != -1) {
+                buffer.flip(); // 切换为读模式
+                md.update(buffer);
+                buffer.clear(); // 清空缓冲区复用
+            }
+        }
+
+        return hex.formatHex(md.digest());
     }
+
 }

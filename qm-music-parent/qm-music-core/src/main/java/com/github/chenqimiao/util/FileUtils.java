@@ -22,6 +22,15 @@ public abstract class FileUtils {
         return "";
     }
 
+    public static String replaceFileExtension(String fileName, String newExtension) {
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+            return fileName.replace(fileName.substring(lastDotIndex + 1)
+                    , newExtension) ;
+        }
+        return fileName + "." + newExtension;
+    }
+
     public static long getLastModified(Path path) {
         try {
             // 1. 获取最后修改时间（FileTime）

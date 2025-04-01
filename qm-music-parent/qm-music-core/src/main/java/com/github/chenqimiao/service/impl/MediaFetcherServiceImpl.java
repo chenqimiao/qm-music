@@ -14,6 +14,7 @@ import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.MediaFetcherService;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
+import com.github.chenqimiao.util.MD5Utils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -91,7 +92,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
             stream.parallel() // 启用并行流加速
                     .filter(Files::isRegularFile) // 只保留普通文件
                     .forEach(path -> {
-                        String filePath = path.toAbsolutePath().toString();
+                        String filePath = path.toAbsolutePath().normalize().toString();
                         if (songSet.contains(filePath)) {
                             return;
                         }
@@ -144,8 +145,8 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
-        songDO.setFile_path(path.toAbsolutePath().toString());
-        songDO.setFile_hash(FileUtils.getFileExtension(path));
+        songDO.setFile_path(path.toAbsolutePath().normalize().toString());
+        songDO.setFile_hash(MD5Utils.calculateMD5(path));
         songDO.setSize(Files.size(path));
         songDO.setYear(musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));

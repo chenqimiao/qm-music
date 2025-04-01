@@ -34,7 +34,9 @@ public enum EnumAudioCodec {
     }
 
     public static List<EnumAudioCodec> byFormat(String format){
-        format = format.toLowerCase();
-        return Arrays.stream(values()).filter(obj -> obj.getSupportedFormats().contains(format)).collect(Collectors.toList());
+        final String f = format.toLowerCase();
+        return Arrays.stream(values()).filter(obj -> {
+            return obj.getSupportedFormats().contains(f);
+        }).collect(Collectors.toList());
     }
 }

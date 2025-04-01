@@ -170,7 +170,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     @Override
     @SneakyThrows
     public String getLyrics(String artistName, String songTitle) {
-        SongDO song = songRepository.findByTitleAndArtistName(songTitle, artistName);
+        SongDO song = null;
+        if (StringUtils.isNotBlank(artistName)) {
+            song = songRepository.findByTitleAndArtistName(songTitle, artistName);
+        }else {
+            song = songRepository.findByTitle(songTitle);
+
+        }
         if (song == null) {
             return null;
         }

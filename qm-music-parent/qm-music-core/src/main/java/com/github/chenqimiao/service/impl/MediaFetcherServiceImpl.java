@@ -18,6 +18,7 @@ import com.github.chenqimiao.util.MD5Utils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,36 +116,47 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
     private void save(MusicMeta musicMeta, Path path) {
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
-        ArtistDO artistDO = artistRepository.queryByName(musicMeta.getArtist());
-        if (artistDO == null){
-            artistDO = new ArtistDO();
-            artistDO.setName(musicMeta.getArtist());
-            artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicMeta.getArtist()));
-            artistRepository.save(artistDO);
-            artistDO = artistRepository.queryByName(musicMeta.getArtist());
+        ArtistDO songArtist = null;
+        ArtistDO albumArtist = null;
+        if (StringUtils.isNotBlank(musicMeta.getArtist())) {
+            ArtistDO artistDO = artistRepository.queryByName(musicMeta.getArtist());
+            if (artistDO == null){
+                artistDO = new ArtistDO();
+                artistDO.setName(musicMeta.getArtist());
+                artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicMeta.getArtist()));
+                artistRepository.save(artistDO);
+                artistDO = artistRepository.queryByName(musicMeta.getArtist());
+            }
+            songArtist = artistDO;
+            albumArtist = artistDO;
+        }
+
+        if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
+            ArtistDO albumArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+            if (albumArtistDO == null){
+                albumArtistDO = new ArtistDO();
+                albumArtistDO.setName(musicAlbumMeta.getAlbumArtist());
+                albumArtistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
+                artistRepository.save(albumArtistDO);
+                albumArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+                if (songArtist == null) songArtist = albumArtistDO;
+                if (albumArtistDO != null) albumArtist = albumArtistDO;
+            }
         }
 
 
-        ArtistDO albunArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
-        if (albunArtistDO == null){
-            albunArtistDO = new ArtistDO();
-            albunArtistDO.setName(musicAlbumMeta.getAlbumArtist());
-            albunArtistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
-            artistRepository.save(albunArtistDO);
-            albunArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
-        }
 
         AlbumDO albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
 
         if (albumDO ==null) {
             albumDO = new AlbumDO();
             albumDO.setTitle(musicAlbumMeta.getAlbum());
-            albumDO.setArtist_id(albunArtistDO.getId());
+            albumDO.setArtist_id(albumArtist != null? albumArtist.getId() : null);
             albumDO.setRelease_year(musicAlbumMeta.getOriginalYear());
             albumDO.setGenre(musicAlbumMeta.getMusicbrainzReleaseType());
             albumDO.setSong_count(0);
             albumDO.setDuration(1234);
-            albumDO.setArtist_name(albunArtistDO.getName());
+            albumDO.setArtist_name(albumArtist != null ? albumArtist.getName() : null);
             albumRepository.save(albumDO);
             albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
         }
@@ -153,7 +165,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setParent(1);
         songDO.setTitle(musicMeta.getTitle());
         songDO.setAlbum_id(albumDO.getId());
-        songDO.setArtist_id(artistDO.getId());
+        songDO.setArtist_id(songArtist.getId());
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
@@ -162,7 +174,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setSize(Files.size(path));
         songDO.setYear(musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
-        songDO.setArtist_name(artistDO.getName());
+        songDO.setArtist_name(songArtist.getName());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
         songRepository.save(songDO);

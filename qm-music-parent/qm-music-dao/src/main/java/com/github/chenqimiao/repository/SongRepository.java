@@ -93,7 +93,7 @@ public class SongRepository {
     public void save(SongDO songDO) {
         String sql =  """
                         insert into song(parent, title, album_id, artist_id, artist_name, 
-                        size, suffix, content_type, year, duration, bit_rate, file_path, file_hash)
+                        size, suffix, content_type, year, duration, bit_rate, file_path, file_hash, file_last_modified)
                           values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                      """;
 
@@ -101,6 +101,6 @@ public class SongRepository {
                         songDO.getAlbum_id(),songDO.getArtist_id(), songDO.getArtist_name(),
                         songDO.getSize(), songDO.getSuffix(), songDO.getContent_type(),
                         songDO.getYear(), songDO.getDuration(), songDO.getBit_rate(),
-                        songDO.getFile_path(), songDO.getFile_hash()  );
+                        songDO.getFile_path(), songDO.getFile_hash(), songDO.getFile_last_modified());
     }
 }

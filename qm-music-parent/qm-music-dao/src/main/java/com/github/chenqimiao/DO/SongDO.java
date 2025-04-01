@@ -27,4 +27,5 @@ public class SongDO {
     private Long size;
     private String year;
     private String artist_name;
+    private Long file_last_modified;
 }

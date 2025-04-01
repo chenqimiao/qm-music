@@ -82,7 +82,8 @@ CREATE TABLE song (
                        file_path VARCHAR(512) NOT NULL UNIQUE,
                        file_hash CHAR(64) NOT NULL UNIQUE,
                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
-                       gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
+                       gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                       file_last_modified INTEGER
 );
 CREATE INDEX idx_song_album ON song(album_id);
 CREATE INDEX idx_song_artist ON song(artist_id);

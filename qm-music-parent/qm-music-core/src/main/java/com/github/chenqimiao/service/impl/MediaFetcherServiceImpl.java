@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -66,7 +67,14 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         List<Integer> toBeRemoveSongIds = songs.stream().filter(song -> {
             String filePath = song.getFile_path();
             Path path = Paths.get(filePath);
-            return !Files.exists(path);
+            if (!Files.exists(path)) {
+                return true;
+            }
+            long lastModifiedMillis = FileUtils.getLastModified(path);
+            if (Math.abs(lastModifiedMillis - song.getFile_last_modified()) > 1000L) {
+                return true;
+            }
+            return false;
         }).map(SongDO::getId).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(toBeRemoveSongIds)) {
             songRepository.deleteByIds(toBeRemoveSongIds);
@@ -142,6 +150,8 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setYear(musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
         songDO.setArtist_name(artistDO.getName());
+
+        songDO.setFile_last_modified(FileUtils.getLastModified(path));
         songRepository.save(songDO);
 
     }

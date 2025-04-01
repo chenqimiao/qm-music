@@ -1,9 +1,9 @@
 package com.github.chenqimiao.service.impl;
 
-import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.io.local.ImageResolver;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
@@ -11,6 +11,7 @@ import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
 import com.github.chenqimiao.util.FileUtils;
+import com.github.chenqimiao.util.ImageResizer;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,6 @@ import org.jaudiotagger.tag.images.Artwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -60,17 +59,29 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             return false;
         }).findFirst();
 
+
         if (first.isPresent()) {
             return CoverStreamDTO.builder()
-                    .cover(first.get().getBinaryData())
+                    .cover(this.scaleImg(first.get(), size))
                     .mimeType(first.get().getMimeType())
                     .build();
         }
 
         return CoverStreamDTO.builder()
-                .cover(artworks.getFirst().getBinaryData())
+                .cover(this.scaleImg(artworks.getFirst(), size))
                 .mimeType(artworks.getFirst().getMimeType())
                 .build();
+    }
+
+    @SneakyThrows
+    private byte[] scaleImg(Artwork artwork, Integer size) {
+        if (size == null
+                || (artwork.getWidth() == size && artwork.getHeight() == size)) {
+            return artwork.getBinaryData();
+        }
+
+        return ImageResizer.processImage(artwork.getBinaryData(), size,
+                size, true, ImageResolver.resolveArtwork(artwork), 0.8);
     }
 
 
@@ -96,7 +107,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             if (CollectionUtils.isEmpty(artworks)) {
                 continue;
             }
-            fallback = artworks.get(0);
+            fallback = artworks.getFirst();
             Optional<Artwork> first = artworks.stream().filter(art ->{
                 if (art.getPictureType() == 3) {
                     return true;
@@ -112,14 +123,14 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
             if (first.isPresent()) {
                 return CoverStreamDTO.builder()
-                        .cover(first.get().getBinaryData())
+                        .cover(this.scaleImg(first.get(), size))
                         .mimeType(first.get().getMimeType())
                         .build();
             }
         }
         if (fallback != null) {
             return CoverStreamDTO.builder()
-                    .cover(fallback.getBinaryData())
+                    .cover(this.scaleImg(fallback, size))
                     .mimeType(fallback.getMimeType())
                     .build();
         }
@@ -137,7 +148,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             if (CollectionUtils.isEmpty(artworks)) {
                 continue;
             }
-            fallback = artworks.get(0);
+            fallback = artworks.getFirst();
             Optional<Artwork> first = artworks.stream().filter(art ->{
                 if (art.getPictureType() == 8) {
                     return true;
@@ -153,14 +164,14 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
             if (first.isPresent()) {
                 return CoverStreamDTO.builder()
-                        .cover(first.get().getBinaryData())
+                        .cover(this.scaleImg(first.get(), size))
                         .mimeType(first.get().getMimeType())
                         .build();
             }
         }
         if (fallback != null) {
             return CoverStreamDTO.builder()
-                    .cover(fallback.getBinaryData())
+                    .cover(this.scaleImg(fallback, size))
                     .mimeType(fallback.getMimeType())
                     .build();
         }
@@ -190,7 +201,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String lrcFile = FileUtils.replaceFileExtension(filePath, ".lrc");
         Path path = Paths.get(lrcFile);
         if (Files.exists(path)) {
-            lyrics = Files.readString(Path.of(lrcFile));
+            lyrics = Files.readString(path);
             return lyrics;
         }
 

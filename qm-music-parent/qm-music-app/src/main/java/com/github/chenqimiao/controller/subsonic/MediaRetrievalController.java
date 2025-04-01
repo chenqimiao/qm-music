@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-
 /**
  * @author Qimiao Chen
  * @since 2025/3/30 22:51
@@ -32,25 +30,14 @@ public class MediaRetrievalController {
     @SneakyThrows
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
                                               @RequestParam(value = "size", required = false) Integer size) {
-        File file = null;
         CoverStreamDTO songCoverStreamDTO = null;
         if (id.startsWith("al-")){
-            // file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(Integer.valueOf(id.replace("al-", "")), size);
-
         }else if (id.startsWith("ar-")){
             songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(Integer.valueOf(id.replace("ar-","")), size);
         }else {
-            //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id), size);
         }
-        // 将File对象转换为Path
-//        Path path = file.toPath();
-//        // 直接读取所有字节
-//        return ResponseEntity.ok()
-//               // .contentType(MediaType.APPLICATION_PDF)
-//               // .header("Content-Disposition", "inline; filename=\"dynamic.pdf\"") // 内联显示
-//                .body(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(songCoverStreamDTO.getMimeType() == null

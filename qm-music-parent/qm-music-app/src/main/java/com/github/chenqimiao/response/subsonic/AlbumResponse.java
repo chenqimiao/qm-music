@@ -52,6 +52,9 @@ public class AlbumResponse extends SubsonicResponse {
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
         private Integer artistId;
+        @JacksonXmlProperty(isAttribute = true, localName = "year")
+        @JSONField(name = "year")
+        private String releaseYear;
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")

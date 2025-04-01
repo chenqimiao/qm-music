@@ -67,7 +67,7 @@ public class SongRepository {
 
     public List<SongDO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from song where title like ? limit ? ?;
+                        select * from song where title like ? limit ?,?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class),
                 "%"+songTitle +"%", offset, pageSize);

@@ -89,15 +89,17 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         Path root = Paths.get(rootPath); // 根目录
 
         try (var stream = Files.walk(root)) {
-            stream.parallel() // 启用并行流加速
-                    .filter(Files::isRegularFile) // 只保留普通文件
+           // stream.parallel() // 启用并行流加速
+            stream.filter(Files::isRegularFile) // 只保留普通文件
                     .forEach(path -> {
                         String filePath = path.toAbsolutePath().normalize().toString();
                         if (songSet.contains(filePath)) {
                             return;
                         }
-
                         MusicMeta musicMeta = MusicFileReader.readMusicMeta(path.toFile());
+                        if (musicMeta == null) {
+                            return;
+                        }
                         this.save(musicMeta, path);
                     });
         } catch (IOException e) {

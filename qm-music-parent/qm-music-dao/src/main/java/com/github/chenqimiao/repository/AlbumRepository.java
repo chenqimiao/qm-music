@@ -49,7 +49,7 @@ public class AlbumRepository {
 
     public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from album where name like ? limit ? ?;
+                        select * from album where name like ? limit ?, ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
                 "%" + albumName + "%", offset, pageSize);

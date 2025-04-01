@@ -50,7 +50,7 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
                 .append(albumSearchRequest.getSortColumn()).append(" ")
                 .append(albumSearchRequest.getSortDirection());
 
-        stringBuilder.append(" limit ").append(albumSearchRequest.getOffset()).append(" ")
+        stringBuilder.append(" limit ").append(albumSearchRequest.getOffset()).append(",")
                 .append(albumSearchRequest.getSize());
 
 

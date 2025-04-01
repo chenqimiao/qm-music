@@ -68,7 +68,7 @@ public class ArtistRepository {
 
     public List<ArtistDO> searchByName(String artistName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from artist where name like ? limit ? ?;
+                        select * from artist where name like ? limit ?, ?;
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
                  '%' + artistName + '%' , offset, pageSize);

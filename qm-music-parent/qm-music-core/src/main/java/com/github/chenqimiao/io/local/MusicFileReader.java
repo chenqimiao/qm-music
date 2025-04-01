@@ -6,9 +6,11 @@ import com.github.chenqimiao.io.model.MusicMeta;
 import lombok.SneakyThrows;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 /**
@@ -19,8 +21,15 @@ import java.io.File;
 public abstract class MusicFileReader {
 
     @SneakyThrows
+    @Nullable
     public static MusicMeta readMusicMeta(File musicFile) {
-        AudioFile f = AudioFileIO.read(musicFile);
+        AudioFile f = null;
+        try {
+            f = AudioFileIO.read(musicFile);
+
+        }catch (CannotReadException e) {
+            return null;
+        }
         Tag tag = f.getTag();
         return MusicMeta.builder().title(tag.getFirst(FieldKey.TITLE))
                 .musicAlbumMeta(MusicAlbumMeta.builder()
@@ -29,11 +38,12 @@ public abstract class MusicFileReader {
                         // 按需获取byte[]
                         .artworks(tag.getArtworkList())
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
+                        .originalYear(tag.getFirst(FieldKey.ORIGINAL_YEAR))
+                        .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
                         .build()
                 )
                 .artist(tag.getFirst(FieldKey.ARTIST))
                 .genre(tag.getFirst(FieldKey.GENRE))
-                //.originalYear(tag.getFirst(FieldKey.ORIGINAL_YEAR))
                 .lyrics(tag.getFirst(FieldKey.LYRICS))
                 .comment(tag.getFirst(FieldKey.COMMENT))
                 .format(f.getAudioHeader().getFormat())

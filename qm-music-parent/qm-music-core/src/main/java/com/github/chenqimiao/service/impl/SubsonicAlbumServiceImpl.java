@@ -50,6 +50,10 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
                 .append(albumSearchRequest.getSortColumn()).append(" ")
                 .append(albumSearchRequest.getSortDirection());
 
+        stringBuilder.append(" limit ").append(albumSearchRequest.getOffset()).append(" ")
+                .append(albumSearchRequest.getSize());
+
+
         List<AlbumDO> albumList = albumRepository.searchAlbumList(stringBuilder.toString());
         return ucModelMapper.map(albumList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
     }

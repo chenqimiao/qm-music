@@ -113,13 +113,23 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
     private void save(MusicMeta musicMeta, Path path) {
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
-        ArtistDO artistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+        ArtistDO artistDO = artistRepository.queryByName(musicMeta.getArtist());
         if (artistDO == null){
             artistDO = new ArtistDO();
-            artistDO.setName(musicAlbumMeta.getAlbumArtist());
-            artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
+            artistDO.setName(musicMeta.getArtist());
+            artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicMeta.getArtist()));
             artistRepository.save(artistDO);
-            artistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+            artistDO = artistRepository.queryByName(musicMeta.getArtist());
+        }
+
+
+        ArtistDO albunArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
+        if (albunArtistDO == null){
+            albunArtistDO = new ArtistDO();
+            albunArtistDO.setName(musicAlbumMeta.getAlbumArtist());
+            albunArtistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
+            artistRepository.save(albunArtistDO);
+            albunArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
         }
 
         AlbumDO albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
@@ -127,12 +137,12 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         if (albumDO ==null) {
             albumDO = new AlbumDO();
             albumDO.setTitle(musicAlbumMeta.getAlbum());
-            albumDO.setArtist_id(artistDO.getId());
+            albumDO.setArtist_id(albunArtistDO.getId());
             albumDO.setRelease_year(musicAlbumMeta.getOriginalYear());
             albumDO.setGenre(musicAlbumMeta.getMusicbrainzReleaseType());
             albumDO.setSong_count(0);
             albumDO.setDuration(1234);
-            albumDO.setArtist_name(artistDO.getName());
+            albumDO.setArtist_name(albunArtistDO.getName());
             albumRepository.save(albumDO);
             albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
         }

@@ -53,7 +53,8 @@ public class MediaRetrievalController {
 //                .body(Files.readAllBytes(path));
 
         return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(songCoverStreamDTO.getMimeType()))
+                .contentType(MediaType.valueOf(songCoverStreamDTO.getMimeType() == null
+                        ? MediaType.IMAGE_PNG_VALUE : songCoverStreamDTO.getMimeType()))
                 .body(songCoverStreamDTO.getCover());
     }
 

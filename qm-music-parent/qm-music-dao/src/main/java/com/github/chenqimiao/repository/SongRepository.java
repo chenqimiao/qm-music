@@ -120,4 +120,12 @@ public class SongRepository {
                         songDO.getFile_path(), songDO.getFile_hash(),
                         songDO.getFile_last_modified());
     }
+
+
+    public Integer count() {
+        String sql = """
+                        select count(1) from song
+                     """;
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
 }

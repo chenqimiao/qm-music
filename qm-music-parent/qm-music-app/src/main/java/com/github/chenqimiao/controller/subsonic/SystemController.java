@@ -1,7 +1,9 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.request.subsonic.SubsonicRequest;
+import com.github.chenqimiao.response.subsonic.ScanStatusResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.response.subsonic.SubsonicResponse;
@@ -31,6 +33,9 @@ public class SystemController {
     @Autowired
     private MediaFetcherService mediaFetcherService;
 
+    @Autowired
+    private SongRepository songRepository;
+
 
     @Value("${qm.music.dir}")
     private String musicDir;
@@ -53,6 +58,18 @@ public class SystemController {
                         .valid(true).email(email).licenseExpires("2099-09-03T14:46:43")
                         .build())
                 .build();
+    }
+
+    @GetMapping(value = {"/getScanStatus"})
+    public ScanStatusResponse getScanStatus() {
+        ScanStatusResponse scanStatusResponse = new ScanStatusResponse();
+        scanStatusResponse
+                .setScanStatus(ScanStatusResponse.ScanStatus
+                            .builder()
+                            .scanning(false)
+                            .count(songRepository.count())
+                            .build());
+        return scanStatusResponse;
     }
 
     @GetMapping(value = "refresh")

@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
@@ -10,6 +11,7 @@ import com.github.chenqimiao.io.model.MusicMeta;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
+import com.github.chenqimiao.util.FFmpegStreamUtils;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.ImageResizer;
 import lombok.SneakyThrows;
@@ -20,11 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -210,13 +214,37 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     @SneakyThrows
-    public SongStreamDTO getSongStream(Integer songId, Integer maxBitRate, String format, Integer estimateContentLength) {
+    public SongStreamDTO getSongStream(Integer songId,
+                                       Integer maxBitRate,
+                                       String format,
+                                       Integer estimateContentLength) {
         SongDO songDO = songRepository.findBySongId(songId);
         String filePath = songDO.getFile_path();
-        return SongStreamDTO.builder()
-                .songStream(new FileInputStream(filePath))
-                .filePath(filePath)
-                .size(Files.size(Paths.get(filePath))).build();
+
+        String contentType = songDO.getContent_type();
+        if ("mp3".equals(format)
+                && !Objects.equals(contentType,
+                AudioContentTypeDetector.mapFormatToMimeType("mp3"))) {
+            // 转码
+            return SongStreamDTO.builder()
+                    .songStream(FFmpegStreamUtils.streamConvert(filePath
+                            , maxBitRate
+                            , format))
+                    .filePath(filePath)
+                    .mimeType("audio/mpeg")
+                    .build();
+
+        } else {
+            InputStream inputStream = new FileInputStream(filePath);
+            return SongStreamDTO.builder()
+                    .songStream(inputStream)
+                    .filePath(filePath)
+                    .mimeType(contentType)
+                    .size(Files.size(Paths.get(filePath))).build();
+        }
+
+
+
 
     }
 }

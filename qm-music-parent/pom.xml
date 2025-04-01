@@ -141,6 +141,11 @@
                 <artifactId>thumbnailator</artifactId>
                 <version>0.4.20</version>
             </dependency>
+            <dependency>
+                <groupId>ws.schild</groupId>
+                <artifactId>jave-core</artifactId>
+                <version>3.5.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -18,4 +18,5 @@ public class SongStreamDTO {
     private InputStream songStream;
     private String filePath;
     private Long size;
+    private String mimeType;
 }

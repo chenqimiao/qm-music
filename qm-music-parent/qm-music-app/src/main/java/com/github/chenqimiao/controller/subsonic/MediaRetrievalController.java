@@ -68,9 +68,14 @@ public class MediaRetrievalController {
 
         SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentLength(songStream.getSize()); // 手动设置长度
-        return new ResponseEntity<>(new InputStreamResource(songStream.getSongStream()), headers, HttpStatus.OK);
+        headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
+        if (songStream.getSize() != null) {
+            headers.setContentLength(songStream.getSize());
+        }
+        return new ResponseEntity<>(new InputStreamResource(songStream.getSongStream()),
+                headers, HttpStatus.OK);
     }
+
+
 
 }

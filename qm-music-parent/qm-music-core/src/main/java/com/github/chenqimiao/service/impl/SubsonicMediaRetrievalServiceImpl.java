@@ -1,5 +1,6 @@
 package com.github.chenqimiao.service.impl;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
@@ -10,6 +11,8 @@ import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.MediaRetrievalService;
 import lombok.SneakyThrows;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.tag.images.Artwork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -34,40 +40,123 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private ArtistRepository artistRepository;
 
     @Override
-    public File getSongCoverArt(Integer songId, Integer size) {
-        SongDO songDO = songRepository.findBySongId(songId);
-        String filePath = songDO.getFile_path();
-        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
-        MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
-        List<Artwork> artworks = musicAlbumMeta.getArtworks();
-        // todo
-        return null;
-    }
-
-    @Override
     public CoverStreamDTO getSongCoverStreamDTO(Integer songId, Integer size) {
-        SongDO songDO = songRepository.findBySongId(songId);
-        String filePath = songDO.getFile_path();
-        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
-        MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
-        List<Artwork> artworks = musicAlbumMeta.getArtworks();
-        if (artworks.isEmpty()) {
+        List<Artwork> artworks = this.getSongArtworks(songId);
+
+        if (CollectionUtils.isEmpty(artworks)) {
             return null;
         }
+
+        Optional<Artwork> first = artworks.stream().filter(n -> {
+            String description = n.getDescription();
+            if (StringUtils.containsIgnoreCase(description, "Lyric")) {
+                return true;
+            }
+            if (StringUtils.containsIgnoreCase(description, "Song Art")) {
+                return true;
+            }
+            return false;
+        }).findFirst();
+
+        if (first.isPresent()) {
+            return CoverStreamDTO.builder()
+                    .cover(first.get().getBinaryData())
+                    .mimeType(first.get().getMimeType())
+                    .build();
+        }
+
         return CoverStreamDTO.builder()
                 .cover(artworks.getFirst().getBinaryData())
                 .mimeType(artworks.getFirst().getMimeType())
                 .build();
     }
 
-    @Override
-    public File getAlbumCoverArt(Integer albumId, Integer size) {
-       return null;
+
+    private List<Artwork> getSongArtworks(Integer songId) {
+        SongDO songDO = songRepository.findBySongId(songId);
+        String filePath = songDO.getFile_path();
+        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
+        MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
+        List<Artwork> artworks = musicAlbumMeta.getArtworks();
+        if (artworks.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return artworks;
     }
 
     @Override
-    public File getArtistCoverArt(Integer artistId, Integer size) {
-        return null;
+    public CoverStreamDTO getAlbumCoverStreamDTO(Integer albumId, Integer size) {
+        List<SongDO> songs = songRepository.findByAlbumId(albumId);
+        // fallback
+        Artwork fallback = null;
+        for (SongDO song : songs) {
+            List<Artwork> artworks = this.getSongArtworks(song.getId());
+            if (CollectionUtils.isEmpty(artworks)) {
+                continue;
+            }
+            fallback = artworks.get(0);
+            Optional<Artwork> first = artworks.stream().filter(art ->{
+                if (art.getPictureType() == 3) {
+                    return true;
+                }
+                if (StringUtils.containsIgnoreCase(art.getDescription(),"Cover")) {
+                    return true;
+                }
+                if (StringUtils.containsIgnoreCase(art.getDescription(),"Album")) {
+                    return true;
+                }
+                return false;
+            }).findFirst();
+
+            if (first.isPresent()) {
+                return CoverStreamDTO.builder()
+                        .cover(first.get().getBinaryData())
+                        .mimeType(first.get().getMimeType())
+                        .build();
+            }
+        }
+        return CoverStreamDTO.builder()
+                .cover(fallback.getBinaryData())
+                .mimeType(fallback.getMimeType())
+                .build();
+    }
+
+
+    @Override
+    public CoverStreamDTO getArtistCoverStreamDTO(Integer artistId, Integer size) {
+        List<SongDO> songs = songRepository.findByArtistId(artistId);
+        // fallback
+        Artwork fallback = null;
+        for (SongDO song : songs) {
+            List<Artwork> artworks = this.getSongArtworks(song.getId());
+            if (CollectionUtils.isEmpty(artworks)) {
+                continue;
+            }
+            fallback = artworks.get(0);
+            Optional<Artwork> first = artworks.stream().filter(art ->{
+                if (art.getPictureType() == 8) {
+                    return true;
+                }
+                if (StringUtils.containsIgnoreCase(art.getDescription(),"Artist")) {
+                    return true;
+                }
+                if (StringUtils.containsIgnoreCase(art.getDescription(),"Portrait")) {
+                    return true;
+                }
+                return false;
+            }).findFirst();
+
+            if (first.isPresent()) {
+                return CoverStreamDTO.builder()
+                        .cover(first.get().getBinaryData())
+                        .mimeType(first.get().getMimeType())
+                        .build();
+            }
+        }
+        return CoverStreamDTO.builder()
+                .cover(fallback.getBinaryData())
+                .mimeType(fallback.getMimeType())
+                .build();
     }
 
     @Override

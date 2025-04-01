@@ -36,10 +36,10 @@ public class MediaRetrievalController {
         CoverStreamDTO songCoverStreamDTO = null;
         if (id.startsWith("al-")){
             // file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id.replace("al-","")), size);
-            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id.replace("al-", "")), size);
+            songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(Integer.valueOf(id.replace("al-", "")), size);
 
         }else if (id.startsWith("ar-")){
-            //file = mediaRetrievalService.getArtistCoverArt(Integer.valueOf(id.replace("ar-","")), size);
+            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(Integer.valueOf(id.replace("ar-","")), size);
         }else {
             //file = mediaRetrievalService.getSongCoverArt(Integer.valueOf(id), size);
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id), size);

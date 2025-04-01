@@ -56,6 +56,14 @@ public class SongRepository {
         return songs.get(0);
     }
 
+    public List<SongDO> findByArtistId(Integer artistId) {
+
+        String sql = """
+                        select * from song where artist_id = ?
+                     """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), artistId);
+    }
+
 
     public List<SongDO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
         String sql = """

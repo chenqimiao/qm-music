@@ -3,7 +3,6 @@ package com.github.chenqimiao.service;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 
-import java.io.File;
 
 /**
  * @author Qimiao Chen
@@ -11,13 +10,12 @@ import java.io.File;
  **/
 public interface MediaRetrievalService {
 
-    File getSongCoverArt(Integer songId, Integer size);
 
     CoverStreamDTO getSongCoverStreamDTO(Integer songId, Integer size);
 
-    File getAlbumCoverArt(Integer albumId, Integer size);
+    CoverStreamDTO getAlbumCoverStreamDTO(Integer albumId, Integer size);
 
-    File getArtistCoverArt(Integer artistId, Integer size);
+    CoverStreamDTO getArtistCoverStreamDTO(Integer artistId, Integer size);
 
     String getLyrics(String artistName, String songTitle);
 

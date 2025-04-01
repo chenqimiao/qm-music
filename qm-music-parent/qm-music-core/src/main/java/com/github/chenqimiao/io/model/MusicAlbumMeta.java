@@ -32,4 +32,7 @@ public class MusicAlbumMeta {
      */
     private String musicbrainzReleaseType;
 
+
+    private String genre;
+
 }

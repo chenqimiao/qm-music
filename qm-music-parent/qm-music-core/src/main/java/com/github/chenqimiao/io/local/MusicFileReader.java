@@ -4,6 +4,7 @@ package com.github.chenqimiao.io.local;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -38,8 +39,12 @@ public abstract class MusicFileReader {
                         // 按需获取byte[]
                         .artworks(tag.getArtworkList())
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
-                        .originalYear(tag.getFirst(FieldKey.ORIGINAL_YEAR))
+                        .originalYear(tag.getFirst(FieldKey.ALBUM_YEAR))
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
+                        .genre(
+                                StringUtils.isNotBlank(tag.getFirst("ALBUMGENRE")) ?
+                                        tag.getFirst("ALBUMGENRE")
+                                        : tag.getFirst(FieldKey.GENRE))
                         .build()
                 )
                 .artist(tag.getFirst(FieldKey.ARTIST))

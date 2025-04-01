@@ -227,7 +227,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                 AudioContentTypeDetector.mapFormatToMimeType("mp3"))) {
             // 转码
             return SongStreamDTO.builder()
-                    .songStream(FFmpegStreamUtils.streamConvert(filePath
+                    .songStream(FFmpegStreamUtils.streamByMemory(filePath
                             , maxBitRate
                             , format))
                     .filePath(filePath)

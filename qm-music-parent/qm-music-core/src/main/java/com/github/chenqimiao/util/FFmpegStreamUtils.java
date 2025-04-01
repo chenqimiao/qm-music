@@ -1,9 +1,20 @@
 package com.github.chenqimiao.util;
 
+import com.github.chenqimiao.enums.EnumAudioCodec;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
+import ws.schild.jave.Encoder;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
+import ws.schild.jave.encode.EncodingAttributes;
 
+import java.io.File;
 import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,7 +50,7 @@ public abstract class FFmpegStreamUtils {
      * @param outputFormat 目标格式（如 "mp3", "aac"）
      */
     @SneakyThrows
-    public static InputStream streamConvert(String inputPath, Integer maxBitRate,
+    public static InputStream streamByOutFFmeg(String inputPath, Integer maxBitRate,
                                             String outputFormat) {
 
 
@@ -54,5 +65,33 @@ public abstract class FFmpegStreamUtils {
 
         return process.getInputStream();
 
+    }
+
+
+    /**
+     * 转码到内存字节流
+     * @param inputPath 输入文件
+     * @param outputFormat 目标格式（如 "mp3", "aac"）
+     * @return 转码后的字节数组
+     */
+    public static InputStream streamByMemory(String inputPath, Integer maxBitRate,
+                                             String outputFormat) throws Exception {
+        try (FileSystem fs = Jimfs.newFileSystem(Configuration.forCurrentPlatform())) {
+            Path outputPath = fs.getPath("output." + outputFormat);
+
+            new Encoder().encode(
+                    new MultimediaObject(new File(inputPath)),
+                    outputPath.toFile(),
+                    new EncodingAttributes()
+                            .setOutputFormat(outputFormat)
+                            .setAudioAttributes(new AudioAttributes()
+                                    .setBitRate(maxBitRate)
+                                    .setCodec(EnumAudioCodec
+                                            .byFormat(outputFormat)
+                                            .getFirst().getName()))
+            );
+
+            return Files.newInputStream(outputPath);
+        }
     }
 }

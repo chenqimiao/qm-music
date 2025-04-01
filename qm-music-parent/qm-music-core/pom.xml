@@ -66,5 +66,9 @@
             <groupId>ws.schild</groupId>
             <artifactId>jave-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.jimfs</groupId>
+            <artifactId>jimfs</artifactId>
+        </dependency>
     </dependencies>
 </project>

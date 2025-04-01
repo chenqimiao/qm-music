@@ -10,6 +10,7 @@ import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.encode.AudioAttributes;
 import ws.schild.jave.encode.EncodingAttributes;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
@@ -91,7 +92,7 @@ public abstract class FFmpegStreamUtils {
                                             .getFirst().getName()))
             );
 
-            return Files.newInputStream(outputPath);
+            return new ByteArrayInputStream(Files.readAllBytes(outputPath));
         }
     }
 }

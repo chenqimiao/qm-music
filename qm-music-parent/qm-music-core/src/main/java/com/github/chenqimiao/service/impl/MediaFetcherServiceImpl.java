@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.IOException;
 import java.nio.file.*;
@@ -63,7 +65,9 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
     @Override
     @SneakyThrows
     public void fetchMusic(String rootPath) {
-
+        AtomicInteger songCount = new AtomicInteger(0);
+        StopWatch stopWatch = new StopWatch("fetchMusic");
+        stopWatch.start();
         List<SongDO> songs = songRepository.findAll();
 
         List<Integer> toBeRemoveSongIds = songs.stream().filter(song -> {
@@ -90,8 +94,8 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         Path root = Paths.get(rootPath); // 根目录
 
         try (var stream = Files.walk(root)) {
-           // stream.parallel() // 启用并行流加速
-            stream.filter(Files::isRegularFile) // 只保留普通文件
+            stream.parallel(). // 启用并行流加速
+                filter(Files::isRegularFile) // 只保留普通文件
                     .forEach(path -> {
                         String filePath = path.toAbsolutePath().normalize().toString();
                         if (songSet.contains(filePath)) {
@@ -102,6 +106,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
                             return;
                         }
                         this.save(musicMeta, path);
+                        songCount.incrementAndGet();
                     });
         } catch (IOException e) {
             log.error("文件遍历io异常", e);
@@ -110,6 +115,8 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
             log.error("文件访问错误 ", e);
         }
 
+        stopWatch.stop();
+        log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(), songCount);
     }
 
     @SneakyThrows

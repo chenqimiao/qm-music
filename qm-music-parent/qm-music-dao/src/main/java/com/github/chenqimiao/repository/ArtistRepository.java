@@ -76,7 +76,7 @@ public class ArtistRepository {
 
     public int save(ArtistDO artistDO) {
         String sql = """
-                     insert into artist (name, first_letter) values (?, ?)
+                     insert OR IGNORE into artist (name, first_letter) values (?, ?)
                      """;
         return jdbcTemplate.update(sql, artistDO.getName(), artistDO.getFirst_letter());
     }

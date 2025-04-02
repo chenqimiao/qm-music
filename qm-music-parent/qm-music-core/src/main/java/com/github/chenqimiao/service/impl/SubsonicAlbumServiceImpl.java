@@ -1,17 +1,18 @@
 package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,16 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
     public List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) {
         List<AlbumDO> albums = albumRepository.searchByName(albumName, pageSize, offset);
         return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+    }
+
+    @Override
+    public List<AlbumDTO> queryByAlbumIds(List<Integer> albumIds) {
+        if (CollectionUtils.isEmpty(albumIds)) {
+            return new ArrayList<>();
+        }
+        List<AlbumDO> albums = albumRepository.queryByIds(albumIds);
+        return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+
     }
 
 

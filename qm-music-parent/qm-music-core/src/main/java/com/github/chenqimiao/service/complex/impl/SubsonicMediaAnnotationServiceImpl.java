@@ -1,4 +1,4 @@
-package com.github.chenqimiao.service.impl;
+package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.UserStarDO;
 import com.github.chenqimiao.enums.EnumStarActionType;
@@ -7,7 +7,7 @@ import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.StarInfoRequest;
 import com.github.chenqimiao.request.StarOrNotRequest;
-import com.github.chenqimiao.service.MediaAnnotationService;
+import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

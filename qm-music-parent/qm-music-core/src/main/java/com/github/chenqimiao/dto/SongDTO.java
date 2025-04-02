@@ -20,6 +20,8 @@ public class SongDTO {
     private Integer albumId;
 
     private Integer artistId;
+
+    private String artistName;
     
     private Integer duration;
     

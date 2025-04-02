@@ -1,9 +1,6 @@
 package com.github.chenqimiao.service;
 
-import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.AlbumDTO;
-import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 
 import java.util.List;
@@ -18,4 +15,6 @@ public interface AlbumService {
 
 
     List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) ;
+
+    List<AlbumDTO> queryByAlbumIds(List<Integer> albumIds) ;
 }

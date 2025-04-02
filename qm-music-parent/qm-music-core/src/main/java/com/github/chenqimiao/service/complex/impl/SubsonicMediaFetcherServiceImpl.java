@@ -1,4 +1,4 @@
-package com.github.chenqimiao.service.impl;
+package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
@@ -11,7 +11,7 @@ import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserRepository;
-import com.github.chenqimiao.service.MediaFetcherService;
+import com.github.chenqimiao.service.complex.MediaFetcherService;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
 import com.github.chenqimiao.util.MD5Utils;

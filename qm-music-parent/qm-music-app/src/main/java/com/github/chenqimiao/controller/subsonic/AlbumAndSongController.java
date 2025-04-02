@@ -126,6 +126,7 @@ public class AlbumAndSongController {
     @GetMapping("/search2")
     public SearchResult2Response search2(SearchRequest searchRequest, HttpServletRequest servletRequest) {
 
+        searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
         SearchResult2Response.SearchResult2.SearchResult2Builder builder = SearchResult2Response.SearchResult2.builder();
 
         if (searchRequest.getArtistCount() != null && searchRequest.getArtistCount() > 0 ) {
@@ -217,6 +218,9 @@ public class AlbumAndSongController {
 
     @GetMapping("/search3")
     public SearchResult3Response search3(SearchRequest searchRequest, HttpServletRequest servletRequest) {
+
+        searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
+
         SearchResult3Response.SearchResult3.SearchResult3Builder builder = SearchResult3Response.SearchResult3.builder();
 
 

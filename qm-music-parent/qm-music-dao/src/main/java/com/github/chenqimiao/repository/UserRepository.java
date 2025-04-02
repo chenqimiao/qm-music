@@ -39,4 +39,15 @@ public class UserRepository {
             return null;
         }
     }
+
+    @Nullable
+    public Integer findIdByUserName(String userName) {
+        String sql = "SELECT `id` FROM user WHERE `username` = ?";
+        try{
+            return jdbcTemplate.queryForObject(sql, Integer.class, userName);
+
+        }catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+    }
 }

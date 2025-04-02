@@ -18,4 +18,7 @@ public abstract class ServerConstants {
 
     public static final String FOLDER_NAME = "QM Music Library";
 
+
+    public static final String AUTHED_USER_ID = "authedUserId";
+
 }

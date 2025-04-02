@@ -149,3 +149,24 @@ UPDATE playlist_item
 SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
 WHERE id = NEW.id;
 END;
+
+
+-- 艺术家表（高频查询场景：按名称搜索）
+CREATE TABLE user_star (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id integer NOT NULL ,
+                        star_type integer NOT NULL,
+                        relation_id INTEGER,
+                        gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                        gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
+);
+
+CREATE UNIQUE INDEX unique_user_star ON user_star(user_id, star_type, relation_id);
+
+CREATE TRIGGER IF NOT EXISTS update_user_star_gmt_modify
+    AFTER UPDATE ON user_star
+BEGIN
+    UPDATE user_star
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+    WHERE id = NEW.id;
+END;

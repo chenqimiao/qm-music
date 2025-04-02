@@ -82,7 +82,7 @@ public class AlbumRepository {
     public void save(AlbumDO albumDO) {
 
         String sql = """
-                    insert into album(`title`, `artist_id`, `release_year`, 
+                    insert into album(`title`, `artist_id`, `release_year`,
                                       `genre`, `duration`, `artist_name`, `song_count`)
                     values(:title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count)
                 """;

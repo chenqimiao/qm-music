@@ -1,13 +1,16 @@
 package com.github.chenqimiao.interceptor;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.UserAuthService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -21,6 +24,9 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
 
     @Resource
     private UserAuthService subsonicUserAuthService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -44,6 +50,7 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_40);
         }
 
+        request.setAttribute(ServerConstants.AUTHED_USER_ID, userRepository.findIdByUserName(username));
         return true;
     }
 

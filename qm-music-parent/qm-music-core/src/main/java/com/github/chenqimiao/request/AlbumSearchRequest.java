@@ -30,4 +30,6 @@ public class AlbumSearchRequest {
 
     private Integer size;
 
+    private String type;
+
 }

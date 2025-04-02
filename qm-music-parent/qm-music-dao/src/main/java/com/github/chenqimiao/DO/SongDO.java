@@ -28,4 +28,6 @@ public class SongDO {
     private String year;
     private String artist_name;
     private Long file_last_modified;
+    private String genre;
+
 }

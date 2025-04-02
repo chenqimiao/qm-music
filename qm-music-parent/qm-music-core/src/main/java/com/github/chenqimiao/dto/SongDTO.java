@@ -40,4 +40,6 @@ public class SongDTO {
     private Long gmtModify;
 
     private Integer year;
+
+    private String genre;
 }

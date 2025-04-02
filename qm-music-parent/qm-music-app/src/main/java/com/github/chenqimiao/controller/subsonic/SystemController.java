@@ -70,7 +70,7 @@ public class SystemController {
         scanStatusResponse
                 .setScanStatus(ScanStatusResponse.ScanStatus
                             .builder()
-                            .scanning(false)
+                            .scanning(lockCache.isEmpty())
                             .count(songRepository.count())
                             .build());
         return scanStatusResponse;

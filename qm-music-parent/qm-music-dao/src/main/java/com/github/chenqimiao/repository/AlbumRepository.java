@@ -1,6 +1,7 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -90,4 +91,18 @@ public class AlbumRepository {
     }
 
 
+    public Map<String, Integer> countGroupByGenre() {
+        String sql = """
+                    select count(1) as num, `genre` from album group by `genre`
+                """;
+        Map<String, Integer> result = Maps.newHashMap();
+
+        jdbcTemplate.query(sql, rs -> {
+            while (rs.next()) {
+                result.put(rs.getString("genre"), rs.getInt("num"));
+            }
+        });
+
+        return result;
+    }
 }

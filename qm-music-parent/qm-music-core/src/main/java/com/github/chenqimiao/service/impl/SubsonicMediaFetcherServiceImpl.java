@@ -26,12 +26,12 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.IOException;
@@ -43,9 +43,9 @@ import java.util.stream.Collectors;
  * @author Qimiao Chen
  * @since 2025/3/31 14:45
  **/
-@Service("mediaFetcherService")
+@Service("subsonicMediaFetcherService")
 @Slf4j
-public class MediaFetcherServiceImpl implements MediaFetcherService {
+public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     private static final ExecutorService VIRTUAL_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
@@ -78,6 +78,7 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
                 return true;
             }
             long lastModifiedMillis = FileUtils.getLastModified(path);
+            // changed ?
             if (Math.abs(lastModifiedMillis - song.getFile_last_modified()) > 1000L) {
                 return true;
             }
@@ -111,13 +112,12 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
                     });
         } catch (IOException e) {
             log.error("文件遍历io异常", e);
-            e.printStackTrace();
         } catch (UncheckedIOException e) { // 处理并行流中可能抛出的未检查异常
             log.error("文件访问错误 ", e);
         }
 
         stopWatch.stop();
-        log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(), songCount);
+        log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(TimeUnit.MILLISECONDS), songCount);
     }
 
     @SneakyThrows
@@ -187,7 +187,8 @@ public class MediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
-        songDO.setArtist_name(songArtist.getName());
+        songDO.setArtist_name(songArtist != null ? songArtist.getName() : null);
+        songDO.setGenre(musicMeta.getGenre());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
         songRepository.save(songDO);

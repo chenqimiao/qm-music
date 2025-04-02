@@ -76,6 +76,7 @@ CREATE TABLE song (
                        suffix VARCHAR(16),
                        content_type VARCHAR(16),
                        cover_art VARCHAR(16),
+                       genre VARCHAR(50),
                        year INTEGER ,
                        duration INTEGER NOT NULL CHECK(duration > 0),
                        bit_rate INTEGER NOT NULL CHECK(bit_rate > 0),

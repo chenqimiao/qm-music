@@ -2,12 +2,15 @@ package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.ArtistDTO;
+import com.github.chenqimiao.dto.GenreStatisticsDTO;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
 import com.github.chenqimiao.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.response.subsonic.ArtistIndexResponse;
 import com.github.chenqimiao.response.subsonic.ArtistsResponse;
+import com.github.chenqimiao.response.subsonic.GenresResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
 import com.github.chenqimiao.service.ArtistService;
+import com.github.chenqimiao.service.GenreService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +33,9 @@ public class BrowsingController {
 
     @Autowired
     private ArtistService artistService;
+
+    @Autowired
+    private GenreService genreService;
 
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
@@ -110,5 +116,16 @@ public class BrowsingController {
         return artistsResponse;
     }
 
-
+    @GetMapping(value = "/getGenres")
+    public GenresResponse getGenres() {
+        List<GenreStatisticsDTO> statistics = genreService.statistics();
+        GenresResponse genresResponse = new GenresResponse();
+        if (CollectionUtils.isEmpty(statistics)) {
+            return genresResponse;
+        }
+        List<GenresResponse.Genre> genres = statistics.stream().map(n ->
+                new GenresResponse.Genre(n.getAlbumCount(), n.getSongCount())).toList();
+        genresResponse.setGenres(new GenresResponse.Genres(genres));
+        return genresResponse;
+    }
 }

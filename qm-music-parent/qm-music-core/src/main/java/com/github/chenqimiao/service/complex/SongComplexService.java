@@ -1,6 +1,7 @@
 package com.github.chenqimiao.service.complex;
 
 import com.github.chenqimiao.dto.ComplexSongDTO;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
  **/
 public interface SongComplexService {
 
-    List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, Integer userId);
+    List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, @Nullable Integer userId);
 
 }

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  * @author Qimiao Chen
  * @since 2025/4/2 23:41
  **/
-@Service("subsonicMediaFetcherService")
+@Service("subsonicSongComplexService")
 @Slf4j
 public class SubsonicSongComplexService implements SongComplexService {
 
@@ -39,7 +40,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     private MediaAnnotationService mediaAnnotationService;
 
     @Override
-    public List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, Integer userId) {
+    public List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, @Nullable Integer userId) {
         if (CollectionUtils.isEmpty(songIds)) {
             return new ArrayList<>();
         }
@@ -49,10 +50,12 @@ public class SubsonicSongComplexService implements SongComplexService {
         List<AlbumDTO> albums = albumService.queryByAlbumIds(albumIds);
         Map<Integer, AlbumDTO> albumMap = albums.stream().collect(Collectors.toMap(AlbumDTO::getId, n -> n));
 
-        BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(userId)
-                .relationIds(songIds).startType(EnumUserStarType.SONG).build();
-        Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
-
+        final Map<Integer, Long> starredTimeMap = new HashMap<>();
+        if (userId != null) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(userId)
+                    .relationIds(songIds).startType(EnumUserStarType.SONG).build();
+            starredTimeMap.putAll(mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest));
+        }
 
         return songs.stream().map(n -> {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);

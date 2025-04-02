@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.enums.EnumAudioFormat;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
 import com.github.chenqimiao.io.local.MusicFileReader;
@@ -228,10 +229,10 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String filePath = songDO.getFile_path();
 
         String contentType = songDO.getContent_type();
-        if (Boolean.TRUE.equals(ffmpegEnable) &&
-                "mp3".equals(format)
+        if (Boolean.TRUE.equals(ffmpegEnable)
+                && EnumAudioFormat.MP3.getName().equals(format)
                 && !Objects.equals(contentType,
-                AudioContentTypeDetector.mapFormatToMimeType("mp3"))) {
+                AudioContentTypeDetector.mapFormatToMimeType(EnumAudioFormat.MP3.getName()))) {
             // 转码
             return SongStreamDTO.builder()
                     .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath

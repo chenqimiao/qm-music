@@ -17,27 +17,27 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 public enum EnumAudioCodec {
-    ACC("acc", Lists.newArrayList("mp4, flv"), "高效音频编码"),
-    LIB_MP3_LAME("libmp3lame", Lists.newArrayList("mp3"), "MP3 编码"),
-    lib_x264("libx264", Lists.newArrayList("mp4", "flv"), "H.264/AVC 编码"),
-    vp9("vp9", Lists.newArrayList("webm"), "VP9 编码"),
+    ACC("acc", Lists.newArrayList(EnumAudioFormat.MP4, EnumAudioFormat.FLV), "高效音频编码"),
+    LIB_MP3_LAME("libmp3lame", Lists.newArrayList(EnumAudioFormat.MP3), "MP3 编码"),
+    lib_x264("libx264", Lists.newArrayList(EnumAudioFormat.MP4, EnumAudioFormat.FLV), "H.264/AVC 编码"),
+    vp9("vp9", Lists.newArrayList(EnumAudioFormat.WEBM), "VP9 编码"),
     ;
 
     private final String name;
 
-    private final List<String> supportedFormats;
+    private final List<EnumAudioFormat> supportedFormats;
 
     private final String desc;
 
-    public static EnumAudioCodec parseObjByCode(String code){
-        Optional<EnumAudioCodec> instance = Arrays.stream(values()).filter(obj -> obj.getName().equals(code)).findFirst();
+    public static EnumAudioCodec parseObjByName(String name){
+        Optional<EnumAudioCodec> instance = Arrays.stream(values()).filter(obj -> obj.getName().equals(name)).findFirst();
         return instance.orElse(null);
     }
 
     public static List<EnumAudioCodec> byFormat(String format){
         final String f = format.toLowerCase();
         return Arrays.stream(values()).filter(obj -> {
-            return obj.getSupportedFormats().contains(f);
+            return obj.getSupportedFormats().contains(EnumAudioFormat.parseObjByName(f));
         }).collect(Collectors.toList());
     }
 }

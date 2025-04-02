@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -92,6 +93,14 @@ public class SongRepository {
                 "%"+songTitle +"%", offset, pageSize);
     }
 
+    public List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
+        String sql = """
+                        select id from song where `title` like ? limit ?, ?;
+                     """;
+        return jdbcTemplate.queryForList(sql, Integer.class,
+                "%" + songTitle + "%", offset, pageSize);
+    }
+
 
     public List<SongDO> findAll() {
         String sql = """
@@ -145,5 +154,17 @@ public class SongRepository {
         });
 
         return result;
+    }
+
+    public List<SongDO> findByIds(List<Integer> songIds) {
+
+        String sql = """
+                    select * from song where `id` in (:ids)
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", songIds);
+
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(SongDO.class));
     }
 }

@@ -10,10 +10,12 @@ import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.SongService;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,5 +82,19 @@ public class SubsonicSongServiceImpl implements SongService {
         SongDO song = songRepository.findBySongId(songId);
 
         return song == null ? null: ucModelMapper.map(song, SongDTO.class);
+    }
+
+    @Override
+    public List<SongDTO> batchQuerySongs(List<Integer> songIds) {
+        if (CollectionUtils.isEmpty(songIds)) {
+            return new ArrayList<>();
+        }
+        List<SongDO> songList = songRepository.findByIds(songIds);
+        return ucModelMapper.map(songList, ModelMapperTypeConfig.TYPE_LIST_SONG_DTO);
+    }
+
+    @Override
+    public List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
+        return songRepository.searchSongIdsByTitle(songTitle, pageSize, offset);
     }
 }

@@ -15,10 +15,12 @@ import com.github.chenqimiao.util.FFmpegStreamUtils;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.ImageResizer;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.tag.images.Artwork;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
@@ -36,6 +38,7 @@ import java.util.Optional;
  * @since 2025/3/30 22:59
  **/
 @Service("subsonicMediaRetrievalService")
+@Slf4j
 public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService {
 
     @Autowired
@@ -212,6 +215,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return "";
     }
 
+    @Value("${qm.ffmpeg.enable}")
+    private Boolean ffmpegEnable;
+
     @Override
     @SneakyThrows
     public SongStreamDTO getSongStream(Integer songId,
@@ -222,14 +228,15 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String filePath = songDO.getFile_path();
 
         String contentType = songDO.getContent_type();
-        if ("mp3".equals(format)
+        if (Boolean.TRUE.equals(ffmpegEnable) &&
+                "mp3".equals(format)
                 && !Objects.equals(contentType,
                 AudioContentTypeDetector.mapFormatToMimeType("mp3"))) {
             // 转码
             return SongStreamDTO.builder()
-                    .songStream(FFmpegStreamUtils.streamByMemory(filePath
-                            , maxBitRate * 1000
-                            , format))
+                    .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
+                    , maxBitRate * 1000
+                    , format))
                     .filePath(filePath)
                     .mimeType("audio/mpeg")
                     .build();

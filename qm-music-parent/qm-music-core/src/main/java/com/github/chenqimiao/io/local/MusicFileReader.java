@@ -3,6 +3,7 @@ package com.github.chenqimiao.io.local;
 
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
+import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -11,7 +12,6 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
-import javax.annotation.Nullable;
 import java.io.File;
 
 /**

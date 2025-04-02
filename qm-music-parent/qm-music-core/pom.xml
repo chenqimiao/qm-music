@@ -51,10 +51,6 @@
             <artifactId>modelmapper</artifactId>
         </dependency>
         <dependency>
-            <groupId>info.schnatterer.musicbrainzws2-java</groupId>
-            <artifactId>musicbrainzws2-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
         </dependency>
@@ -63,12 +59,12 @@
             <artifactId>thumbnailator</artifactId>
         </dependency>
         <dependency>
-            <groupId>ws.schild</groupId>
-            <artifactId>jave-core</artifactId>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.jimfs</groupId>
-            <artifactId>jimfs</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -29,8 +29,8 @@ public class AlbumRepository {
 
 
     public List<AlbumDO> searchAlbumList(String suffix) {
-        String sql = "select * from album ? " ;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class), suffix);
+        String sql = "select * from album  " +  suffix;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class));
     }
 
 

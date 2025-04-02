@@ -69,6 +69,11 @@ public class SearchResult2Response extends SubsonicResponse {
         private String artist;
         @JacksonXmlProperty(isAttribute = true)
         private Integer artistId;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date starred;
     }
 
 
@@ -121,6 +126,11 @@ public class SearchResult2Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String type;
 
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date starred;
+
     }
 
     @Getter
@@ -137,5 +147,9 @@ public class SearchResult2Response extends SubsonicResponse {
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
         private String artistImageUrl;
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date starred;
     }
 }

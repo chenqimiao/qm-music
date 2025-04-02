@@ -1,10 +1,13 @@
 package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,5 +76,9 @@ public class ArtistIndexResponse extends SubsonicResponse {
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
         private String artistImageUrl;
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date starred;
     }
 }

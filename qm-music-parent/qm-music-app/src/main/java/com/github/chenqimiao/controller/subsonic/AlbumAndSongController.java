@@ -116,7 +116,7 @@ public class AlbumAndSongController {
 
     public static Type TYPE_LIST_SONG_2 = new TypeToken<List<SearchResult2Response.Song>>() {}.getType();
 
-    @GetMapping("search2")
+    @GetMapping("/search2")
     public SearchResult2Response search2(SearchRequest searchRequest) {
         List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
                 , searchRequest.getArtistOffset());

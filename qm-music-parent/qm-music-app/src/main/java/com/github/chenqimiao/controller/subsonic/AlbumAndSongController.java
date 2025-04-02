@@ -135,15 +135,15 @@ public class AlbumAndSongController {
         }
 
         if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
-            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
+            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getAlbumCount()
+                    , searchRequest.getAlbumOffset());
             builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2));
         }
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
 
-            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
+            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
+                    , searchRequest.getSongOffset());
             builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_2));
         }
 
@@ -228,15 +228,15 @@ public class AlbumAndSongController {
         }
 
         if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
-            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
+            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getAlbumCount()
+                    , searchRequest.getAlbumOffset());
             builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_3));
         }
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
 
-            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
+            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
+                    , searchRequest.getAlbumOffset());
             builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_3));
         }
 

@@ -85,4 +85,10 @@ public class SubsonicArtistServiceImpl implements ArtistService {
         List<ArtistDTO> artists = ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
         return artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter, TreeMap::new, Collectors.toList()));
     }
+
+    @Override
+    public List<ArtistDTO> batchQueryArtist(List<Integer> artistIds) {
+        List<ArtistDO> artistList = artistRepository.findByIds(artistIds);
+        return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+    }
 }

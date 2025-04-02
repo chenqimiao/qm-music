@@ -1,4 +1,4 @@
-package com.github.chenqimiao.service;
+package com.github.chenqimiao.service.complex;
 
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.StarInfoRequest;

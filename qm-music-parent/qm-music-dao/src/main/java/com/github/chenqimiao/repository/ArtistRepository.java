@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -18,6 +21,9 @@ public class ArtistRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
     public List<ArtistDO> findArtistGtUpdateTime(Long timestamp) {
@@ -93,5 +99,17 @@ public class ArtistRepository {
              return null;
          }
 
+    }
+
+    public List<ArtistDO> findByIds(List<Integer> artistIds) {
+
+        String sql = """
+                    select * from artist where `id` in (:ids)
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", artistIds);
+
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ArtistDO.class));
     }
 }

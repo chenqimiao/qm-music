@@ -7,7 +7,7 @@ import com.github.chenqimiao.response.subsonic.ScanStatusResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.response.subsonic.SubsonicResponse;
-import com.github.chenqimiao.service.MediaFetcherService;
+import com.github.chenqimiao.service.complex.MediaFetcherService;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

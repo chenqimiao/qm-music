@@ -1,6 +1,4 @@
-package com.github.chenqimiao.service;
-
-import java.io.OutputStream;
+package com.github.chenqimiao.service.complex;
 
 /**
  * @author Qimiao Chen

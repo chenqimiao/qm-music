@@ -1,7 +1,6 @@
 package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
@@ -62,6 +61,13 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
     public List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) {
         List<AlbumDO> albums = albumRepository.searchByName(albumName, pageSize, offset);
         return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+    }
+
+    @Override
+    public List<AlbumDTO> queryByAlbumIds(List<Integer> albumIds) {
+        List<AlbumDO> albums = albumRepository.queryByIds(albumIds);
+        return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+
     }
 
 

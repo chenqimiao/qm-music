@@ -3,7 +3,7 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
-import com.github.chenqimiao.service.MediaRetrievalService;
+import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;

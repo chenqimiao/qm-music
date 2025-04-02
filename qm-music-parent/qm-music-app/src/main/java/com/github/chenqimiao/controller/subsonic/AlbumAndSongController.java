@@ -12,7 +12,7 @@ import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.MediaAnnotationService;
+import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import com.github.chenqimiao.service.SongService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;

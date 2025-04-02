@@ -13,7 +13,7 @@ import com.github.chenqimiao.response.subsonic.GenresResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
-import com.github.chenqimiao.service.MediaAnnotationService;
+import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

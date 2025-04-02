@@ -105,4 +105,16 @@ public class AlbumRepository {
 
         return result;
     }
+
+    public List<AlbumDO> queryByIds(List<Integer> albumIds) {
+        String sql = """
+                    select * from album where `id` in (:ids)
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", albumIds);
+
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
+
+    }
 }

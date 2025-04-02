@@ -1,4 +1,4 @@
-package com.github.chenqimiao.service.impl;
+package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
@@ -11,7 +11,7 @@ import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
-import com.github.chenqimiao.service.MediaRetrievalService;
+import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.FFmpegStreamUtils;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.ImageResizer;

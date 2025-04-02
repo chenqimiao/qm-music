@@ -32,6 +32,7 @@ public class ModelMapperConfig {
     private final Converter<Long, Date> longToDateConverter = new AbstractConverter<>() {
         @Override
         protected Date convert(Long timestamp) {
+            if (timestamp == null) {return null;}
             return new Date(timestamp);
         }
     };

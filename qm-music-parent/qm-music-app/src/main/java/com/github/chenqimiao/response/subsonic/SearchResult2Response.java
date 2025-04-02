@@ -2,6 +2,7 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
@@ -31,16 +32,19 @@ public class SearchResult2Response extends SubsonicResponse {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "artist")
         @JSONField(name = "artist")
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private List<ArtistItem> artists;
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "album")
         @JSONField(name = "album")
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private List<Album> albums;
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")
         @JSONField(name = "song")
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private List<Song> songs;
     }
 

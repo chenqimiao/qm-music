@@ -24,4 +24,8 @@ public interface ArtistService {
 
     List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset);
 
+
+    Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId);
+
+
 }

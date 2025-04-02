@@ -3,7 +3,9 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
+import com.github.chenqimiao.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.response.subsonic.ArtistIndexResponse;
+import com.github.chenqimiao.response.subsonic.ArtistsResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
 import com.github.chenqimiao.service.ArtistService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -69,6 +71,43 @@ public class BrowsingController {
                     ? System.currentTimeMillis(): artistIndexRequest.getIfModifiedSince());
         }
         return artistIndexResponse;
+    }
+
+    @GetMapping(value = "/getArtists")
+    public ArtistsResponse getArtists(ArtistsRequest artistsRequest) {
+        Map<String, List<ArtistDTO>> artistGroup =
+                artistService.queryAllArtistGroupByFirstLetter(artistsRequest.getMusicFolderId());
+        ArtistsResponse artistsResponse = new ArtistsResponse();
+        if (artistGroup.isEmpty()){
+            return artistsResponse;
+        }
+
+        List<ArtistsResponse.Index> indexes = new ArrayList<>();
+        artistGroup.forEach((k,v) ->{
+            List<ArtistsResponse.Artist> artists = v.stream().map(n ->
+                    ArtistsResponse.Artist
+                    .builder()
+                    .id(n.getId())
+                    .name(n.getName())
+                    .coverArt(n.getCoverArt())
+                    .build()).collect(Collectors.toList());
+
+            ArtistsResponse.Index index = ArtistsResponse.Index
+                    .builder()
+                    .name(k)
+                    .artists(artists)
+                    .build();
+            indexes.add(index);
+
+        });
+        ArtistsResponse.Artists artists = ArtistsResponse.Artists
+                .builder()
+                .ignoredArticles("The El La Los Las Le Les")
+                .indexes(indexes)
+                .build();
+        artistsResponse.setArtists(artists);
+
+        return artistsResponse;
     }
 
 

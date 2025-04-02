@@ -9,10 +9,12 @@ import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
 import jakarta.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,5 +74,15 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     public List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset) {
         List<ArtistDO> artistDOS = artistRepository.searchByName(artistName, pageSize, offset);
         return ucModelMapper.map(artistDOS, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+    }
+
+    @Override
+    public Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId) {
+        List<ArtistDO> artistList = artistRepository.findAll();
+        if (CollectionUtils.isEmpty(artistList)) {
+            return Collections.EMPTY_MAP;
+        }
+        List<ArtistDTO> artists = ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+        return artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter, TreeMap::new, Collectors.toList()));
     }
 }

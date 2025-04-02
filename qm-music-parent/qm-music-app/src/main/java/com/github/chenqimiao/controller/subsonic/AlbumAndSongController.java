@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +54,7 @@ public class AlbumAndSongController {
 
     @Autowired
     private MediaAnnotationService mediaAnnotationService;
+
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
@@ -145,7 +147,15 @@ public class AlbumAndSongController {
 
             List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
                     , searchRequest.getSongOffset());
-            builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_2));
+            List<SearchResult2Response.Song> songList = modelMapper.map(songs, TYPE_LIST_SONG_2);
+            List<Integer> albumIds = songList.stream().map(SearchResult2Response.Song::getAlbumId).filter(Objects::nonNull).toList();
+            List<AlbumDTO> albums = albumService.queryByAlbumIds(albumIds);
+            Map<Integer, AlbumDTO> albumMap = albums.stream().collect(Collectors.toMap(AlbumDTO::getId, n -> n));
+            songList.forEach(song -> {
+                AlbumDTO albumDTO = albumMap.get(song.getAlbumId());
+                song.setAlbumTitle(albumDTO.getTitle());
+            });
+            builder.songs(songList);
         }
 
         Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
@@ -241,7 +251,15 @@ public class AlbumAndSongController {
 
             List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
                     , searchRequest.getAlbumOffset());
-            builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_3));
+            List<SearchResult3Response.Song> songList = modelMapper.map(songs, TYPE_LIST_SONG_3);
+            List<Integer> albumIds = songList.stream().map(SearchResult3Response.Song::getAlbumId).filter(Objects::nonNull).toList();
+            List<AlbumDTO> albums = albumService.queryByAlbumIds(albumIds);
+            Map<Integer, AlbumDTO> albumMap = albums.stream().collect(Collectors.toMap(AlbumDTO::getId, n -> n));
+            songList.forEach(song -> {
+                AlbumDTO albumDTO = albumMap.get(song.getAlbumId());
+                song.setAlbumTitle(albumDTO.getTitle());
+            });
+            builder.songs(songList);
         }
 
         Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);

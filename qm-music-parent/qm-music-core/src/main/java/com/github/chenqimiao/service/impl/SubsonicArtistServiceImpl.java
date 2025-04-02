@@ -14,10 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +85,9 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
     @Override
     public List<ArtistDTO> batchQueryArtist(List<Integer> artistIds) {
+        if (CollectionUtils.isEmpty(artistIds)) {
+            return new ArrayList<>();
+        }
         List<ArtistDO> artistList = artistRepository.findByIds(artistIds);
         return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
     }

@@ -124,7 +124,7 @@ public class BrowsingController {
             return genresResponse;
         }
         List<GenresResponse.Genre> genres = statistics.stream().map(n ->
-                new GenresResponse.Genre(n.getAlbumCount(), n.getSongCount())).toList();
+                new GenresResponse.Genre(n.getAlbumCount(), n.getSongCount(), n.getGenreName())).toList();
         genresResponse.setGenres(new GenresResponse.Genres(genres));
         return genresResponse;
     }

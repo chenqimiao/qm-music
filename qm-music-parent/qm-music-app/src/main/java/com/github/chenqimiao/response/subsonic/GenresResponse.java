@@ -3,6 +3,7 @@ package com.github.chenqimiao.response.subsonic;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,5 +41,8 @@ public class GenresResponse extends SubsonicResponse {
 
         @JacksonXmlProperty(isAttribute = true)
         private Integer songCount;
+
+        @JacksonXmlText
+        private String name;
     }
 }

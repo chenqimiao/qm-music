@@ -5,7 +5,6 @@ import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
 import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -52,6 +51,7 @@ public abstract class MusicFileReader {
                 .format(f.getAudioHeader().getFormat())
                 .bitRate(f.getAudioHeader().getBitRate())
                 .trackLength(f.getAudioHeader().getTrackLength())
+                .track(tag.getFirst(FieldKey.TRACK))
                 .build();
     }
 

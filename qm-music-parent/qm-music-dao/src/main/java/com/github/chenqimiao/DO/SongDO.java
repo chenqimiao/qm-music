@@ -29,5 +29,6 @@ public class SongDO {
     private String artist_name;
     private Long file_last_modified;
     private String genre;
+    private String track;
 
 }

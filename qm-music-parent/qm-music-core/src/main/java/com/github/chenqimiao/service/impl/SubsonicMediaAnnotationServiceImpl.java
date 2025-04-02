@@ -4,10 +4,14 @@ import com.github.chenqimiao.DO.UserStarDO;
 import com.github.chenqimiao.enums.EnumStarActionType;
 
 import com.github.chenqimiao.repository.UserStarRepository;
+import com.github.chenqimiao.request.BatchStarInfoRequest;
+import com.github.chenqimiao.request.StarInfoRequest;
 import com.github.chenqimiao.request.StarOrNotRequest;
 import com.github.chenqimiao.service.MediaAnnotationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -28,6 +32,29 @@ public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationServic
         }else if (actionType == EnumStarActionType.UN_STAR) {
             this.doUnStar(starOrNotRequest);
         }
+    }
+
+    @Override
+    public boolean isStar(StarInfoRequest starInfoRequest) {
+        int count = userStarRepository.countByUnique(starInfoRequest.getUserId()
+                , starInfoRequest.getStartType().getCode()
+                , starInfoRequest.getRelationId());
+
+        return count > 0;
+    }
+
+    @Override
+    public Long starredTime(StarInfoRequest starInfoRequest) {
+        return userStarRepository.queryCreateTimeByUnique(starInfoRequest.getUserId()
+                , starInfoRequest.getStartType().getCode()
+                , starInfoRequest.getRelationId());
+    }
+
+    @Override
+    public Map<Integer, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest) {
+        return  userStarRepository.batchQueryStarredTimeByUniqueKeys(batchStarInfoRequest.getUserId()
+                , batchStarInfoRequest.getStartType().getCode()
+                , batchStarInfoRequest.getRelationIds());
     }
 
     private void doUnStar(StarOrNotRequest starOrNotRequest) {

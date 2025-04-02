@@ -3,6 +3,8 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.GenreStatisticsDTO;
+import com.github.chenqimiao.enums.EnumUserStarType;
+import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
 import com.github.chenqimiao.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.response.subsonic.ArtistIndexResponse;
@@ -11,16 +13,15 @@ import com.github.chenqimiao.response.subsonic.GenresResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
+import com.github.chenqimiao.service.MediaAnnotationService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +38,9 @@ public class BrowsingController {
     @Autowired
     private GenreService genreService;
 
+    @Autowired
+    private MediaAnnotationService mediaAnnotationService;
+
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
 
@@ -47,13 +51,20 @@ public class BrowsingController {
     }
 
     @GetMapping(value = "/getIndexes")
-    public ArtistIndexResponse getIndexes(ArtistIndexRequest artistIndexRequest) {
+    public ArtistIndexResponse getIndexes(ArtistIndexRequest artistIndexRequest, HttpServletRequest servletRequest) {
         Map<String, List<ArtistDTO>> artistMap = artistService.searchArtistMap(artistIndexRequest.getIfModifiedSince());
         ArtistIndexResponse artistIndexResponse = new ArtistIndexResponse();
         ArtistIndexResponse.Indexes indexes = new ArtistIndexResponse.Indexes();
         artistIndexResponse.setIndexes(indexes);
         indexes.setIgnoredArticles("The El La Los Las Le Les Os As O A");
         List<ArtistIndexResponse.Index> indexList = new ArrayList<>();
+        List<Integer> artistIds = artistMap.values().stream().flatMap(List::stream).map(ArtistDTO::getId).toList();
+        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+
+        BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder()
+                        .userId(authedUserId).relationIds(artistIds).startType(EnumUserStarType.ARTIST).build();
+        Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+
         artistMap.forEach((key, value) -> {
             ArtistIndexResponse.Index idx = new ArtistIndexResponse.Index();
             idx.setName(key);
@@ -63,6 +74,8 @@ public class BrowsingController {
                 ArtistIndexResponse.ArtistItem artistItem = new ArtistIndexResponse.ArtistItem();
                 artistItem.setId(id);
                 artistItem.setName(name);
+                Long starredTimestamp = starredTimeMap.get(id);
+                if (starredTimestamp != null) {artistItem.setStarred(new Date(starredTimestamp));}
                 return artistItem;
             }).collect(Collectors.toList());
             idx.setArtists(artistItems);

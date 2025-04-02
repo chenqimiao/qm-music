@@ -40,4 +40,6 @@ public class MusicMeta {
     private String bitRate;
 
     private Integer trackLength;
+
+    private String track;
 }

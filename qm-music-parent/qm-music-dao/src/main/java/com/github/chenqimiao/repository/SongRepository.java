@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -119,7 +118,7 @@ public class SongRepository {
                           values(:parent, :title, :album_id, :artist_id,
                                  :artist_name, :size, :suffix, :content_type, :year,
                                  :duration, :bit_rate, :file_path, :file_hash, 
-                                 :file_last_modified,:genre)
+                                 :file_last_modified,:genre,:track)
                      """;
                 namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
     }

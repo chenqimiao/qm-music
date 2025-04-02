@@ -1,18 +1,20 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
+import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
+import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
 import com.github.chenqimiao.request.subsonic.SearchRequest;
-import com.github.chenqimiao.response.subsonic.AlbumList2Response;
-import com.github.chenqimiao.response.subsonic.AlbumResponse;
-import com.github.chenqimiao.response.subsonic.SearchResult2Response;
-import com.github.chenqimiao.response.subsonic.SongResponse;
+import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
+import com.github.chenqimiao.service.MediaAnnotationService;
 import com.github.chenqimiao.service.SongService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -24,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +50,9 @@ public class AlbumAndSongController {
 
     @Autowired
     private ArtistService artistService;
+
+    @Autowired
+    private MediaAnnotationService mediaAnnotationService;
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
@@ -117,24 +124,72 @@ public class AlbumAndSongController {
     public static Type TYPE_LIST_SONG_2 = new TypeToken<List<SearchResult2Response.Song>>() {}.getType();
 
     @GetMapping("/search2")
-    public SearchResult2Response search2(SearchRequest searchRequest) {
-        List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                , searchRequest.getArtistOffset());
-        List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                , searchRequest.getArtistOffset());
-        List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
-                , searchRequest.getArtistOffset());
+    public SearchResult2Response search2(SearchRequest searchRequest, HttpServletRequest servletRequest) {
 
+        SearchResult2Response.SearchResult2.SearchResult2Builder builder = SearchResult2Response.SearchResult2.builder();
+
+        if (searchRequest.getArtistCount() != null && searchRequest.getArtistCount() > 0 ) {
+            List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.artists(modelMapper.map(artists, TYPE_LIST_ARTIST_2));
+        }
+
+        if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
+            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2));
+        }
+
+        if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
+
+            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_2));
+        }
+
+        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        SearchResult2Response.SearchResult2 searchResult2 = builder.build();
+        this.wrapStarredTime(searchResult2, authedUserId);
         SearchResult2Response response = new SearchResult2Response();
-        response.setSearchResult2(SearchResult2Response.SearchResult2
-                .builder()
-                .artists(modelMapper.map(artists, TYPE_LIST_ARTIST_2))
-                        .albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2))
-                        .songs(modelMapper.map(songs, TYPE_LIST_SONG_2))
-                        .build()
-                );
+        response.setSearchResult2(searchResult2);
         return response;
 
+    }
+
+    private void wrapStarredTime(SearchResult2Response.SearchResult2 searchResult2Response, Integer authedUserId) {
+        List<SearchResult2Response.Song> songs = searchResult2Response.getSongs();
+        List<SearchResult2Response.Album> albums = searchResult2Response.getAlbums();
+        List<SearchResult2Response.ArtistItem> artists = searchResult2Response.getArtists();
+
+        if (CollectionUtils.isNotEmpty(songs)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(songs.stream().map(SearchResult2Response.Song::getId).toList()).startType(EnumUserStarType.SONG).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            songs.forEach(song -> {
+                Long starredTimestamp = starredTimeMap.get(song.getId());
+                song.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+
+        }
+        if (CollectionUtils.isNotEmpty(albums)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(albums.stream().map(SearchResult2Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            albums.forEach(album -> {
+                Long starredTimestamp = starredTimeMap.get(album.getId());
+                album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+
+        }
+        if (CollectionUtils.isNotEmpty(artists)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(artists.stream().map(SearchResult2Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            artists.forEach(artistItem -> {
+                Long starredTimestamp = starredTimeMap.get(artistItem.getId());
+                artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+        }
     }
 
 
@@ -147,7 +202,88 @@ public class AlbumAndSongController {
         SongResponse response = new SongResponse();
 
         response.setSong(modelMapper.map(songDTO, SongResponse.Song.class));
+
         return response;
     }
+
+
+
+
+    public static Type TYPE_LIST_ALBUM_3 = new TypeToken<List<SearchResult3Response.Album>>() {}.getType();
+
+    public static Type TYPE_LIST_ARTIST_3 = new TypeToken<List<SearchResult3Response.ArtistItem>>() {}.getType();
+
+    public static Type TYPE_LIST_SONG_3 = new TypeToken<List<SearchResult3Response.Song>>() {}.getType();
+
+    @GetMapping("/search3")
+    public SearchResult3Response search3(SearchRequest searchRequest, HttpServletRequest servletRequest) {
+        SearchResult3Response.SearchResult3.SearchResult3Builder builder = SearchResult3Response.SearchResult3.builder();
+
+
+        if (searchRequest.getArtistCount() != null
+                && searchRequest.getArtistCount() > 0 ) {
+            List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.artists(modelMapper.map(artists, TYPE_LIST_ARTIST_3));
+        }
+
+        if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
+            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_3));
+        }
+
+        if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
+
+            List<SongDTO> songs = songService.searchByTitle(searchRequest.getQuery(), searchRequest.getArtistCount()
+                    , searchRequest.getArtistOffset());
+            builder.songs(modelMapper.map(songs, TYPE_LIST_SONG_3));
+        }
+
+        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        SearchResult3Response.SearchResult3 searchResult3 = builder.build();
+        this.wrapStarredTime(searchResult3, authedUserId);
+        SearchResult3Response response = new SearchResult3Response();
+        response.setSearchResult3(searchResult3);
+        return response;
+
+    }
+
+    private void wrapStarredTime(SearchResult3Response.SearchResult3 searchResult3Response, Integer authedUserId) {
+        List<SearchResult3Response.Song> songs = searchResult3Response.getSongs();
+        List<SearchResult3Response.Album> albums = searchResult3Response.getAlbums();
+        List<SearchResult3Response.ArtistItem> artists = searchResult3Response.getArtists();
+
+        if (CollectionUtils.isNotEmpty(songs)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(songs.stream().map(SearchResult3Response.Song::getId).toList()).startType(EnumUserStarType.SONG).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            songs.forEach(song -> {
+                Long starredTimestamp = starredTimeMap.get(song.getId());
+                song.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+
+        }
+        if (CollectionUtils.isNotEmpty(albums)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(albums.stream().map(SearchResult3Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            albums.forEach(album -> {
+                Long starredTimestamp = starredTimeMap.get(album.getId());
+                album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+
+        }
+        if (CollectionUtils.isNotEmpty(artists)) {
+            BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
+                    .relationIds(artists.stream().map(SearchResult3Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
+            Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+            artists.forEach(artistItem -> {
+                Long starredTimestamp = starredTimeMap.get(artistItem.getId());
+                artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
+            });
+        }
+    }
+
 }
 

@@ -42,4 +42,6 @@ public class SongDTO {
     private Integer year;
 
     private String genre;
+
+    private String track;
 }

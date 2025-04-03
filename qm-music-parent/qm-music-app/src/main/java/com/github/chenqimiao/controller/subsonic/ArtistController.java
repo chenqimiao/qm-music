@@ -3,6 +3,7 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.response.subsonic.ArtistResponse;
 import com.github.chenqimiao.service.ArtistService;
+import com.github.chenqimiao.service.complex.ArtistComplexService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,10 +32,12 @@ public class ArtistController {
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<ArtistResponse.Album>>() {}.getType();
 
+    @Autowired
+    private ArtistComplexService artistComplexService;
+
 
     @GetMapping(value = "/getArtist")
     public ArtistResponse getArtist(@RequestParam("id") Long artistId) {
-
         ArtistResponse artistResponse = new ArtistResponse();
         ArtistAggDTO artistAggDTO = artistService.queryArtistWithAlbums(artistId);
         ArtistResponse.Artist artist = artistAggDTO.getArtist() == null ? new ArtistResponse.Artist()

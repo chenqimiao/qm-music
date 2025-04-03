@@ -2,6 +2,7 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.github.chenqimiao.util.DateTimeUtils;
@@ -52,6 +53,7 @@ public class ArtistsResponse extends SubsonicResponse {
     @Setter
     @Getter
     @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Artist {
         @JacksonXmlProperty(isAttribute = true)
         private Long id;

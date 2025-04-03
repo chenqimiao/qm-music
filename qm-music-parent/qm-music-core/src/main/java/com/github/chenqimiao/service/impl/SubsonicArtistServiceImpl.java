@@ -2,13 +2,16 @@ package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.repository.AlbumRepository;
+import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
+import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -33,6 +36,9 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
     @Resource
     private ModelMapper ucModelMapper;
+
+    @Resource
+    private ArtistRelationRepository artistRelationRepository;
 
 
     @Override
@@ -59,13 +65,24 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistAggDTO queryArtistWithAlbums(Long artistId) {
+        ArtistAggDTO artistAggDTO = new ArtistAggDTO();
         ArtistDO artistDO = artistRepository.findByArtistId(artistId);
         ArtistDTO artistDTO = artistDO == null ? null : ucModelMapper.map(artistDO, ArtistDTO.class);
-        List<AlbumDO> albumDOList = albumRepository.findByArtistId(artistId);
-        return ArtistAggDTO.builder()
-                .artist(artistDTO)
-                .albumList(ucModelMapper.map(albumDOList, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO))
-                .build();
+        if (artistDTO == null) {
+            return artistAggDTO;
+        }
+        artistAggDTO.setArtist(artistDTO);
+
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
+        params.put("artistId", artistId);
+        params.put("type", EnumArtistRelationType.ALBUM.getCode());
+        List<ArtistRelationDO> artistRelationList = artistRelationRepository.search(params);
+        if (CollectionUtils.isNotEmpty(artistRelationList)) {
+            List<AlbumDO> albumDOS =
+                    albumRepository.queryByIds(artistRelationList.stream().map(ArtistRelationDO::getRelation_id).collect(Collectors.toList()));
+            artistAggDTO.setAlbumList(ucModelMapper.map(albumDOS, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO));
+        }
+        return artistAggDTO;
     }
 
     @Override

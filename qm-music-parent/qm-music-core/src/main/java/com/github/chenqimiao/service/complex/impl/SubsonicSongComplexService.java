@@ -44,7 +44,7 @@ public class SubsonicSongComplexService implements SongComplexService {
         }
         List<SongDTO> songs = songService.batchQuerySongBySongIds(songIds);
 
-        final Map<Integer, Long> starredTimeMap = new HashMap<>();
+        final Map<Long, Long> starredTimeMap = new HashMap<>();
         if (userId != null) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(userId)
                     .relationIds(songIds).startType(EnumUserStarType.SONG).build();

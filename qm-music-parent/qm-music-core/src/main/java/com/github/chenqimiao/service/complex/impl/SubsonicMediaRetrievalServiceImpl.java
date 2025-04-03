@@ -1,14 +1,17 @@
 package com.github.chenqimiao.service.complex.impl;
 
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumAudioFormat;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
+import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
@@ -47,6 +50,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Autowired
     private ArtistRepository artistRepository;
+
+    @Autowired
+    private ArtistRelationRepository artistRelationRepository;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
@@ -148,11 +154,15 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
-        List<SongDO> songs = songRepository.findByArtistId(artistId);
+
+        List<ArtistRelationDO> songRelations
+                = artistRelationRepository.findByArtistIdAndType(artistId, EnumArtistRelationType.SONG.getCode());
         // fallback
         Artwork fallback = null;
-        for (SongDO song : songs) {
-            List<Artwork> artworks = this.getSongArtworks(song.getId());
+
+        List<Long> songIds = songRelations.stream().map(ArtistRelationDO::getRelation_id).toList();
+        for (Long songId : songIds) {
+            List<Artwork> artworks = this.getSongArtworks(songId);
             if (CollectionUtils.isEmpty(artworks)) {
                 continue;
             }

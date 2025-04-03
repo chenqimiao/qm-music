@@ -20,6 +20,7 @@ public interface ArtistService {
     Map<String, List<ArtistDTO>> searchArtistMap(@Nullable Long ifModifiedSince);
 
 
+
     ArtistAggDTO queryArtistWithAlbums(Long artistId);
 
     List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset);

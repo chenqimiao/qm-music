@@ -1,6 +1,5 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
@@ -106,7 +105,7 @@ public class SearchController {
         if (CollectionUtils.isNotEmpty(albums)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
                     .relationIds(albums.stream().map(SearchResult2Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
-            Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
+            Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             albums.forEach(album -> {
                 Long starredTimestamp = starredTimeMap.get(album.getId());
                 album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
@@ -116,7 +115,7 @@ public class SearchController {
         if (CollectionUtils.isNotEmpty(artists)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
                     .relationIds(artists.stream().map(SearchResult2Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
-            Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
+            Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             artists.forEach(artistItem -> {
                 Long starredTimestamp = starredTimeMap.get(artistItem.getId());
                 artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
@@ -173,7 +172,7 @@ public class SearchController {
         if (CollectionUtils.isNotEmpty(albums)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
                     .relationIds(albums.stream().map(SearchResult3Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
-            Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
+            Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             albums.forEach(album -> {
                 Long starredTimestamp = starredTimeMap.get(album.getId());
                 album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
@@ -183,7 +182,7 @@ public class SearchController {
         if (CollectionUtils.isNotEmpty(artists)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
                     .relationIds(artists.stream().map(SearchResult3Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
-            Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
+            Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             artists.forEach(artistItem -> {
                 Long starredTimestamp = starredTimeMap.get(artistItem.getId());
                 artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);

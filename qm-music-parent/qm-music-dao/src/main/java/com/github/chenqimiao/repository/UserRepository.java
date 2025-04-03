@@ -1,6 +1,5 @@
 package com.github.chenqimiao.repository;
 
-import com.github.chenqimiao.DO.ArtistDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,10 +40,10 @@ public class UserRepository {
     }
 
     @Nullable
-    public Integer findIdByUserName(String userName) {
+    public Long findIdByUserName(String userName) {
         String sql = "SELECT `id` FROM user WHERE `username` = ?";
         try{
-            return jdbcTemplate.queryForObject(sql, Integer.class, userName);
+            return jdbcTemplate.queryForObject(sql, Long.class, userName);
 
         }catch (EmptyResultDataAccessException exception) {
             return null;

@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,12 +128,15 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @SneakyThrows
     private void save(MusicMeta musicMeta, Path path) {
+        List<String> delimiters = Arrays.asList("&", "and", ",");
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
         List<ArtistDO> songArtists = new ArrayList<>();
         List<ArtistDO> albumArtists = new ArrayList<>();
         if (StringUtils.isNotBlank(musicMeta.getArtist())) {
-            songArtists = Arrays.stream(musicMeta.getArtist().split(","))
+            String delimiter = delimiters.stream().filter(n ->
+                    musicMeta.getArtist().contains(n)).findFirst().orElse(",");
+            songArtists = Arrays.stream(musicMeta.getArtist().split(delimiter))
                     .map(String::trim).distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
@@ -146,8 +150,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         }
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
-
-            albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(","))
+            String delimiter = delimiters.stream().filter(n ->
+                    musicMeta.getArtist().contains(n)).findFirst().orElse(",");
+            albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(delimiter))
                     .map(String::trim).distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
@@ -166,7 +171,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbum())) {
              albumDO = albumRepository.queryByUniqueKey(musicAlbumMeta.getAlbum());
 
-            if (albumDO ==null) {
+            if (albumDO == null) {
                 albumDO = new AlbumDO();
                 albumDO.setId(sequence.nextId());
                 albumDO.setTitle(musicAlbumMeta.getAlbum());
@@ -199,7 +204,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setSize(Files.size(path));
         songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear());
-        songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
+        int bitRate = NumberUtils.toInt(musicMeta.getBitRate());
+        songDO.setBit_rate(bitRate == 0 ? null : bitRate);
         songDO.setGenre(musicMeta.getGenre());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));

@@ -2,9 +2,12 @@ package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
+import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -30,11 +33,23 @@ public class MediaRetrievalController {
     @SneakyThrows
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
                                               @RequestParam(value = "size", required = false) Integer size) {
+        String[] split = id.split("-");
         CoverStreamDTO songCoverStreamDTO = null;
+
+        if (split.length <= 1 ) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+        }
+
+        long bizId = NumberUtils.toLong(split[1] , NumberUtils.LONG_ZERO);
+
+        if (bizId <= NumberUtils.LONG_ZERO) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+        }
+
         if (id.startsWith("al-")){
-            songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(Long.valueOf(id.replace("al-", "")), size);
+            songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
         }else if (id.startsWith("ar-")){
-            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(Long.valueOf(id.replace("ar-","")), size);
+            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
         }else {
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Long.valueOf(id), size);
         }

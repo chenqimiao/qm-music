@@ -37,7 +37,7 @@ public class ArtistRelationRepository {
             sqlSb.append(" and `type` = :type ");
         }
         if (params.get("relation_id") != null) {
-            sqlSb.append(" and `relation_id` =:relationId ");
+            sqlSb.append(" and `relation_id` = :relationId ");
         }
         if (params.get("offset") != null
                 && params.get("pageSize") != null) {
@@ -56,12 +56,12 @@ public class ArtistRelationRepository {
         }
         String sql = """
                 
-                    insert or ignore into artist_relation (artist_id, type, relation_id) 
+                    insert or ignore into artist_relation (artist_id, type, relation_id)
                     values (:artist_id, :type, :relation_id);
                 """;
         // 直接使用 BeanPropertySqlParameterSource 自动映射字段
         SqlParameterSource[] batchArgs = artistRelationDO.stream()
-                .map(user -> new BeanPropertySqlParameterSource(user))
+                .map(BeanPropertySqlParameterSource::new)
                 .toArray(SqlParameterSource[]::new);
         namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
 
@@ -85,12 +85,18 @@ public class ArtistRelationRepository {
 
         namedParameterJdbcTemplate.query(sql, params,
             rs -> {
-                result.put(rs.getLong("id"), rs.getInt("count"));
+                result.put(rs.getLong("artist_id"), rs.getInt("count"));
                 return result;
         });
 
          return result;
     }
 
+    public List<ArtistRelationDO> findByArtistIdAndType(Long artistId, Integer type) {
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
+        params.put("artist_id", artistId);
+        params.put("type", type);
+        return this.search(params);
+    }
 
 }

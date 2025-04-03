@@ -2,10 +2,11 @@ package com.github.chenqimiao.util;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Path;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.Set;
 
 /**
  * @author Qimiao Chen
@@ -13,6 +14,9 @@ import java.nio.file.attribute.FileTime;
  **/
 @Slf4j
 public abstract class FileUtils {
+
+    private static Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a");
+
     public static String getFileExtension(Path path) {
         String fileName = path.getFileName().toString();
         int lastDotIndex = fileName.lastIndexOf('.');
@@ -45,5 +49,11 @@ public abstract class FileUtils {
                    e.getMessage());
         }
         return System.currentTimeMillis();
+    }
+
+
+    public static boolean isVideo(Path path) {
+        String fileExtension = getFileExtension(path);
+        return audioExtensions.contains(fileExtension);
     }
 }

@@ -69,7 +69,7 @@ public class AlbumRepository {
 
     public AlbumDO queryByUniqueKey(String albumName) {
         String sql = """
-                        select * from album where `title` = :title
+                        select * from album where `title` = ?
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
@@ -82,7 +82,7 @@ public class AlbumRepository {
     public void save(AlbumDO albumDO) {
 
         String sql = """
-                    insert into album(`id`,`title`,`artist_id`, `release_year`,
+                    insert or ignore into album(`id`,`title`,`artist_id`, `release_year`,
                                       `genre`, `duration`, `artist_name`, `song_count`)
                     values( :id, :title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count);
                """;

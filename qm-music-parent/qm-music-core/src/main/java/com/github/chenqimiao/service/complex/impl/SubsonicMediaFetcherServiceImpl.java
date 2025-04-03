@@ -104,6 +104,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         try (var stream = Files.walk(root)) {
             stream.parallel(). // 启用并行流加速
                 filter(Files::isRegularFile) // 只保留普通文件
+                    .filter(FileUtils::isVideo) //仅扫描video
                     .forEach(path -> {
                         String filePath = path.toAbsolutePath().normalize().toString();
                         if (songSet.contains(filePath)) {

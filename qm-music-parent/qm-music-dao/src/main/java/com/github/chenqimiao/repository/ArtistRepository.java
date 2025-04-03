@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.DO.ArtistRelationDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -27,6 +25,7 @@ public class ArtistRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -150,7 +149,7 @@ public class ArtistRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("artistNames", artistNames);
 
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), params);
+        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ArtistDO.class));
 
     }
 

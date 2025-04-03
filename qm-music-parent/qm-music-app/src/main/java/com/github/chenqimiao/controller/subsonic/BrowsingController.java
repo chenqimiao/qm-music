@@ -111,7 +111,7 @@ public class BrowsingController {
         if (artistGroup.isEmpty()){
             return artistsResponse;
         }
-
+        // TODO count songCount and albumCount 
         List<ArtistsResponse.Index> indexes = new ArrayList<>();
         artistGroup.forEach((k,v) ->{
             List<ArtistsResponse.Artist> artists = v.stream().map(n ->

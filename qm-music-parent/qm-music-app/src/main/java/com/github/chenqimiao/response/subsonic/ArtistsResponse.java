@@ -55,5 +55,7 @@ public class ArtistsResponse extends SubsonicResponse {
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
         private Long albumCount;
+        @JacksonXmlProperty(isAttribute = true)
+        private Long songCount;
     }
 }

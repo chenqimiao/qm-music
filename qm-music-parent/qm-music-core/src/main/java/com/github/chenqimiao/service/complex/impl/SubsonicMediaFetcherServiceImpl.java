@@ -77,6 +77,51 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         stopWatch.start();
         List<SongDO> songs = songRepository.findAll();
 
+        List<Long> cleanedSongIds = this.cleanOutOfDateSongs(songs);
+
+        Set<String> standBySongSet = songs.stream().filter(song -> !cleanedSongIds.contains(song.getId()))
+                .map(SongDO::getFile_path).collect(Collectors.toSet());
+
+        this.traverseVideoFiles(rootPath, standBySongSet, songCount);
+
+        stopWatch.stop();
+        log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(TimeUnit.MILLISECONDS), songCount);
+    }
+
+    private void traverseVideoFiles(String rootPath, Set<String> standBySongSet, AtomicInteger songCount) {
+        Path root = Paths.get(rootPath); // 根目录
+
+        try (var stream = Files.walk(root)) {
+            stream.parallel(). // 启用并行流加速
+                filter(Files::isRegularFile) // 只保留普通文件
+                    .filter(FileUtils::isVideo) //仅扫描video
+                    .forEach(path -> {
+                        try{
+                            String filePath = path.toAbsolutePath().normalize().toString();
+                            if (standBySongSet.contains(filePath)) {
+                                return;
+                            }
+                            MusicMeta musicMeta = MusicFileReader.readMusicMeta(path.toFile());
+                            if (musicMeta == null) {
+                                return;
+                            }
+                            this.save(musicMeta, path);
+                            songCount.incrementAndGet();
+                        }catch (Exception e) {
+                            log.error("traverse file exception: {} ", path, e);
+                        }
+
+                    });
+        } catch (IOException e) {
+            log.error("io exception", e);
+        } catch (UncheckedIOException e) { // 处理并行流中可能抛出的未检查异常
+            log.error("unknown io exception", e);
+        } catch (Exception e) {
+            log.error("unknown  exception", e);
+        }
+    }
+
+    private List<Long> cleanOutOfDateSongs(List<SongDO> songs) {
         List<Long> toBeRemoveSongIds = songs.stream().filter(song -> {
             String filePath = song.getFile_path();
             Path path = Paths.get(filePath);
@@ -93,38 +138,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         if (CollectionUtils.isNotEmpty(toBeRemoveSongIds)) {
             songRepository.deleteByIds(toBeRemoveSongIds);
         }
-
-        Set<String> songSet = songs.stream().filter(song -> !toBeRemoveSongIds.contains(song.getId()))
-                .map(SongDO::getFile_path).collect(Collectors.toSet());
-
-//        Map<String, Integer> songMap= songs.stream().collect(Collectors.toMap(SongDO::getFile_path, SongDO::getId));
-
-        Path root = Paths.get(rootPath); // 根目录
-
-        try (var stream = Files.walk(root)) {
-            stream.parallel(). // 启用并行流加速
-                filter(Files::isRegularFile) // 只保留普通文件
-                    .filter(FileUtils::isVideo) //仅扫描video
-                    .forEach(path -> {
-                        String filePath = path.toAbsolutePath().normalize().toString();
-                        if (songSet.contains(filePath)) {
-                            return;
-                        }
-                        MusicMeta musicMeta = MusicFileReader.readMusicMeta(path.toFile());
-                        if (musicMeta == null) {
-                            return;
-                        }
-                        this.save(musicMeta, path);
-                        songCount.incrementAndGet();
-                    });
-        } catch (IOException e) {
-            log.error("文件遍历io异常", e);
-        } catch (UncheckedIOException e) { // 处理并行流中可能抛出的未检查异常
-            log.error("文件访问错误 ", e);
-        }
-
-        stopWatch.stop();
-        log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(TimeUnit.MILLISECONDS), songCount);
+        return toBeRemoveSongIds;
     }
 
     @SneakyThrows
@@ -205,7 +219,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setSize(Files.size(path));
         songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear());
-        int bitRate = NumberUtils.toInt(musicMeta.getBitRate());
+        int bitRate = NumberUtils.toInt(musicMeta.getBitRate(), NumberUtils.INTEGER_ZERO);
         songDO.setBit_rate(bitRate == 0 ? null : bitRate);
         songDO.setGenre(musicMeta.getGenre());
 

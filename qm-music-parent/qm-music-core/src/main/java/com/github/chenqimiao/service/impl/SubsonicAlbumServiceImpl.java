@@ -66,7 +66,7 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public List<AlbumDTO> queryByAlbumIds(List<Integer> albumIds) {
+    public List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Integer> albumIds) {
         if (CollectionUtils.isEmpty(albumIds)) {
             return new ArrayList<>();
         }

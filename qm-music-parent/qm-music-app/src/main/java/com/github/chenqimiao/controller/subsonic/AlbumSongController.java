@@ -3,32 +3,27 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
-import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
-import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
-import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
-import com.github.chenqimiao.service.complex.SongComplexService;
+import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -44,9 +39,14 @@ public class AlbumSongController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private MediaAnnotationService mediaRetrievalService;
+
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
+    @Autowired
+    private ResourcePatternResolver resourcePatternResolver;
 
 
     @GetMapping(value = "/getAlbumList2")
@@ -81,6 +81,28 @@ public class AlbumSongController {
         }
 
         return albumList2Response;
+    }
+
+    private static final Type TYPE_STAR_LIST_ALBUM = new TypeToken<List<StarredResponse.Album>>() {}.getType();
+    private static final Type TYPE_STAR_LIST_SONG = new TypeToken<List<StarredResponse.Song>>() {}.getType();
+    private static final Type TYPE_STAR_LIST_ARTIST = new TypeToken<List<StarredResponse.Artist>>() {}.getType();
+
+    @GetMapping("/getStarred")
+    public StarredResponse getStarred(@RequestParam(required = false) Long musicFolderId,
+                           HttpServletRequest servletRequest) {
+
+        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+
+        UserStarResourceDTO resource = mediaRetrievalService.getUserStarResourceDTO(authedUserId);
+
+        return new StarredResponse(StarredResponse.Starred
+                .builder()
+                .albums(modelMapper.map(resource.getAlbums(), TYPE_STAR_LIST_ALBUM))
+                .songs(modelMapper.map(resource.getSongs(), TYPE_STAR_LIST_SONG))
+                .artists( modelMapper.map(resource.getArtists(), TYPE_STAR_LIST_ARTIST))
+                .build());
+
+
     }
 }
 

@@ -20,7 +20,6 @@ CREATE TABLE artist (
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          name VARCHAR(255) NOT NULL UNIQUE,
                          first_letter VARCHAR(1) NOT NULL,
-                         country_code varCHAR(16),
                          cover_art varCHAR(16),
                          gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                          gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
@@ -40,12 +39,12 @@ END;
 CREATE TABLE album (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         title VARCHAR(255) NOT NULL,
-                        artist_id INTEGER NOT NULL,
+                        artist_id INTEGER,
                         release_year CHAR(4),
                         genre VARCHAR(50),
                         song_count INTEGER NOT NULL,
                         duration INTEGER NOT NULL,
-                        artist_name VARCHAR(128) NOT NULL,
+                        artist_name VARCHAR(128),
                         cover_art VARCHAR(128),
                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
@@ -70,8 +69,9 @@ CREATE TABLE song (
                        parent INTEGER ,
                        title VARCHAR(255) NOT NULL,
                        album_id INTEGER,
-                       artist_id INTEGER NOT NULL,
-                       artist_name varchar(32) NOT NULL,
+                       album_title varchar(64) ,
+                       artist_id INTEGER ,
+                       artist_name varchar(32) ,
                        size INTEGER NOT NULL,
                        suffix VARCHAR(16),
                        content_type VARCHAR(16),
@@ -157,7 +157,7 @@ CREATE TABLE user_star (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         user_id integer NOT NULL ,
                         star_type integer NOT NULL,
-                        relation_id INTEGER,
+                        relation_id INTEGER NOT NULL,
                         gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                         gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );

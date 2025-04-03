@@ -1,26 +1,12 @@
 package com.github.chenqimiao.service.complex;
 
-import com.github.chenqimiao.request.BatchStarInfoRequest;
-import com.github.chenqimiao.request.StarInfoRequest;
-import com.github.chenqimiao.request.StarOrNotRequest;
-
-import java.util.Map;
+import com.github.chenqimiao.dto.UserStarResourceDTO;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/2 17:38
+ * @since 2025/4/3 11:28
  **/
 public interface MediaAnnotationService {
 
-     void starOrNot(StarOrNotRequest starOrNotRequest);
-
-
-     boolean isStar(StarInfoRequest starInfoRequest);
-
-
-     Long starredTime(StarInfoRequest starInfoRequest);
-
-
-     Map<Integer, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest);
-
+    UserStarResourceDTO getUserStarResourceDTO(Integer userId);
 }

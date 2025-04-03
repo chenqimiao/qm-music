@@ -26,7 +26,7 @@ public interface ArtistService {
 
     Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId);
 
-    List<ArtistDTO> batchQueryArtist(List<Integer> artistIds);
+    List<ArtistDTO> batchQueryArtistByArtistIds(List<Integer> artistIds);
 
 
 }

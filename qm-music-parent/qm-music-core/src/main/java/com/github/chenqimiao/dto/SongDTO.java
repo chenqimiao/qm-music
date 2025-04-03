@@ -19,6 +19,8 @@ public class SongDTO {
 
     private Integer albumId;
 
+    private String albumTitle;
+
     private Integer artistId;
 
     private String artistName;

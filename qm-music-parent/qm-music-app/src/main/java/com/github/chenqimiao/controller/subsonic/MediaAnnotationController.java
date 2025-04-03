@@ -7,7 +7,7 @@ import com.github.chenqimiao.request.StarOrNotRequest;
 import com.github.chenqimiao.request.subsonic.StarRequest;
 import com.github.chenqimiao.request.subsonic.UnStarRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
-import com.github.chenqimiao.service.complex.MediaAnnotationService;
+import com.github.chenqimiao.service.UserStarService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MediaAnnotationController {
 
     @Autowired
-    private MediaAnnotationService mediaAnnotationService;
+    private UserStarService userStarService;
 
     @GetMapping("/star")
     public SubsonicPong star(StarRequest starRequest, HttpServletRequest servletRequest){
@@ -41,7 +41,7 @@ public class MediaAnnotationController {
                     .startType(EnumUserStarType.SONG)
                     .relationId(starRequest.getId())
                     .build();
-            mediaAnnotationService.starOrNot(request);
+            userStarService.starOrNot(request);
             return new SubsonicPong();
         }
 
@@ -50,9 +50,9 @@ public class MediaAnnotationController {
                     .userId(authedUserId)
                     .actionType(EnumStarActionType.STAR)
                     .startType(EnumUserStarType.ARTIST)
-                    .relationId(starRequest.getId())
+                    .relationId(starRequest.getArtistId())
                     .build();
-            mediaAnnotationService.starOrNot(request);
+            userStarService.starOrNot(request);
             return new SubsonicPong();
         }
 
@@ -61,9 +61,9 @@ public class MediaAnnotationController {
                     .userId(authedUserId)
                     .actionType(EnumStarActionType.STAR)
                     .startType(EnumUserStarType.ALBUM)
-                    .relationId(starRequest.getId())
+                    .relationId(starRequest.getAlbumId())
                     .build();
-           mediaAnnotationService.starOrNot(request);
+           userStarService.starOrNot(request);
            return new SubsonicPong();
         }
 
@@ -88,7 +88,7 @@ public class MediaAnnotationController {
                     .startType(EnumUserStarType.SONG)
                     .relationId(unStarRequest.getId())
                     .build();
-            mediaAnnotationService.starOrNot(request);
+            userStarService.starOrNot(request);
             return new SubsonicPong();
         }
 
@@ -99,7 +99,7 @@ public class MediaAnnotationController {
                     .startType(EnumUserStarType.ARTIST)
                     .relationId(unStarRequest.getId())
                     .build();
-            mediaAnnotationService.starOrNot(request);
+            userStarService.starOrNot(request);
             return new SubsonicPong();
         }
 
@@ -110,7 +110,7 @@ public class MediaAnnotationController {
                     .startType(EnumUserStarType.ALBUM)
                     .relationId(unStarRequest.getId())
                     .build();
-            mediaAnnotationService.starOrNot(request);
+            userStarService.starOrNot(request);
             return new SubsonicPong();
         }
 

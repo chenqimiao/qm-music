@@ -6,10 +6,12 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NameTokenizers;
+import org.modelmapper.internal.util.Assert;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 
 /**
@@ -32,17 +34,54 @@ public class ModelMapperConfig {
     private final Converter<Long, Date> longToDateConverter = new AbstractConverter<>() {
         @Override
         protected Date convert(Long timestamp) {
-            if (timestamp == null) {return null;}
+            if (timestamp == null) {
+                return null;
+            }
             return new Date(timestamp);
         }
     };
+
+
+    public static class NullSafeModelMapper extends ModelMapper {
+
+        public <D> D map(Object source, Class<D> destinationType) {
+            if (source == null) return null;
+            return super.map(source, destinationType);
+        }
+
+        public <D> D map(Object source, Class<D> destinationType, String typeMapName) {
+            if (source == null) return null;
+            return super.map(source, destinationType, typeMapName);
+        }
+
+        public void map(Object source, Object destination) {
+            if (source == null) return;
+            super.map(source, destination);
+        }
+
+        public void map(Object source, Object destination, String typeMapName) {
+            if (source == null) return;
+            super.map(source, destination, typeMapName);
+        }
+
+        public <D> D map(Object source, Type destinationType) {
+            if (source == null) return null;
+
+            return super.map(source, destinationType);
+        }
+
+        public <D> D map(Object source, Type destinationType, String typeMapName) {
+           if (source == null) return null;
+           return super.map(source, destinationType, typeMapName);
+        }
+    }
 
     @Bean
     @Primary
     public ModelMapper modelMapper() {
 
 
-        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new NullSafeModelMapper();
 
         // @see http://modelmapper.org/user-manual/configuration/
 
@@ -63,7 +102,7 @@ public class ModelMapperConfig {
     public ModelMapper ucModelMapper() {
 
 
-        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new NullSafeModelMapper();
 
         modelMapper.getConfiguration().setFullTypeMatchingRequired(true);
 
@@ -81,7 +120,7 @@ public class ModelMapperConfig {
     public ModelMapper cuModelMapper() {
 
 
-        ModelMapper modelMapper = new ModelMapper();
+        ModelMapper modelMapper = new NullSafeModelMapper();
 
         modelMapper.getConfiguration().setFullTypeMatchingRequired(true);
 

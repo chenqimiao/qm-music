@@ -85,7 +85,7 @@ public class SubsonicSongServiceImpl implements SongService {
     }
 
     @Override
-    public List<SongDTO> batchQuerySongs(List<Integer> songIds) {
+    public List<SongDTO> batchQuerySongBySongIds(List<Integer> songIds) {
         if (CollectionUtils.isEmpty(songIds)) {
             return new ArrayList<>();
         }

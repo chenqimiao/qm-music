@@ -20,7 +20,7 @@ public interface SongService {
 
     SongDTO queryBySongId(Integer songId);
 
-    List<SongDTO> batchQuerySongs(List<Integer> songIds);
+    List<SongDTO> batchQuerySongBySongIds(List<Integer> songIds);
 
 
     List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset);

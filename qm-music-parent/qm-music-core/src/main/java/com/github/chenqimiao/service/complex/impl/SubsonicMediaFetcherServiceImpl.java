@@ -177,6 +177,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setParent(1);
         songDO.setTitle(musicMeta.getTitle());
         songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(null));
+        songDO.setAlbum_Title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));
         songDO.setArtist_id(Optional.ofNullable(songArtist).map(ArtistDO::getId).orElse(null));
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));

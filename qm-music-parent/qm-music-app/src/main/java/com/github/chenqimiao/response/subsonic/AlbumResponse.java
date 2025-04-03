@@ -100,7 +100,8 @@ public class AlbumResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String contentType;
         @JacksonXmlProperty(isAttribute = true)
-        private Boolean isVideo;
+        @Builder.Default
+        private Boolean isVideo = Boolean.FALSE;
         @JacksonXmlProperty(isAttribute = true, localName = "path")
         @JSONField(name = "path")
         private String filePath;
@@ -109,7 +110,8 @@ public class AlbumResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer artistId;
         @JacksonXmlProperty(isAttribute = true)
-        private String type;
+        @Builder.Default
+        private String type = "music";
 
     }
 }

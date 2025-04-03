@@ -12,8 +12,6 @@ import lombok.Setter;
 public class ComplexSongDTO extends SongDTO {
 
 
-    private String albumTitle;
-
     private Long starred;
 
     private Boolean isStar;

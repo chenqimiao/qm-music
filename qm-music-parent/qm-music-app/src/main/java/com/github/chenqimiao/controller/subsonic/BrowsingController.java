@@ -10,7 +10,7 @@ import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
 import com.github.chenqimiao.service.SongService;
-import com.github.chenqimiao.service.complex.MediaAnnotationService;
+import com.github.chenqimiao.service.UserStarService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -38,7 +38,7 @@ public class BrowsingController {
     private GenreService genreService;
 
     @Autowired
-    private MediaAnnotationService mediaAnnotationService;
+    private UserStarService userStarService;
 
     @Autowired
     private SongService songService;
@@ -68,7 +68,7 @@ public class BrowsingController {
 
         BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder()
                         .userId(authedUserId).relationIds(artistIds).startType(EnumUserStarType.ARTIST).build();
-        Map<Integer, Long> starredTimeMap = mediaAnnotationService.batchQueryStarredTime(batchStarInfoRequest);
+        Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
 
         artistMap.forEach((key, value) -> {
             ArtistIndexResponse.Index idx = new ArtistIndexResponse.Index();
@@ -170,10 +170,7 @@ public class BrowsingController {
             SongDTO song = songAggDTO.getSong();
             AlbumResponse.Song s = modelMapper.map(song, AlbumResponse.Song.class);
             s.setArtistName(songAggDTO.getArtistName());
-            s.setType("music");
             s.setAlbumTitle(albumDTO.getTitle());
-            s.setIsDir(Boolean.FALSE);
-            s.setIsVideo(false);
             return s;
         }).collect(Collectors.toList());
         album.setSongs(songList);

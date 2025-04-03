@@ -13,7 +13,6 @@ public class ArtistDO {
     private Integer id;
     private String name;
     private String first_letter;
-    private String country_code;
     private Long gmt_create;
     private Long gmt_modify;
     private String cover_art;

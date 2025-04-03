@@ -15,6 +15,7 @@ public class SongDO {
     private Integer parent;
     private String title;
     private Integer album_id;
+    private String album_Title;
     private Integer artist_id;
     private Integer duration;
     private String suffix;

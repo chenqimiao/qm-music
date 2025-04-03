@@ -4,6 +4,7 @@ import com.github.chenqimiao.DO.UserStarDO;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -106,6 +107,19 @@ public class UserStarRepository {
         });
 
         return result;
+
+    }
+
+    public List<UserStarDO> queryUserStarByUserId(Integer userId) {
+        var sql = """
+                    select * from user_star where
+                    user_id = :user_id;
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("user_id", userId);
+
+
+        return namedParameterJdbcTemplate.query(sql, param, new BeanPropertyRowMapper<> (UserStarDO.class));
 
     }
 }

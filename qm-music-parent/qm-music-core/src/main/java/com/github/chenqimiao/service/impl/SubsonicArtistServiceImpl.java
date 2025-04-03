@@ -84,7 +84,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<ArtistDTO> batchQueryArtist(List<Integer> artistIds) {
+    public List<ArtistDTO> batchQueryArtistByArtistIds(List<Integer> artistIds) {
         if (CollectionUtils.isEmpty(artistIds)) {
             return new ArrayList<>();
         }

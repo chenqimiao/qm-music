@@ -1,28 +1,36 @@
-package com.github.chenqimiao.service.complex.impl;
+package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.UserStarDO;
+import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.dto.UserStarDTO;
 import com.github.chenqimiao.enums.EnumStarActionType;
 
 import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.StarInfoRequest;
 import com.github.chenqimiao.request.StarOrNotRequest;
-import com.github.chenqimiao.service.complex.MediaAnnotationService;
+import com.github.chenqimiao.service.UserStarService;
+import jakarta.annotation.Resource;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author Qimiao Chen
  * @since 2025/4/2 17:38
  **/
-@Service("subsonicMediaAnnotationServiceImpl")
-public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationService {
+@Service("subsonicUserStarServiceImpl")
+public class SubsonicUserStarServiceImpl implements UserStarService {
 
 
     @Autowired
     private UserStarRepository userStarRepository;
+
+    @Resource
+    private ModelMapper ucModelMapper;
 
     @Override
     public void starOrNot(StarOrNotRequest starOrNotRequest) {
@@ -55,6 +63,12 @@ public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationServic
         return  userStarRepository.batchQueryStarredTimeByUniqueKeys(batchStarInfoRequest.getUserId()
                 , batchStarInfoRequest.getStartType().getCode()
                 , batchStarInfoRequest.getRelationIds());
+    }
+
+    @Override
+    public List<UserStarDTO> queryUserStarByUserId(Integer userId) {
+        List<UserStarDO> userStars = userStarRepository.queryUserStarByUserId(userId);
+        return ucModelMapper.map(userStars, ModelMapperTypeConfig.TYPE_LIST_USER_STAR_DTO);
     }
 
     private void doUnStar(StarOrNotRequest starOrNotRequest) {

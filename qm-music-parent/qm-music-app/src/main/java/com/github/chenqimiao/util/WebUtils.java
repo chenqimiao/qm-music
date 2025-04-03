@@ -2,6 +2,8 @@ package com.github.chenqimiao.util;
 
 import com.github.chenqimiao.constant.ServerConstants;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * @author Qimiao Chen
@@ -9,7 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
  **/
 public abstract class WebUtils {
 
-    public static Long  currentUserId(HttpServletRequest request) {
+    public static Long currentUserId(HttpServletRequest request) {
         return  (Long) request.getAttribute(ServerConstants.AUTHED_USER_ID);
+    }
+
+
+    public static Long currentUserId() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return currentUserId(request);
     }
 }

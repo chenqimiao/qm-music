@@ -3,7 +3,7 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
@@ -75,7 +75,7 @@ public class SubsonicSongServiceImpl implements SongService {
     @Override
     public List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset) {
         List<SongDO> songs = songRepository.searchByTitle(songTitle, pageSize, offset);
-        return ucModelMapper.map(songs, ModelMapperTypeConfig.TYPE_LIST_SONG_DTO);
+        return ucModelMapper.map(songs, ModelMapperTypeConstants.TYPE_LIST_SONG_DTO);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class SubsonicSongServiceImpl implements SongService {
             return new ArrayList<>();
         }
         List<SongDO> songList = songRepository.findByIds(songIds);
-        return ucModelMapper.map(songList, ModelMapperTypeConfig.TYPE_LIST_SONG_DTO);
+        return ucModelMapper.map(songList, ModelMapperTypeConstants.TYPE_LIST_SONG_DTO);
     }
 
     @Override

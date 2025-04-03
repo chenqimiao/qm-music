@@ -1,16 +1,14 @@
 package com.github.chenqimiao.repository;
 
-import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-
 
 import java.util.List;
 import java.util.Map;
@@ -68,5 +66,31 @@ public class ArtistRelationRepository {
         namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
 
     }
+
+
+    public Map<Long, Integer> countByArtistIdsAndType(List<Long> artistIds, Integer type) {
+
+        String sql = """
+                
+                    select artist_id, count(id) as count  from artist_relation
+                        where artist_id in (:artist_ids) and `type` = :type
+                        group by artist_id
+                    
+                """;
+        Map<String, Object> params = Maps.newLinkedHashMapWithExpectedSize(2);
+        params.put("artist_ids", artistIds);
+        params.put("type", type);
+
+        Map<Long, Integer> result = Maps.newLinkedHashMapWithExpectedSize(artistIds.size());
+
+        namedParameterJdbcTemplate.query(sql, params,
+            rs -> {
+                result.put(rs.getLong("id"), rs.getInt("count"));
+                return result;
+        });
+
+         return result;
+    }
+
 
 }

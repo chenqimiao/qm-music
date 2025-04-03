@@ -1,7 +1,7 @@
 package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.UserStarDO;
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.UserStarDTO;
 import com.github.chenqimiao.enums.EnumStarActionType;
 
@@ -59,7 +59,7 @@ public class SubsonicUserStarServiceImpl implements UserStarService {
     }
 
     @Override
-    public Map<Integer, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest) {
+    public Map<Long, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest) {
         return  userStarRepository.batchQueryStarredTimeByUniqueKeys(batchStarInfoRequest.getUserId()
                 , batchStarInfoRequest.getStartType().getCode()
                 , batchStarInfoRequest.getRelationIds());
@@ -68,7 +68,7 @@ public class SubsonicUserStarServiceImpl implements UserStarService {
     @Override
     public List<UserStarDTO> queryUserStarByUserId(Long userId) {
         List<UserStarDO> userStars = userStarRepository.queryUserStarByUserId(userId);
-        return ucModelMapper.map(userStars, ModelMapperTypeConfig.TYPE_LIST_USER_STAR_DTO);
+        return ucModelMapper.map(userStars, ModelMapperTypeConstants.TYPE_LIST_USER_STAR_DTO);
     }
 
     private void doUnStar(StarOrNotRequest starOrNotRequest) {

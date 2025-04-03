@@ -1,6 +1,6 @@
 package com.github.chenqimiao.service.complex.impl;
 
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.service.AlbumService;
@@ -68,11 +68,11 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
 
         List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(artistIds);
 
-        List<SongWithStarDTO> songWithStars = modelMapper.map(songs, ModelMapperTypeConfig.TYPE_LIST_SONG_WITH_STAR_DTO);
+        List<SongWithStarDTO> songWithStars = modelMapper.map(songs, ModelMapperTypeConstants.TYPE_LIST_SONG_WITH_STAR_DTO);
 
-        List<AlbumWithStarDTO> albumWithStars = modelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_WITH_STAR_DTO);
+        List<AlbumWithStarDTO> albumWithStars = modelMapper.map(albums, ModelMapperTypeConstants.TYPE_LIST_ALBUM_WITH_STAR_DTO);
 
-        List<ArtistWithStarDTO> artistWithStars = modelMapper.map(artists, ModelMapperTypeConfig.TYPE_LIST_ARTIST_WITH_STAR_DTO);
+        List<ArtistWithStarDTO> artistWithStars = modelMapper.map(artists, ModelMapperTypeConstants.TYPE_LIST_ARTIST_WITH_STAR_DTO);
 
         songWithStars.forEach(n -> {
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.SONG.getCode(), n.getId()));

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -119,17 +118,7 @@ public class SongRepository {
     }
 
     public void save(SongDO songDO) {
-        String sql =  """
-                        insert into song(id, parent, title, album_id, artist_id,
-                                         artist_name, size, suffix, content_type,
-                                         year, duration, bit_rate,file_path,
-                                         file_hash, file_last_modified, genre, track)
-                          values(:id, :parent, :title, :album_id, :artist_id,
-                                 :artist_name, :size, :suffix, :content_type, :year,
-                                 :duration, :bit_rate, :file_path, :file_hash,
-                                 :file_last_modified,:genre, :track)
-                     """;
-                namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
+
     }
 
 
@@ -201,5 +190,8 @@ public class SongRepository {
 
 
         return namedParameterJdbcTemplate.queryForList(sqlSb.toString(), params, Long.class);
+    }
+
+    public void saveAndReturn(SongDO songDO) {
     }
 }

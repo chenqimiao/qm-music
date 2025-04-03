@@ -1,7 +1,7 @@
 package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
@@ -56,13 +56,13 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
 
 
         List<AlbumDO> albumList = albumRepository.searchAlbumList(stringBuilder.toString());
-        return ucModelMapper.map(albumList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+        return ucModelMapper.map(albumList, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO);
     }
 
     @Override
     public List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) {
         List<AlbumDO> albums = albumRepository.searchByTitle(albumName, pageSize, offset);
-        return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+        return ucModelMapper.map(albums, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
             return new ArrayList<>();
         }
         List<AlbumDO> albums = albumRepository.queryByIds(albumIds);
-        return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
+        return ucModelMapper.map(albums, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO);
 
     }
 

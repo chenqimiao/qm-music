@@ -86,7 +86,7 @@ public class UserStarRepository {
         }
     }
 
-    public Map<Integer, Long> batchQueryStarredTimeByUniqueKeys(Long userId, Integer starType,
+    public Map<Long, Long> batchQueryStarredTimeByUniqueKeys(Long userId, Integer starType,
                                                                 List<Long> relationIds) {
         var sql = """
                     select gmt_create, relation_id from user_star where
@@ -98,11 +98,11 @@ public class UserStarRepository {
         param.put("user_id", userId);
         param.put("star_type", starType);
         param.put("relation_ids", relationIds);
-        Map<Integer, Long> result = Maps.newHashMapWithExpectedSize(relationIds.size());
+        Map<Long, Long> result = Maps.newHashMapWithExpectedSize(relationIds.size());
 
         namedParameterJdbcTemplate.query(sql, param, rs -> {
             long gmtCreate = rs.getLong("gmt_create");
-            Integer relationId = rs.getInt("relation_id");
+            Long relationId = rs.getLong("relation_id");
             result.put(relationId, gmtCreate);
         });
 

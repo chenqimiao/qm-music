@@ -15,7 +15,6 @@ import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
 import com.github.chenqimiao.util.MD5Utils;
 import io.github.mocreates.Sequence;
-import io.github.mocreates.config.SequenceConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,7 +23,9 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -33,9 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.io.IOException;
-import java.nio.file.*;
-import java.io.UncheckedIOException;
 import java.util.stream.Collectors;
 
 /**
@@ -144,7 +142,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         return artistDO;
                     }).toList();
 
-            artistRepository.save(songArtists);
+            songArtists = artistRepository.saveAndReturn(songArtists);
         }
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
@@ -159,14 +157,14 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         return artistDO;
                     }).toList();
 
-             artistRepository.save(albumArtists);
+            albumArtists = artistRepository.saveAndReturn(albumArtists);
 
         }
 
 
         AlbumDO albumDO = null;
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbum())) {
-             albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
+             albumDO = albumRepository.queryByUniqueKey(musicAlbumMeta.getAlbum());
 
             if (albumDO ==null) {
                 albumDO = new AlbumDO();
@@ -179,7 +177,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                 albumDO.setSong_count(0);
                 albumDO.setDuration(1234);
                 albumDO.setArtist_name(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getName(): null);
-                albumRepository.save(albumDO);
+                albumDO = albumRepository.saveAndReturn(albumDO);
             }
         }
 

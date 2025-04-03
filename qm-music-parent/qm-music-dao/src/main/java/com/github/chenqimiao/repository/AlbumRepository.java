@@ -67,7 +67,7 @@ public class AlbumRepository {
         return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
     }
 
-    public AlbumDO queryByName(String albumName) {
+    public AlbumDO queryByUniqueKey(String albumName) {
         String sql = """
                         select * from album where `title` = :title
                      """;
@@ -116,5 +116,12 @@ public class AlbumRepository {
 
         return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
 
+    }
+
+    public AlbumDO saveAndReturn(AlbumDO albumDO) {
+
+        this.save(albumDO);
+
+        return this.queryByUniqueKey(albumDO.getTitle());
     }
 }

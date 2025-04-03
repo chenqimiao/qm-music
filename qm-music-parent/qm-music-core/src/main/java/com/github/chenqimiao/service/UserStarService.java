@@ -23,7 +23,7 @@ public interface UserStarService {
      Long starredTime(StarInfoRequest starInfoRequest);
 
 
-     Map<Integer, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest);
+     Map<Long, Long> batchQueryStarredTime(BatchStarInfoRequest batchStarInfoRequest);
 
 
      List<UserStarDTO> queryUserStarByUserId(Long userId);

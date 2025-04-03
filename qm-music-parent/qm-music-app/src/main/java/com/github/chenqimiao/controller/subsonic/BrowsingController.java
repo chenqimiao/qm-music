@@ -12,6 +12,7 @@ import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.service.complex.ArtistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
@@ -53,6 +54,9 @@ public class BrowsingController {
     @Autowired
     private SongComplexService songComplexService;
 
+    @Autowired
+    private ArtistComplexService artistComplexService;
+
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
 
@@ -74,7 +78,7 @@ public class BrowsingController {
         Long authedUserId = WebUtils.currentUserId(servletRequest);
         BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder()
                         .userId(authedUserId).relationIds(artistIds).startType(EnumUserStarType.ARTIST).build();
-        Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
+        Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
 
         artistMap.forEach((key, value) -> {
             ArtistIndexResponse.Index idx = new ArtistIndexResponse.Index();
@@ -111,16 +115,25 @@ public class BrowsingController {
         if (artistGroup.isEmpty()){
             return artistsResponse;
         }
-        // TODO count songCount and albumCount 
+        List<Long> artistIds = artistGroup.values().stream().flatMap(List::stream).map(ArtistDTO::getId).toList();
+        List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, WebUtils.currentUserId());
+        Map<Long, ComplexArtistDTO> complexArtistMap = complexArtists.stream().collect(Collectors.toMap(ComplexArtistDTO::getId, n -> n));
         List<ArtistsResponse.Index> indexes = new ArrayList<>();
         artistGroup.forEach((k,v) ->{
-            List<ArtistsResponse.Artist> artists = v.stream().map(n ->
-                    ArtistsResponse.Artist
-                    .builder()
-                    .id(n.getId())
-                    .name(n.getName())
-                    .coverArt(n.getCoverArt())
-                    .build()).collect(Collectors.toList());
+
+            List<ArtistsResponse.Artist> artists = v.stream().map(n -> {
+                ComplexArtistDTO complexArtistDTO = complexArtistMap.get(n.getId());
+                return ArtistsResponse.Artist
+                                .builder()
+                                .id(n.getId())
+                                .name(n.getName())
+                                .coverArt(n.getCoverArt())
+                        .albumCount(complexArtistDTO.getAlbumCount())
+                        .albumCount(complexArtistDTO.getAlbumCount())
+                        .starred(modelMapper.map(complexArtistDTO.getStarred(), Date.class))
+                        .build();
+
+            }).collect(Collectors.toList());
 
             ArtistsResponse.Index index = ArtistsResponse.Index
                     .builder()

@@ -2,7 +2,7 @@ package com.github.chenqimiao.service.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.config.ModelMapperTypeConfig;
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
@@ -46,7 +46,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
             artistList = artistRepository.findArtistGtUpdateTime(ifModifiedSince);
         }
 
-        return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+        return ucModelMapper.map(artistList, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
     }
 
     @Override
@@ -64,14 +64,14 @@ public class SubsonicArtistServiceImpl implements ArtistService {
         List<AlbumDO> albumDOList = albumRepository.findByArtistId(artistId);
         return ArtistAggDTO.builder()
                 .artist(artistDTO)
-                .albumList(ucModelMapper.map(albumDOList, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO))
+                .albumList(ucModelMapper.map(albumDOList, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO))
                 .build();
     }
 
     @Override
     public List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset) {
         List<ArtistDO> artistDOS = artistRepository.searchByName(artistName, pageSize, offset);
-        return ucModelMapper.map(artistDOS, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+        return ucModelMapper.map(artistDOS, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
         if (CollectionUtils.isEmpty(artistList)) {
             return Collections.EMPTY_MAP;
         }
-        List<ArtistDTO> artists = ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+        List<ArtistDTO> artists = ucModelMapper.map(artistList, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
         return artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter, TreeMap::new, Collectors.toList()));
     }
 
@@ -92,7 +92,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
             return new ArrayList<>();
         }
         List<ArtistDO> artistList = artistRepository.findByIds(artistIds);
-        return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
+        return ucModelMapper.map(artistList, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
     }
 
 }

@@ -1,10 +1,16 @@
 package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import lombok.*;
+import com.github.chenqimiao.util.DateTimeUtils;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,8 +60,12 @@ public class ArtistsResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
-        private Long albumCount;
+        private Integer albumCount;
         @JacksonXmlProperty(isAttribute = true)
-        private Long songCount;
+        private Integer songCount;
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = DateTimeUtils.yyyyMMddTHHmmss) // jackson xml or json format
+        @DateTimeFormat(pattern = DateTimeUtils.yyyyMMddTHHmmss) // fastjson2 json format
+        private Date starred;
     }
 }

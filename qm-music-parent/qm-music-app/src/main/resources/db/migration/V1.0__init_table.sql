@@ -17,7 +17,7 @@ END;
 
 -- 艺术家表（高频查询场景：按名称搜索）
 CREATE TABLE artist (
-                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         id INTEGER PRIMARY KEY ,
                          name VARCHAR(255) NOT NULL UNIQUE,
                          first_letter VARCHAR(1) NOT NULL,
                          cover_art varCHAR(16),
@@ -38,7 +38,7 @@ END;
 
 -- 专辑表（Subsonic API常用过滤：年份/流派）
 CREATE TABLE album (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        id INTEGER PRIMARY KEY,
                         title VARCHAR(255) NOT NULL,
                         artist_id INTEGER,
                         release_year CHAR(4),
@@ -66,7 +66,7 @@ END;
 
 -- 歌曲表（核心表，结合Subsonic高频访问场景）
 CREATE TABLE song (
-                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       id INTEGER PRIMARY KEY,
                        parent INTEGER ,
                        title VARCHAR(255) NOT NULL,
                        album_id INTEGER,

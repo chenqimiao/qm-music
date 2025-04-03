@@ -189,6 +189,9 @@ public class SongRepository {
             sqlSb.append(" and `genre` like :similarGenre ");
             params.put("similarGenre", "%" + params.get("similarGenre") + "%");
         }
+        if (params.get("genre") != null) {
+            sqlSb.append(" and `genre` = :genre ");
+        }
 
         if (Boolean.TRUE.equals(params.get("isRandom")))  {
             sqlSb.append(" ORDER BY RANDOM() ");

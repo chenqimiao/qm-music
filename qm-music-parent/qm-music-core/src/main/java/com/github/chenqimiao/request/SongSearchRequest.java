@@ -22,4 +22,6 @@ public class SongSearchRequest extends PageRequest{
     private Boolean isRandom;
 
     private String similarGenre;
+
+    private String genre;
 }

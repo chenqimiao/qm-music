@@ -110,6 +110,7 @@ public class SubsonicSongServiceImpl implements SongService {
         params.put("pageSize", searchRequest.getPageSize());
         params.put("similarGenre", searchRequest.getSimilarGenre());
         params.put("isRandom", Boolean.TRUE.equals(searchRequest.getIsRandom()));
+        params.put("genre", searchRequest.getGenre());
         return songRepository.search(params);
     }
 }

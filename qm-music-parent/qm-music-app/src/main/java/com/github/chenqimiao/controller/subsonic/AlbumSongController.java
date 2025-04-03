@@ -1,18 +1,19 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.dto.*;
+import com.github.chenqimiao.dto.AlbumDTO;
+import com.github.chenqimiao.dto.ComplexSongDTO;
+import com.github.chenqimiao.dto.UserStarResourceDTO;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.request.SongSearchRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
 import com.github.chenqimiao.request.subsonic.RandomSongsRequest;
+import com.github.chenqimiao.request.subsonic.SongsByGenreRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
-import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +50,9 @@ public class AlbumSongController {
 
     @Autowired
     private SongService songService;
+
+    @Autowired
+    private SongComplexService complexSongService;
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
@@ -120,7 +123,7 @@ public class AlbumSongController {
 
     private static final Type TYPE_LIST_RANDOM_SONG = new TypeToken<List<RandSongsResponse.Song>>() {}.getType();
 
-    @GetMapping("getRandomSongs")
+    @GetMapping("/getRandomSongs")
     public RandSongsResponse getRandomSongs(RandomSongsRequest request, HttpServletRequest servletRequest) {
         SongSearchRequest searchRequest = new SongSearchRequest();
         searchRequest.setToYear(request.getToYear());
@@ -139,5 +142,29 @@ public class AlbumSongController {
         RandSongsResponse.RandomSongs randomSongs = RandSongsResponse.RandomSongs.builder().songs(modelMapper.map(complexSongs, TYPE_LIST_RANDOM_SONG)).build();
         return new RandSongsResponse(randomSongs);
     }
+
+    private static final Type c = new TypeToken<List<SongsByGenreResponse.Song>>() {}.getType();
+
+
+    @GetMapping("/getSongsByGenre")
+    public SongsByGenreResponse getSongsByGenre(SongsByGenreRequest songsByGenreRequest) {
+        String genre = songsByGenreRequest.getGenre();
+        if (StringUtils.isBlank(genre)) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_0);
+        }
+        SongSearchRequest searchRequest = new SongSearchRequest();
+        searchRequest.setOffset(songsByGenreRequest.getOffset());
+        searchRequest.setPageSize(songsByGenreRequest.getCount());
+        searchRequest.setGenre(songsByGenreRequest.getGenre());
+        List<Long> songIds = songService.search(searchRequest);
+        if (CollectionUtils.isEmpty(songIds)) {
+            return new SongsByGenreResponse();
+        }
+        List<ComplexSongDTO> complexSongs = complexSongService.queryBySongIds(songIds, WebUtils.currentUserId());
+
+        SongsByGenreResponse.SongsByGenre songsByGenre = SongsByGenreResponse.SongsByGenre.builder().songs(modelMapper.map(complexSongs, TYPE_LIST_RANDOM_SONG)).build();
+        return new SongsByGenreResponse(songsByGenre);
+    }
+
 }
 

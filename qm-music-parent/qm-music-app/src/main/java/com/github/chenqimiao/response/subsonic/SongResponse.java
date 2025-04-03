@@ -71,7 +71,7 @@ public class SongResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         // mock: 私人乐库喜欢才收藏
-        private Integer rating = 5;
+        private Integer userRating = 5;
 
         @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format

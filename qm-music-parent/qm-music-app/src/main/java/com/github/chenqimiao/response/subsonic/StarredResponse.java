@@ -163,6 +163,9 @@ public class StarredResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private String mediaType = "song";
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 
 }

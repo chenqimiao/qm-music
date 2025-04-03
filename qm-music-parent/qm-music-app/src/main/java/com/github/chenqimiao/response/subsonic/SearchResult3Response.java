@@ -18,6 +18,7 @@ import java.util.List;
 
 @Setter
 @Getter
+@Builder
 public class SearchResult3Response extends SubsonicResponse {
 
     private SearchResult3 searchResult3;
@@ -100,7 +101,8 @@ public class SearchResult3Response extends SubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Boolean isDir;
+        @Builder.Default
+        private Boolean isDir = Boolean.FALSE;
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true, localName = "created")
@@ -119,7 +121,8 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String contentType;
         @JacksonXmlProperty(isAttribute = true)
-        private Boolean isVideo;
+        @Builder.Default
+        private Boolean isVideo = Boolean.FALSE;
         @JacksonXmlProperty(isAttribute = true, localName = "path")
         @JSONField(name = "path")
         private String filePath;
@@ -128,7 +131,8 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer artistId;
         @JacksonXmlProperty(isAttribute = true)
-        private String type;
+        @Builder.Default
+        private String type = "music";
         @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -140,10 +144,14 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String genre;
 
-
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private String sortName ="";
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private String mediaType = "song";
 
     }
-
     @Getter
     @Setter
     @Builder

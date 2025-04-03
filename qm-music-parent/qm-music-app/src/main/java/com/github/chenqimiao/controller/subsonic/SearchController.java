@@ -161,9 +161,7 @@ public class SearchController {
 
         SearchResult3Response.SearchResult3 searchResult3 = builder.build();
         this.wrapStarredTime(searchResult3, authedUserId);
-        SearchResult3Response response = new SearchResult3Response();
-        response.setSearchResult3(searchResult3);
-        return response;
+        return SearchResult3Response.builder().searchResult3(searchResult3).build();
 
     }
 

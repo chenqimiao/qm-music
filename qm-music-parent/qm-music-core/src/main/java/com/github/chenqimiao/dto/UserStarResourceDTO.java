@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class UserStarResourceDTO {
 
-    private Integer userId;
+    private Long userId;
 
     private List<AlbumWithStarDTO> albums;
 

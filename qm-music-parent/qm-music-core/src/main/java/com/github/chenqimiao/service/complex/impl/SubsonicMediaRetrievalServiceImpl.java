@@ -49,7 +49,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private ArtistRepository artistRepository;
 
     @Override
-    public CoverStreamDTO getSongCoverStreamDTO(Integer songId, Integer size) {
+    public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
         List<Artwork> artworks = this.getSongArtworks(songId);
 
         if (CollectionUtils.isEmpty(artworks)) {
@@ -93,7 +93,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     }
 
 
-    private List<Artwork> getSongArtworks(Integer songId) {
+    private List<Artwork> getSongArtworks(Long songId) {
         SongDO songDO = songRepository.findBySongId(songId);
         String filePath = songDO.getFile_path();
         MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
@@ -106,7 +106,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     }
 
     @Override
-    public CoverStreamDTO getAlbumCoverStreamDTO(Integer albumId, Integer size) {
+    public CoverStreamDTO getAlbumCoverStreamDTO(Long albumId, Integer size) {
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
         // fallback
         Artwork fallback = null;
@@ -147,7 +147,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
 
     @Override
-    public CoverStreamDTO getArtistCoverStreamDTO(Integer artistId, Integer size) {
+    public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
         List<SongDO> songs = songRepository.findByArtistId(artistId);
         // fallback
         Artwork fallback = null;
@@ -221,7 +221,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     @SneakyThrows
-    public SongStreamDTO getSongStream(Integer songId,
+    public SongStreamDTO getSongStream(Long songId,
                                        Integer maxBitRate,
                                        String format,
                                        Integer estimateContentLength) {

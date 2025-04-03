@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Getter
 public class StarRequest {
 
-    private Integer id;
-    private Integer albumId;
-    private Integer artistId;
+    private Long id;
+    private Long albumId;
+    private Long artistId;
 }

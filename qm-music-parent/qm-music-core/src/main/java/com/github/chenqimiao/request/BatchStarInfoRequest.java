@@ -18,8 +18,8 @@ public class BatchStarInfoRequest {
 
     private EnumUserStarType startType;
 
-    private Integer userId;
+    private Long userId;
 
-    private List<Integer> relationIds;
+    private List<Long> relationIds;
 
 }

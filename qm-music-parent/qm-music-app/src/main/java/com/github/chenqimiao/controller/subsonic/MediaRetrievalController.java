@@ -32,11 +32,11 @@ public class MediaRetrievalController {
                                               @RequestParam(value = "size", required = false) Integer size) {
         CoverStreamDTO songCoverStreamDTO = null;
         if (id.startsWith("al-")){
-            songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(Integer.valueOf(id.replace("al-", "")), size);
+            songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(Long.valueOf(id.replace("al-", "")), size);
         }else if (id.startsWith("ar-")){
-            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(Integer.valueOf(id.replace("ar-","")), size);
+            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(Long.valueOf(id.replace("ar-","")), size);
         }else {
-            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Integer.valueOf(id), size);
+            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Long.valueOf(id), size);
         }
 
         return ResponseEntity.ok()
@@ -62,7 +62,7 @@ public class MediaRetrievalController {
 
     @RequestMapping(value = "/stream")
     @SneakyThrows
-    public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Integer songId,
+    public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Long songId,
                                                       Integer maxBitRate, String format,
                                                       Integer estimateContentLength) {
 

@@ -55,7 +55,7 @@ public class SearchResult2Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)
@@ -72,7 +72,7 @@ public class SearchResult2Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String artist;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
 
         @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
@@ -88,9 +88,9 @@ public class SearchResult2Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class Song {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer parent;
+        private Long parent;
         @JacksonXmlProperty(isAttribute = true)
         private String title;
         @JacksonXmlProperty(isAttribute = true, localName = "album")
@@ -124,9 +124,9 @@ public class SearchResult2Response extends SubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer albumId;
+        private Long albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
         @JacksonXmlProperty(isAttribute = true)
         private String type;
 
@@ -144,7 +144,7 @@ public class SearchResult2Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class ArtistItem{
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)

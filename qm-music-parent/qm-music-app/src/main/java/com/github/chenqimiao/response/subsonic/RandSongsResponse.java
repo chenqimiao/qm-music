@@ -2,23 +2,42 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.github.chenqimiao.util.DateTimeUtils;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Qimiao Chen
- * @since 2025/3/31 11:46
+ * @since 2025/4/3 15:59
  **/
 @Setter
 @Getter
-public class SongResponse extends SubsonicResponse {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class RandSongsResponse extends SubsonicResponse {
 
-    private Song song;
 
+    private  RandomSongs randomSongs;
+
+
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    @NoArgsConstructor
+    public static class RandomSongs  {
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "song")
+        private List<Song> songs;
+    }
     @Setter
     @Getter
     @AllArgsConstructor
@@ -80,5 +99,3 @@ public class SongResponse extends SubsonicResponse {
 
     }
 }
-
-

@@ -11,12 +11,12 @@ import lombok.Setter;
 @Getter
 public class UserStarDTO {
 
-    private Integer userId;
+    private Long userId;
     /**
      * @see com.github.chenqimiao.enums.EnumUserStarType
      */
     private Integer starType;
-    private Integer relationId;
+    private Long relationId;
     private Long gmtCreate;
     private Long gmtModify;
 }

@@ -33,7 +33,7 @@ public class ArtistController {
 
 
     @GetMapping(value = "/getArtist")
-    public ArtistResponse getArtist(@RequestParam("id") Integer artistId) {
+    public ArtistResponse getArtist(@RequestParam("id") Long artistId) {
 
         ArtistResponse artistResponse = new ArtistResponse();
         ArtistAggDTO artistAggDTO = artistService.queryArtistWithAlbums(artistId);

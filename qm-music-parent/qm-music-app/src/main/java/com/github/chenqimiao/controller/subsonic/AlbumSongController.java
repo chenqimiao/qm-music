@@ -5,11 +5,16 @@ import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
+import com.github.chenqimiao.request.SongSearchRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
+import com.github.chenqimiao.request.subsonic.RandomSongsRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
+import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
+import com.github.chenqimiao.service.complex.SongComplexService;
+import com.github.chenqimiao.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,11 +48,14 @@ public class AlbumSongController {
     private MediaAnnotationService mediaRetrievalService;
 
 
+    @Autowired
+    private SongService songService;
+
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
-    @Autowired
-    private ResourcePatternResolver resourcePatternResolver;
 
+    @Autowired
+    private SongComplexService songComplexService;
 
     @GetMapping(value = "/getAlbumList2")
     public AlbumList2Response getAlbumList2(AlbumList2Request albumList2Request) {
@@ -91,8 +99,7 @@ public class AlbumSongController {
     public StarredResponse getStarred(@RequestParam(required = false) Long musicFolderId,
                            HttpServletRequest servletRequest) {
 
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
-
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
         UserStarResourceDTO resource = mediaRetrievalService.getUserStarResourceDTO(authedUserId);
 
         return new StarredResponse(StarredResponse.Starred
@@ -111,5 +118,26 @@ public class AlbumSongController {
         return new SubsonicPong();
     }
 
+    private static final Type TYPE_LIST_RANDOM_SONG = new TypeToken<List<RandSongsResponse.Song>>() {}.getType();
+
+    @GetMapping("getRandomSongs")
+    public RandSongsResponse getRandomSongs(RandomSongsRequest request, HttpServletRequest servletRequest) {
+        SongSearchRequest searchRequest = new SongSearchRequest();
+        searchRequest.setToYear(request.getToYear());
+        searchRequest.setFromYear(request.getFromYear());
+        searchRequest.setSimilarGenre(request.getGenre());
+        searchRequest.setOffset(0);
+        searchRequest.setPageSize(request.getSize());
+        List<Long> songIds = songService.search(searchRequest);
+        if (CollectionUtils.isEmpty(songIds)) {
+            return new RandSongsResponse();
+        }
+
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
+
+        List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
+        RandSongsResponse.RandomSongs randomSongs = RandSongsResponse.RandomSongs.builder().songs(modelMapper.map(complexSongs, TYPE_LIST_RANDOM_SONG)).build();
+        return new RandSongsResponse(randomSongs);
+    }
 }
 

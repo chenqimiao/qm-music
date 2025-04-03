@@ -66,7 +66,7 @@ public class SubsonicUserStarServiceImpl implements UserStarService {
     }
 
     @Override
-    public List<UserStarDTO> queryUserStarByUserId(Integer userId) {
+    public List<UserStarDTO> queryUserStarByUserId(Long userId) {
         List<UserStarDO> userStars = userStarRepository.queryUserStarByUserId(userId);
         return ucModelMapper.map(userStars, ModelMapperTypeConfig.TYPE_LIST_USER_STAR_DTO);
     }

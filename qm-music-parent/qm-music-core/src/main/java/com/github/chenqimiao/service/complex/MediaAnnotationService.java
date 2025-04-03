@@ -8,5 +8,5 @@ import com.github.chenqimiao.dto.UserStarResourceDTO;
  **/
 public interface MediaAnnotationService {
 
-    UserStarResourceDTO getUserStarResourceDTO(Integer userId);
+    UserStarResourceDTO getUserStarResourceDTO(Long userId);
 }

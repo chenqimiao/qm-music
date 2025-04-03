@@ -29,14 +29,14 @@ public class SongRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public List<SongDO> findByAlbumId(Integer alumId) {
+    public List<SongDO> findByAlbumId(Long alumId) {
         String sql = """
                         select * from song where `album_id` = ?
                      """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), alumId);
     }
 
-    public SongDO findBySongId(Integer songId) {
+    public SongDO findBySongId(Long songId) {
 
         try {
             String sql = """
@@ -76,7 +76,7 @@ public class SongRepository {
         return songs.getFirst();
     }
 
-    public List<SongDO> findByArtistId(Integer artistId) {
+    public List<SongDO> findByArtistId(Long artistId) {
 
         String sql = """
                         select * from song where `artist_id` = ?
@@ -93,11 +93,11 @@ public class SongRepository {
                 "%"+songTitle +"%", offset, pageSize);
     }
 
-    public List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
+    public List<Long> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
         String sql = """
                         select id from song where `title` like ? limit ?, ?;
                      """;
-        return jdbcTemplate.queryForList(sql, Integer.class,
+        return jdbcTemplate.queryForList(sql, Long.class,
                 "%" + songTitle + "%", offset, pageSize);
     }
 
@@ -109,7 +109,7 @@ public class SongRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class));
     }
 
-    public void deleteByIds(List<Integer> ids) {
+    public void deleteByIds(List<Long> ids) {
         String sql = """
                        delete from song where `id` in (?)
                      """;
@@ -120,13 +120,13 @@ public class SongRepository {
 
     public void save(SongDO songDO) {
         String sql =  """
-                        insert into song(parent, title, album_id, artist_id,
+                        insert into song(id, parent, title, album_id, artist_id,
                                          artist_name, size, suffix, content_type,
                                          year, duration, bit_rate,file_path,
                                          file_hash, file_last_modified, genre, track)
-                          values(:parent, :title, :album_id, :artist_id,
+                          values(:id, :parent, :title, :album_id, :artist_id,
                                  :artist_name, :size, :suffix, :content_type, :year,
-                                 :duration, :bit_rate, :file_path, :file_hash, 
+                                 :duration, :bit_rate, :file_path, :file_hash,
                                  :file_last_modified,:genre, :track)
                      """;
                 namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
@@ -156,7 +156,7 @@ public class SongRepository {
         return result;
     }
 
-    public List<SongDO> findByIds(List<Integer> songIds) {
+    public List<SongDO> findByIds(List<Long> songIds) {
 
         String sql = """
                     select * from song where `id` in (:ids)
@@ -166,5 +166,40 @@ public class SongRepository {
         params.put("ids", songIds);
 
         return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(SongDO.class));
+    }
+
+    public List<Long> search(Map<String, Object> params) {
+
+        StringBuffer sqlSb = new StringBuffer();
+        sqlSb.append("select id from song where 1=1 ");
+        if (params.get("songId") != null) {
+            sqlSb.append(" and `id` = :songId ");
+        }
+        if (params.get("fromYear") != null) {
+            sqlSb.append(" and `from_year` >= :fromYear ");
+        }
+        if (params.get("toYear") != null) {
+            sqlSb.append(" and `from_year` <= :toYear ");
+        }
+        if (params.get("similarSongTitle") != null) {
+            sqlSb.append(" and `title` like :similarSongTitle ");
+            params.put("similarSongTitle", "%" +params.get("similarSongTitle") + "%");
+        }
+        if (params.get("similarGenre") != null) {
+            sqlSb.append(" and `genre` like :similarGenre ");
+            params.put("similarGenre", "%" + params.get("similarGenre") + "%");
+        }
+
+        if (Boolean.TRUE.equals(params.get("isRandom")))  {
+            sqlSb.append(" ORDER BY RANDOM() ");
+        }
+        if (params.get("offset") != null
+                && params.get("pageSize") != null) {
+            sqlSb.append(" limit :offset , :pageSize");
+
+        }
+
+
+        return namedParameterJdbcTemplate.queryForList(sqlSb.toString(), params, Long.class);
     }
 }

@@ -42,7 +42,7 @@ public class AlbumList2Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         @JSONField(name = "name")
         private String title;
@@ -61,6 +61,6 @@ public class AlbumList2Response extends SubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
     }
 }

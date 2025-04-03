@@ -2,6 +2,7 @@ package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.AlbumAggDTO;
 import com.github.chenqimiao.dto.SongDTO;
+import com.github.chenqimiao.request.SongSearchRequest;
 
 import java.util.List;
 
@@ -12,18 +13,20 @@ import java.util.List;
 public interface SongService {
 
 
-    AlbumAggDTO queryByAlbumId(Integer albumId);
+    AlbumAggDTO queryByAlbumId(Long albumId);
 
 
     List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset);
 
 
-    SongDTO queryBySongId(Integer songId);
+    SongDTO queryBySongId(Long songId);
 
-    List<SongDTO> batchQuerySongBySongIds(List<Integer> songIds);
+    List<SongDTO> batchQuerySongBySongIds(List<Long> songIds);
 
 
-    List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset);
+    List<Long> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset);
 
+
+    List<Long> search(SongSearchRequest searchRequest);
 
 }

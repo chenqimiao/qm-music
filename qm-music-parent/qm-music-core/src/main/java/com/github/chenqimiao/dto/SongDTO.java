@@ -11,17 +11,17 @@ import lombok.Setter;
 @Getter
 public class SongDTO {
     
-    private Integer id;
+    private Long id;
 
     private Integer parent;
 
     private String title;
 
-    private Integer albumId;
+    private Long albumId;
 
     private String albumTitle;
 
-    private Integer artistId;
+    private Long artistId;
 
     private String artistName;
     
@@ -43,7 +43,7 @@ public class SongDTO {
 
     private Long gmtModify;
 
-    private Integer year;
+    private String year;
 
     private String genre;
 

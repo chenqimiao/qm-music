@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AlbumDO {
-    private Integer id;
+    private Long id;
     private String title;
-    private Integer artist_id;
+    private Long artist_id;
     private String artist_name;
     private String release_year;
     private String genre;

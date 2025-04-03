@@ -5,16 +5,21 @@ import lombok.Setter;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/2 17:25
+ * @since 2025/4/3 17:30
  **/
-
-@Setter
 @Getter
-public class UserStarDO {
+@Setter
+public class ArtistRelationDO {
 
-    private Long user_id;
-    private Integer star_type;
+    private Long id;
+
+    private Long artist_id;
+
+    private Integer type;
+
     private Long relation_id;
+
     private Long gmt_create;
-    private Long gmt_modify;
+
+    private Long gmt_modified;
 }

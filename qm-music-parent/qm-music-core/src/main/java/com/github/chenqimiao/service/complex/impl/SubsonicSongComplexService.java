@@ -38,7 +38,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     private UserStarService userStarService;
 
     @Override
-    public List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, @Nullable Integer userId) {
+    public List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId) {
         if (CollectionUtils.isEmpty(songIds)) {
             return new ArrayList<>();
         }

@@ -11,12 +11,12 @@ import lombok.Setter;
 @Getter
 public class SongDO {
 
-    private Integer id;
-    private Integer parent;
+    private Long id;
+    private Long parent;
     private String title;
-    private Integer album_id;
-    private String album_Title;
-    private Integer artist_id;
+    private Long album_id;
+    private String album_title;
+    private Long artist_id;
     private Integer duration;
     private String suffix;
     private String content_type;

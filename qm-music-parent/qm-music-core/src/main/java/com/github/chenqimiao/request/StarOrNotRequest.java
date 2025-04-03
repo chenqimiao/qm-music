@@ -15,11 +15,11 @@ import lombok.*;
 @NoArgsConstructor
 public class StarOrNotRequest {
 
-    private Integer relationId;
+    private Long relationId;
 
     private EnumUserStarType startType;
 
-    private Integer userId;
+    private Long userId;
 
     /**
      * @see  com.github.chenqimiao.enums.EnumStarActionType

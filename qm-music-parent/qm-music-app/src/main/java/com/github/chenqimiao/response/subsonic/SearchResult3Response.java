@@ -56,7 +56,7 @@ public class SearchResult3Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)
@@ -73,7 +73,7 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String artist;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
 
         @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
@@ -89,9 +89,9 @@ public class SearchResult3Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class Song {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer parent;
+        private Long parent;
         @JacksonXmlProperty(isAttribute = true)
         private String title;
         @JacksonXmlProperty(isAttribute = true, localName = "album")
@@ -140,7 +140,7 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String track;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer year;
+        private String year;
         @JacksonXmlProperty(isAttribute = true)
         private String genre;
 
@@ -159,7 +159,7 @@ public class SearchResult3Response extends SubsonicResponse {
     @NoArgsConstructor
     public static class ArtistItem{
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)

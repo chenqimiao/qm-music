@@ -16,5 +16,5 @@ public interface AlbumService {
 
     List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) ;
 
-    List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Integer> albumIds) ;
+    List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Long> albumIds) ;
 }

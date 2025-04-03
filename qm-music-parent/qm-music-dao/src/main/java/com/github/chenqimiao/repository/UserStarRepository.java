@@ -34,7 +34,7 @@ public class UserStarRepository {
     }
 
 
-    public int delByUnique(Integer userId, Integer starType, Integer relationId) {
+    public int delByUnique(Long userId, Integer starType, Long relationId) {
         var sql = """
                     delete from user_star where
                     user_id = :user_id
@@ -48,7 +48,7 @@ public class UserStarRepository {
         return namedParameterJdbcTemplate.update(sql, param);
     }
 
-    public int countByUnique(Integer userId, Integer starType, Integer relationId) {
+    public int countByUnique(Long userId, Integer starType, Long relationId) {
         var sql = """
                     select count(1) from user_star where
                     user_id = :user_id
@@ -64,7 +64,7 @@ public class UserStarRepository {
     }
 
 
-    public Long queryCreateTimeByUnique(Integer userId, Integer starType, Integer relationId) {
+    public Long queryCreateTimeByUnique(Long userId, Integer starType, Long relationId) {
 
         var sql = """
                     select gmt_create from user_star where
@@ -86,8 +86,8 @@ public class UserStarRepository {
         }
     }
 
-    public Map<Integer, Long> batchQueryStarredTimeByUniqueKeys(Integer userId, Integer starType,
-                                                                List<Integer> relationIds) {
+    public Map<Integer, Long> batchQueryStarredTimeByUniqueKeys(Long userId, Integer starType,
+                                                                List<Long> relationIds) {
         var sql = """
                     select gmt_create, relation_id from user_star where
                     user_id = :user_id
@@ -110,7 +110,7 @@ public class UserStarRepository {
 
     }
 
-    public List<UserStarDO> queryUserStarByUserId(Integer userId) {
+    public List<UserStarDO> queryUserStarByUserId(Long userId) {
         var sql = """
                     select * from user_star where
                     user_id = :user_id;

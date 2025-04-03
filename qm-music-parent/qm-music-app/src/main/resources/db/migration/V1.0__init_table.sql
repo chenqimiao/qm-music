@@ -25,6 +25,7 @@ CREATE TABLE artist (
                          gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 
+
 CREATE INDEX idx_artist_name ON artist(name);
 
 CREATE TRIGGER IF NOT EXISTS update_artists_gmt_modify
@@ -168,6 +169,25 @@ CREATE TRIGGER IF NOT EXISTS update_user_star_gmt_modify
     AFTER UPDATE ON user_star
 BEGIN
     UPDATE user_star
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+    WHERE id = NEW.id;
+END;
+
+CREATE TABLE artist_relation (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       artist_id INTEGER NOT NULL,
+                       type integer NOT NULL,
+                       relation_id INTEGER NOT NULL,
+                       gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
+                       gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
+);
+
+CREATE UNIQUE INDEX idx_artist_relation ON artist_relation(artist_id, type, relation_id);
+
+CREATE TRIGGER IF NOT EXISTS artist_relation_gmt_modify
+    AFTER UPDATE ON artist_relation
+BEGIN
+    UPDATE artist_relation
     SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
     WHERE id = NEW.id;
 END;

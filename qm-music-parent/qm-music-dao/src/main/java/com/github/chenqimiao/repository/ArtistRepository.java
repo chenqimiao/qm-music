@@ -1,16 +1,22 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.ArtistDO;
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -42,7 +48,7 @@ public class ArtistRepository {
     }
 
 
-    public ArtistDO findByArtistId(Integer artistId) {
+    public ArtistDO findByArtistId(Long artistId) {
         String sql = """
                     select * from artist where `id` = ?
                  """;
@@ -83,10 +89,17 @@ public class ArtistRepository {
 
     public int save(ArtistDO artistDO) {
         String sql = """
-                     insert OR IGNORE into artist (`name`, `first_letter`) values (?, ?)
+                     insert OR IGNORE into artist (`name`, `first_letter`) values (?, ?, ?)
                      """;
         return jdbcTemplate.update(sql, artistDO.getName(), artistDO.getFirst_letter());
     }
+
+
+    public ArtistDO saveAndReturn(ArtistDO artistDO) {
+        int save = this.save(artistDO);
+        return this.findByName(artistDO.getName());
+    }
+
 
     public ArtistDO queryByName(String artistName) {
         String sql = """
@@ -100,8 +113,7 @@ public class ArtistRepository {
          }
 
     }
-
-    public List<ArtistDO> findByIds(List<Integer> artistIds) {
+    public List<ArtistDO> findByIds(List<Long> artistIds) {
 
         String sql = """
                     select * from artist where `id` in (:ids)
@@ -111,5 +123,43 @@ public class ArtistRepository {
         params.put("ids", artistIds);
 
         return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ArtistDO.class));
+    }
+
+
+    public void save(List<ArtistDO> artistList) {
+        if (CollectionUtils.isEmpty(artistList)) {
+            return ;
+        }
+        String sql = """
+                
+                    insert or ignore into artist (id, name, first_letter)
+                    values (:id, :name, :first_letter);
+                """;
+        // 直接使用 BeanPropertySqlParameterSource 自动映射字段
+        SqlParameterSource[] batchArgs = artistList.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .toArray(SqlParameterSource[]::new);
+        namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
+    }
+
+    public List<ArtistDO> queryByUniqueKeys(List<String> artistNames) {
+        String sql = """
+                        select * from artist where `name` in (:artistNames);
+                     """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("artistNames", artistNames);
+
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), params);
+
+    }
+
+    public List<ArtistDO> saveAndReturn(List<ArtistDO> artistList) {
+        if (CollectionUtils.isEmpty(artistList)) {
+            return Collections.emptyList();
+        }
+        this.save(artistList);
+        List<String> names = artistList.stream().map(ArtistDO::getName).toList();
+        return this.queryByUniqueKeys(names);
     }
 }

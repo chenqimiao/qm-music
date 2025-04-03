@@ -35,7 +35,7 @@ public class AlbumRepository {
 
 
 
-    public AlbumDO findByAlbumId(Integer albumId) {
+    public AlbumDO findByAlbumId(Long albumId) {
         String sql = """
                         select * from album where `id` = ?
                      """;
@@ -47,7 +47,7 @@ public class AlbumRepository {
     }
 
 
-    public List<AlbumDO> findByArtistId(Integer artistId) {
+    public List<AlbumDO> findByArtistId(Long artistId) {
         String sql = """
                         select * from album where `artist_id` = ?
                      """;
@@ -55,9 +55,9 @@ public class AlbumRepository {
     }
 
 
-    public List<AlbumDO> searchByName(String albumName, Integer pageSize, Integer offset) {
+    public List<AlbumDO> searchByTitle(String albumName, Integer pageSize, Integer offset) {
         String sql = """
-                        select * from album where `name` like :albumName limit :offset, :pageSize;
+                        select * from album where `title` like :albumName limit :offset, :pageSize;
                      """;
         Map<String, Object> params = new HashMap<>();
         params.put("albumName", "%" + albumName + "%");
@@ -82,10 +82,10 @@ public class AlbumRepository {
     public void save(AlbumDO albumDO) {
 
         String sql = """
-                    insert into album(`title`, `artist_id`, `release_year`,
+                    insert into album(`id`,`title`,`artist_id`, `release_year`,
                                       `genre`, `duration`, `artist_name`, `song_count`)
-                    values(:title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count)
-                """;
+                    values( :id, :title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count);
+               """;
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(albumDO);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }
@@ -106,7 +106,7 @@ public class AlbumRepository {
         return result;
     }
 
-    public List<AlbumDO> queryByIds(List<Integer> albumIds) {
+    public List<AlbumDO> queryByIds(List<Long> albumIds) {
         String sql = """
                     select * from album where `id` in (:ids)
                 """;

@@ -2,6 +2,7 @@ package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -19,14 +20,14 @@ public interface ArtistService {
     Map<String, List<ArtistDTO>> searchArtistMap(@Nullable Long ifModifiedSince);
 
 
-    ArtistAggDTO queryArtistWithAlbums(Integer artistId);
+    ArtistAggDTO queryArtistWithAlbums(Long artistId);
 
     List<ArtistDTO> searchByName(String artistName, Integer pageSize, Integer offset);
 
 
-    Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId);
+    Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId, EnumArtistRelationType enumArtistRelationType);
 
-    List<ArtistDTO> batchQueryArtistByArtistIds(List<Integer> artistIds);
+    List<ArtistDTO> batchQueryArtistByArtistIds(List<Long> artistIds);
 
 
 }

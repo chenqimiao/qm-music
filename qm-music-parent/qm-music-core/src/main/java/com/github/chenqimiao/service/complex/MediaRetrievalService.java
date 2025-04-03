@@ -11,13 +11,13 @@ import com.github.chenqimiao.dto.SongStreamDTO;
 public interface MediaRetrievalService {
 
 
-    CoverStreamDTO getSongCoverStreamDTO(Integer songId, Integer size);
+    CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size);
 
-    CoverStreamDTO getAlbumCoverStreamDTO(Integer albumId, Integer size);
+    CoverStreamDTO getAlbumCoverStreamDTO(Long albumId, Integer size);
 
-    CoverStreamDTO getArtistCoverStreamDTO(Integer artistId, Integer size);
+    CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size);
 
     String getLyrics(String artistName, String songTitle);
 
-    SongStreamDTO getSongStream(Integer songId, Integer maxBitRate, String format, Integer estimateContentLength);
+    SongStreamDTO getSongStream(Long songId, Integer maxBitRate, String format, Integer estimateContentLength);
 }

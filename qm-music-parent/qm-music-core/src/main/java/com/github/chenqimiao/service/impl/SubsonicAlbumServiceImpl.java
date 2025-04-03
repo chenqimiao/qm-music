@@ -61,12 +61,12 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
 
     @Override
     public List<AlbumDTO> searchByName(String albumName, Integer pageSize, Integer offset) {
-        List<AlbumDO> albums = albumRepository.searchByName(albumName, pageSize, offset);
+        List<AlbumDO> albums = albumRepository.searchByTitle(albumName, pageSize, offset);
         return ucModelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_DTO);
     }
 
     @Override
-    public List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Integer> albumIds) {
+    public List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Long> albumIds) {
         if (CollectionUtils.isEmpty(albumIds)) {
             return new ArrayList<>();
         }

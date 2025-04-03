@@ -14,9 +14,9 @@ import lombok.Setter;
 @Builder
 public class StarInfoRequest {
 
-    private Integer relationId;
+    private Long relationId;
 
     private EnumUserStarType startType;
 
-    private Integer userId;
+    private Long userId;
 }

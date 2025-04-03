@@ -33,7 +33,7 @@ public class AlbumResponse extends SubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         @JSONField(name = "name")
         private String title;
@@ -52,7 +52,7 @@ public class AlbumResponse extends SubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
         @JacksonXmlProperty(isAttribute = true, localName = "year")
         @JSONField(name = "year")
         private String releaseYear;
@@ -69,9 +69,9 @@ public class AlbumResponse extends SubsonicResponse {
     @NoArgsConstructor
     public static class Song {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer parent;
+        private Long parent;
         @JacksonXmlProperty(isAttribute = true)
         private String title;
         @JacksonXmlProperty(isAttribute = true, localName = "album")
@@ -106,9 +106,9 @@ public class AlbumResponse extends SubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer albumId;
+        private Long albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private String type = "music";

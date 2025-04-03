@@ -14,6 +14,7 @@ import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.SongComplexService;
+import com.github.chenqimiao.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -79,11 +80,11 @@ public class SearchController {
             builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2));
         }
 
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
 
-            List<Integer> songIds = songService.searchSongIdsByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
+            List<Long> songIds = songService.searchSongIdsByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
                     , searchRequest.getAlbumOffset());
             List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
             List<SearchResult2Response.Song> songList = modelMapper.map(complexSongs, TYPE_LIST_SONG_2);
@@ -98,7 +99,7 @@ public class SearchController {
 
     }
 
-    private void wrapStarredTime(SearchResult2Response.SearchResult2 searchResult2Response, Integer authedUserId) {
+    private void wrapStarredTime(SearchResult2Response.SearchResult2 searchResult2Response, Long authedUserId) {
         List<SearchResult2Response.Album> albums = searchResult2Response.getAlbums();
         List<SearchResult2Response.ArtistItem> artists = searchResult2Response.getArtists();
 
@@ -136,7 +137,7 @@ public class SearchController {
 
         SearchResult3Response.SearchResult3.SearchResult3Builder builder = SearchResult3Response.SearchResult3.builder();
 
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
 
         if (searchRequest.getArtistCount() != null
                 && searchRequest.getArtistCount() > 0 ) {
@@ -152,7 +153,7 @@ public class SearchController {
         }
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
-            List<Integer> songIds = songService.searchSongIdsByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
+            List<Long> songIds = songService.searchSongIdsByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
                     , searchRequest.getAlbumOffset());
             List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
             List<SearchResult3Response.Song> songList = modelMapper.map(complexSongs, TYPE_LIST_SONG_3);
@@ -165,7 +166,7 @@ public class SearchController {
 
     }
 
-    private void wrapStarredTime(SearchResult3Response.SearchResult3 searchResult3Response, Integer authedUserId) {
+    private void wrapStarredTime(SearchResult3Response.SearchResult3 searchResult3Response, Long authedUserId) {
         List<SearchResult3Response.Album> albums = searchResult3Response.getAlbums();
         List<SearchResult3Response.ArtistItem> artists = searchResult3Response.getArtists();
 

@@ -1,5 +1,6 @@
 package com.github.chenqimiao.dto;
 
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class ArtistDTO {
 
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -22,5 +23,6 @@ public class ArtistDTO {
     private String firstLetter;
 
     private Long gmtModify;
+
 
 }

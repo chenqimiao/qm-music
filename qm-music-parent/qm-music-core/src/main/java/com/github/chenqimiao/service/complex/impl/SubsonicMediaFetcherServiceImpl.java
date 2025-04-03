@@ -2,19 +2,20 @@ package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.model.MusicMeta;
-import com.github.chenqimiao.repository.AlbumRepository;
-import com.github.chenqimiao.repository.ArtistRepository;
-import com.github.chenqimiao.repository.SongRepository;
-import com.github.chenqimiao.repository.UserRepository;
+import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.service.complex.MediaFetcherService;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
 import com.github.chenqimiao.util.MD5Utils;
+import io.github.mocreates.Sequence;
+import io.github.mocreates.config.SequenceConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +48,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     private static final ExecutorService VIRTUAL_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
+
+
     // 线程安全的计数器
     private static final AtomicLong fileCount = new AtomicLong();
     private static final AtomicLong dirCount = new AtomicLong();
@@ -62,6 +63,12 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private Sequence sequence;
+
+    @Autowired
+    private ArtistRelationRepository artistRelationRepository;
+
 
     @Override
     @SneakyThrows
@@ -71,7 +78,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         stopWatch.start();
         List<SongDO> songs = songRepository.findAll();
 
-        List<Integer> toBeRemoveSongIds = songs.stream().filter(song -> {
+        List<Long> toBeRemoveSongIds = songs.stream().filter(song -> {
             String filePath = song.getFile_path();
             Path path = Paths.get(filePath);
             if (!Files.exists(path)) {
@@ -89,7 +96,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         }
 
         Set<String> songSet = songs.stream().filter(song -> !toBeRemoveSongIds.contains(song.getId()))
-                .map(n -> n.getFile_path()).collect(Collectors.toSet());
+                .map(SongDO::getFile_path).collect(Collectors.toSet());
 
 //        Map<String, Integer> songMap= songs.stream().collect(Collectors.toMap(SongDO::getFile_path, SongDO::getId));
 
@@ -124,32 +131,36 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
     private void save(MusicMeta musicMeta, Path path) {
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
-        ArtistDO songArtist = null;
-        ArtistDO albumArtist = null;
+        List<ArtistDO> songArtists = new ArrayList<>();
+        List<ArtistDO> albumArtists = new ArrayList<>();
         if (StringUtils.isNotBlank(musicMeta.getArtist())) {
-            ArtistDO artistDO = artistRepository.queryByName(musicMeta.getArtist());
-            if (artistDO == null){
-                artistDO = new ArtistDO();
-                artistDO.setName(musicMeta.getArtist());
-                artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicMeta.getArtist()));
-                artistRepository.save(artistDO);
-                artistDO = artistRepository.queryByName(musicMeta.getArtist());
-            }
-            songArtist = artistDO;
-            albumArtist = artistDO;
+            songArtists = Arrays.stream(musicMeta.getArtist().split(","))
+                    .map(String::trim).distinct()
+                    .map(n -> {
+                        ArtistDO artistDO  = new ArtistDO();
+                        artistDO.setId(sequence.nextId());
+                        artistDO.setName(n);
+                        artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
+                        return artistDO;
+                    }).toList();
+
+            artistRepository.save(songArtists);
         }
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
-            ArtistDO albumArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
-            if (albumArtistDO == null){
-                albumArtistDO = new ArtistDO();
-                albumArtistDO.setName(musicAlbumMeta.getAlbumArtist());
-                albumArtistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbumArtist()));
-                artistRepository.save(albumArtistDO);
-                albumArtistDO = artistRepository.queryByName(musicAlbumMeta.getAlbumArtist());
-                if (songArtist == null) songArtist = albumArtistDO;
-                if (albumArtistDO != null) albumArtist = albumArtistDO;
-            }
+
+            albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(","))
+                    .map(String::trim).distinct()
+                    .map(n -> {
+                        ArtistDO artistDO  = new ArtistDO();
+                        artistDO.setId(sequence.nextId());
+                        artistDO.setName(n);
+                        artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
+                        return artistDO;
+                    }).toList();
+
+             artistRepository.save(albumArtists);
+
         }
 
 
@@ -159,26 +170,29 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
             if (albumDO ==null) {
                 albumDO = new AlbumDO();
+                albumDO.setId(sequence.nextId());
                 albumDO.setTitle(musicAlbumMeta.getAlbum());
-                albumDO.setArtist_id(albumArtist != null ? albumArtist.getId() : null);
+                albumDO.setArtist_id(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getId(): null);
                 albumDO.setRelease_year(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                         : musicAlbumMeta.getOriginalYear());
                 albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
                 albumDO.setSong_count(0);
                 albumDO.setDuration(1234);
-                albumDO.setArtist_name(albumArtist != null ? albumArtist.getName() : null);
+                albumDO.setArtist_name(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getName(): null);
                 albumRepository.save(albumDO);
-                albumDO = albumRepository.queryByName(musicAlbumMeta.getAlbum());
             }
         }
 
 
         SongDO songDO = new SongDO();
-        songDO.setParent(1);
+        long songId = sequence.nextId();
+        songDO.setId(songId);
+        songDO.setParent(1L);
         songDO.setTitle(musicMeta.getTitle());
         songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(null));
-        songDO.setAlbum_Title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));
-        songDO.setArtist_id(Optional.ofNullable(songArtist).map(ArtistDO::getId).orElse(null));
+        songDO.setAlbum_title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));
+        songDO.setArtist_id(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getId() : null);
+        songDO.setArtist_name(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getName() : null);
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
@@ -188,14 +202,40 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear());
         songDO.setBit_rate(Integer.valueOf(musicMeta.getBitRate()));
-        songDO.setArtist_name(songArtist != null ? songArtist.getName() : null);
         songDO.setGenre(musicMeta.getGenre());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
         songDO.setTrack(musicMeta.getTrack());
         songRepository.save(songDO);
 
-    }
+        // save relation
 
+
+        List<ArtistRelationDO> songRelationList = songArtists.stream().map(n -> {
+            ArtistRelationDO artistRelationDO = new ArtistRelationDO();
+            artistRelationDO.setType(EnumArtistRelationType.SONG.getCode());
+            artistRelationDO.setArtist_id(n.getId());
+            artistRelationDO.setRelation_id(songId);
+            return artistRelationDO;
+        }).toList();
+
+        List<ArtistRelationDO> artistRelationList = new ArrayList<>(songRelationList);
+
+        if (albumDO != null) {
+            Long albumId = albumDO.getId();
+            List<ArtistRelationDO> albumRelationList = albumArtists.stream().map(n -> {
+                ArtistRelationDO artistRelationDO = new ArtistRelationDO();
+                artistRelationDO.setType(EnumArtistRelationType.ALBUM.getCode());
+                artistRelationDO.setArtist_id(n.getId());
+                artistRelationDO.setRelation_id(albumId);
+                return artistRelationDO;
+            }).toList();
+            artistRelationList.addAll(albumRelationList);
+
+        }
+
+        artistRelationRepository.save(artistRelationList);
+
+    }
 
 }

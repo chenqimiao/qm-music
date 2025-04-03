@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ArtistDO {
-    private Integer id;
+    private Long id;
     private String name;
     private String first_letter;
     private Long gmt_create;

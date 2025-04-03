@@ -5,6 +5,7 @@ import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
@@ -57,7 +58,7 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public ArtistAggDTO queryArtistWithAlbums(Integer artistId) {
+    public ArtistAggDTO queryArtistWithAlbums(Long artistId) {
         ArtistDO artistDO = artistRepository.findByArtistId(artistId);
         ArtistDTO artistDTO = artistDO == null ? null : ucModelMapper.map(artistDO, ArtistDTO.class);
         List<AlbumDO> albumDOList = albumRepository.findByArtistId(artistId);
@@ -74,8 +75,10 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId) {
-        List<ArtistDO> artistList = artistRepository.findAll();
+    public Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId, EnumArtistRelationType enumArtistRelationType) {
+        List<ArtistDO> artistList = null;
+        artistList = artistRepository.findAll();
+
         if (CollectionUtils.isEmpty(artistList)) {
             return Collections.EMPTY_MAP;
         }
@@ -84,11 +87,12 @@ public class SubsonicArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<ArtistDTO> batchQueryArtistByArtistIds(List<Integer> artistIds) {
+    public List<ArtistDTO> batchQueryArtistByArtistIds(List<Long> artistIds) {
         if (CollectionUtils.isEmpty(artistIds)) {
             return new ArrayList<>();
         }
         List<ArtistDO> artistList = artistRepository.findByIds(artistIds);
         return ucModelMapper.map(artistList, ModelMapperTypeConfig.TYPE_LIST_ARTIST_DTO);
     }
+
 }

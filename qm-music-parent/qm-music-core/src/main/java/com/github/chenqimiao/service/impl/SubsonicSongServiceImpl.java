@@ -8,6 +8,7 @@ import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
+import com.github.chenqimiao.request.SongSearchRequest;
 import com.github.chenqimiao.service.SongService;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,7 +43,7 @@ public class SubsonicSongServiceImpl implements SongService {
     private ModelMapper ucModelMapper;
 
     @Override
-    public AlbumAggDTO queryByAlbumId(Integer albumId) {
+    public AlbumAggDTO queryByAlbumId(Long albumId) {
 
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
         AlbumDO album = albumRepository.findByAlbumId(albumId);
@@ -50,7 +51,7 @@ public class SubsonicSongServiceImpl implements SongService {
 
         ArtistDO artistDO = artistRepository.findByArtistId(albumDTO.getArtistId());
 
-        Map<Integer, ArtistDTO> cache = new HashMap<>();
+        Map<Long, ArtistDTO> cache = new HashMap<>();
         if (artistDO != null) {
             cache.put(albumDTO.getArtistId(), ucModelMapper.map(artistDO, ArtistDTO.class));
         }
@@ -78,14 +79,14 @@ public class SubsonicSongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO queryBySongId(Integer songId) {
+    public SongDTO queryBySongId(Long songId) {
         SongDO song = songRepository.findBySongId(songId);
 
         return song == null ? null: ucModelMapper.map(song, SongDTO.class);
     }
 
     @Override
-    public List<SongDTO> batchQuerySongBySongIds(List<Integer> songIds) {
+    public List<SongDTO> batchQuerySongBySongIds(List<Long> songIds) {
         if (CollectionUtils.isEmpty(songIds)) {
             return new ArrayList<>();
         }
@@ -94,7 +95,21 @@ public class SubsonicSongServiceImpl implements SongService {
     }
 
     @Override
-    public List<Integer> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
+    public List<Long> searchSongIdsByTitle(String songTitle, Integer pageSize, Integer offset) {
         return songRepository.searchSongIdsByTitle(songTitle, pageSize, offset);
+    }
+
+    @Override
+    public List<Long> search(SongSearchRequest searchRequest) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("songId", searchRequest.getSongId());
+        params.put("fromYear", searchRequest.getFromYear());
+        params.put("toYear", searchRequest.getToYear());
+        params.put("similarSongTitle", searchRequest.getSimilarSongTitle());
+        params.put("offset", searchRequest.getOffset());
+        params.put("pageSize", searchRequest.getPageSize());
+        params.put("similarGenre", searchRequest.getSimilarGenre());
+        params.put("isRandom", Boolean.TRUE.equals(searchRequest.getIsRandom()));
+        return songRepository.search(params);
     }
 }

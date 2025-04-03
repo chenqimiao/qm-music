@@ -2,6 +2,7 @@ package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
@@ -12,6 +13,7 @@ import com.github.chenqimiao.service.GenreService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.SongComplexService;
+import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
@@ -68,9 +70,8 @@ public class BrowsingController {
         artistIndexResponse.setIndexes(indexes);
         indexes.setIgnoredArticles("The El La Los Las Le Les Os As O A");
         List<ArtistIndexResponse.Index> indexList = new ArrayList<>();
-        List<Integer> artistIds = artistMap.values().stream().flatMap(List::stream).map(ArtistDTO::getId).toList();
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
-
+        List<Long> artistIds = artistMap.values().stream().flatMap(List::stream).map(ArtistDTO::getId).toList();
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
         BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder()
                         .userId(authedUserId).relationIds(artistIds).startType(EnumUserStarType.ARTIST).build();
         Map<Integer, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
@@ -79,7 +80,7 @@ public class BrowsingController {
             ArtistIndexResponse.Index idx = new ArtistIndexResponse.Index();
             idx.setName(key);
             List<ArtistIndexResponse.ArtistItem> artistItems = value.stream().map(n -> {
-                Integer id = n.getId();
+                Long id = n.getId();
                 String name = n.getName();
                 ArtistIndexResponse.ArtistItem artistItem = new ArtistIndexResponse.ArtistItem();
                 artistItem.setId(id);
@@ -105,7 +106,7 @@ public class BrowsingController {
     @GetMapping(value = "/getArtists")
     public ArtistsResponse getArtists(ArtistsRequest artistsRequest) {
         Map<String, List<ArtistDTO>> artistGroup =
-                artistService.queryAllArtistGroupByFirstLetter(artistsRequest.getMusicFolderId());
+                artistService.queryAllArtistGroupByFirstLetter(artistsRequest.getMusicFolderId(), EnumArtistRelationType.SONG);
         ArtistsResponse artistsResponse = new ArtistsResponse();
         if (artistGroup.isEmpty()){
             return artistsResponse;
@@ -153,8 +154,8 @@ public class BrowsingController {
     }
 
     @GetMapping("getSong")
-    public SongResponse getSong(@RequestParam("id") Integer songId, HttpServletRequest servletRequest) {
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+    public SongResponse getSong(@RequestParam("id") Long songId, HttpServletRequest servletRequest) {
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
         List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(Lists.newArrayList(songId), authedUserId);
 
 
@@ -166,7 +167,7 @@ public class BrowsingController {
     }
 
     @GetMapping(value = "/getAlbum")
-    public AlbumResponse getAlbum(@RequestParam("id") Integer albumId) {
+    public AlbumResponse getAlbum(@RequestParam("id") Long albumId) {
         AlbumAggDTO albumAggDTO = songService.queryByAlbumId(albumId);
         AlbumDTO albumDTO = albumAggDTO.getAlbum();
         List<SongAggDTO> songs = albumAggDTO.getSongs();

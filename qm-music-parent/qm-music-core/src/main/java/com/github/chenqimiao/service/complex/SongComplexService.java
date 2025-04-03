@@ -11,6 +11,6 @@ import java.util.List;
  **/
 public interface SongComplexService {
 
-    List<ComplexSongDTO> queryBySongIds(List<Integer> songIds, @Nullable Integer userId);
+    List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId);
 
 }

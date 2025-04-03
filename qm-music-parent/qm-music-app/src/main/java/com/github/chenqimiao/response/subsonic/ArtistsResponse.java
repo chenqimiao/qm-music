@@ -48,7 +48,7 @@ public class ArtistsResponse extends SubsonicResponse {
     @Builder
     public static class Artist {
         @JacksonXmlProperty(isAttribute = true)
-        private Integer id;
+        private Long id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)

@@ -40,7 +40,7 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
     private ModelMapper modelMapper;
 
     @Override
-    public UserStarResourceDTO getUserStarResourceDTO(Integer userId) {
+    public UserStarResourceDTO getUserStarResourceDTO(Long userId) {
         List<UserStarDTO> userStarRecords =
                 userStarService.queryUserStarByUserId(userId);
         if (CollectionUtils.isEmpty(userStarRecords)) {
@@ -50,15 +50,15 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
         Map<String, UserStarDTO> userStarMap = userStarRecords.stream().collect(
                 Collectors.toMap(n -> this.buildUniqueKey(n.getStarType(), n.getRelationId()), n -> n));
 
-        List<Integer> songIds = userStarRecords.stream().filter(n ->
+        List<Long> songIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.SONG.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
-        List<Integer> artistIds = userStarRecords.stream().filter(n ->
+        List<Long> artistIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.ARTIST.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
-        List<Integer> albumIds = userStarRecords.stream().filter(n ->
+        List<Long> albumIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.ALBUM.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
@@ -93,7 +93,7 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
                 .songs(songWithStars).albums(albumWithStars).artists(artistWithStars).build();
     }
 
-    private String buildUniqueKey(Integer userStarTypeCode, Integer relationId) {
+    private String buildUniqueKey(Integer userStarTypeCode, Long relationId) {
         return userStarTypeCode + "-" + relationId;
     }
 }

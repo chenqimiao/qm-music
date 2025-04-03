@@ -8,6 +8,7 @@ import com.github.chenqimiao.request.subsonic.StarRequest;
 import com.github.chenqimiao.request.subsonic.UnStarRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.util.WebUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class MediaAnnotationController {
                     && starRequest.getArtistId() == null) {
             return new SubsonicPong();
         }
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
 
         if (starRequest.getId() != null) {
             StarOrNotRequest request = StarOrNotRequest.builder()
@@ -79,8 +80,7 @@ public class MediaAnnotationController {
                 && unStarRequest.getArtistId() == null) {
             return new SubsonicPong();
         }
-        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
-
+        Long authedUserId = WebUtils.currentUserId(servletRequest);
         if (unStarRequest.getId() != null) {
             StarOrNotRequest request = StarOrNotRequest.builder()
                     .userId(authedUserId)

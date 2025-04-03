@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AlbumDTO {
-    private Integer id;
+    private Long id;
     private String title;
-    private Integer artistId;
+    private Long artistId;
     private String releaseYear;
     private String genre;
     private Integer songCount;

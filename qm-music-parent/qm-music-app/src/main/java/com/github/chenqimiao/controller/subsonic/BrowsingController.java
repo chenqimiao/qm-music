@@ -1,24 +1,23 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.dto.ArtistDTO;
-import com.github.chenqimiao.dto.GenreStatisticsDTO;
+import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
 import com.github.chenqimiao.request.subsonic.ArtistsRequest;
-import com.github.chenqimiao.response.subsonic.ArtistIndexResponse;
-import com.github.chenqimiao.response.subsonic.ArtistsResponse;
-import com.github.chenqimiao.response.subsonic.GenresResponse;
-import com.github.chenqimiao.response.subsonic.SubsonicMusicFolder;
+import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
+import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -40,6 +39,12 @@ public class BrowsingController {
 
     @Autowired
     private MediaAnnotationService mediaAnnotationService;
+
+    @Autowired
+    private SongService songService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
@@ -141,4 +146,39 @@ public class BrowsingController {
         genresResponse.setGenres(new GenresResponse.Genres(genres));
         return genresResponse;
     }
+
+    @GetMapping("getSong")
+    public SongResponse getSong(@RequestParam("id") Integer songId) {
+
+        SongDTO songDTO = songService.queryBySongId(songId);
+
+        SongResponse response = new SongResponse();
+
+        response.setSong(modelMapper.map(songDTO, SongResponse.Song.class));
+
+        return response;
+    }
+
+    @GetMapping(value = "/getAlbum")
+    public AlbumResponse getAlbum(@RequestParam("id") Integer albumId) {
+        AlbumAggDTO albumAggDTO = songService.queryByAlbumId(albumId);
+        AlbumDTO albumDTO = albumAggDTO.getAlbum();
+        List<SongAggDTO> songs = albumAggDTO.getSongs();
+        AlbumResponse albumResponse = new AlbumResponse();
+        AlbumResponse.Album album = modelMapper.map(albumDTO, AlbumResponse.Album.class);
+        List<AlbumResponse.Song> songList = songs.stream().map(songAggDTO -> {
+            SongDTO song = songAggDTO.getSong();
+            AlbumResponse.Song s = modelMapper.map(song, AlbumResponse.Song.class);
+            s.setArtistName(songAggDTO.getArtistName());
+            s.setType("music");
+            s.setAlbumTitle(albumDTO.getTitle());
+            s.setIsDir(Boolean.FALSE);
+            s.setIsVideo(false);
+            return s;
+        }).collect(Collectors.toList());
+        album.setSongs(songList);
+        albumResponse.setAlbum(album);
+        return albumResponse;
+    }
+
 }

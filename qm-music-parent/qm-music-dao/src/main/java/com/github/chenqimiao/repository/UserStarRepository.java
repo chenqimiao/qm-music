@@ -101,9 +101,12 @@ public class UserStarRepository {
         Map<Long, Long> result = Maps.newHashMapWithExpectedSize(relationIds.size());
 
         namedParameterJdbcTemplate.query(sql, param, rs -> {
-            long gmtCreate = rs.getLong("gmt_create");
-            Long relationId = rs.getLong("relation_id");
-            result.put(relationId, gmtCreate);
+            while (rs.next()) {
+                long gmtCreate = rs.getLong("gmt_create");
+                long relationId = rs.getLong("relation_id");
+                result.put(relationId, gmtCreate);
+            }
+
         });
 
         return result;

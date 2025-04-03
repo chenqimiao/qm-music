@@ -85,8 +85,9 @@ public class ArtistRelationRepository {
 
         namedParameterJdbcTemplate.query(sql, params,
             rs -> {
-                result.put(rs.getLong("artist_id"), rs.getInt("count"));
-                return result;
+                while (rs.next()) {
+                    result.put(rs.getLong("artist_id"), rs.getInt("count"));
+                }
         });
 
          return result;

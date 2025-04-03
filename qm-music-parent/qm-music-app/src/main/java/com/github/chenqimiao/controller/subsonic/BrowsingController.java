@@ -129,7 +129,7 @@ public class BrowsingController {
                                 .name(n.getName())
                                 .coverArt(n.getCoverArt())
                         .albumCount(complexArtistDTO.getAlbumCount())
-                        .albumCount(complexArtistDTO.getAlbumCount())
+                        .songCount(complexArtistDTO.getSongCount())
                         .starred(modelMapper.map(complexArtistDTO.getStarred(), Date.class))
                         .build();
 

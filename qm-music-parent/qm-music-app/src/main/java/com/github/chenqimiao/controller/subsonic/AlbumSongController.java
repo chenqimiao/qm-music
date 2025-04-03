@@ -107,6 +107,7 @@ public class AlbumSongController {
 
     @GetMapping("/setRating")
     public SubsonicPong setRating(String id, Integer rating) {
+        // mock
         return new SubsonicPong();
     }
 

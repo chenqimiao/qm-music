@@ -127,9 +127,9 @@ public class SearchResult3Response extends SubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer albumId;
+        private Long albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Integer artistId;
+        private Long artistId;
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private String type = "music";

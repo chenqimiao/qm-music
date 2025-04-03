@@ -1,5 +1,6 @@
 package com.github.chenqimiao.service.complex.impl;
 
+import com.github.chenqimiao.config.ModelMapperTypeConfig;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.service.AlbumService;
@@ -8,11 +9,14 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -32,24 +36,29 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
 
     @Autowired
     private AlbumService albumService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public UserStarResourceDTO getUserStarResourceDTO(Integer userId) {
-        List<UserStarDTO> userStarResources =
+        List<UserStarDTO> userStarRecords =
                 userStarService.queryUserStarByUserId(userId);
-        if (CollectionUtils.isEmpty(userStarResources)) {
+        if (CollectionUtils.isEmpty(userStarRecords)) {
             return UserStarResourceDTO.builder().userId(userId).build();
         }
 
-        List<Integer> songIds = userStarResources.stream().filter(n ->
+        Map<String, UserStarDTO> userStarMap = userStarRecords.stream().collect(
+                Collectors.toMap(n -> this.buildUniqueKey(n.getStarType(), n.getRelationId()), n -> n));
+
+        List<Integer> songIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.SONG.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
-        List<Integer> artistIds = userStarResources.stream().filter(n ->
+        List<Integer> artistIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.ARTIST.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
-        List<Integer> albumIds = userStarResources.stream().filter(n ->
+        List<Integer> albumIds = userStarRecords.stream().filter(n ->
                         Objects.equals(n.getStarType(), EnumUserStarType.ALBUM.getCode()))
                 .map(UserStarDTO::getRelationId).toList();
 
@@ -59,8 +68,32 @@ public class MediaAnnotationServiceImpl implements MediaAnnotationService {
 
         List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(artistIds);
 
+        List<SongWithStarDTO> songWithStars = modelMapper.map(songs, ModelMapperTypeConfig.TYPE_LIST_SONG_WITH_STAR_DTO);
+
+        List<AlbumWithStarDTO> albumWithStars = modelMapper.map(albums, ModelMapperTypeConfig.TYPE_LIST_ALBUM_WITH_STAR_DTO);
+
+        List<ArtistWithStarDTO> artistWithStars = modelMapper.map(artists, ModelMapperTypeConfig.TYPE_LIST_ARTIST_WITH_STAR_DTO);
+
+        songWithStars.forEach(n -> {
+            UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.SONG.getCode(), n.getId()));
+            n.setStarred(userStarDTO.getGmtCreate());
+        });
+        albumWithStars.forEach(n -> {
+            UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ALBUM.getCode(), n.getId()));
+            n.setStarred(userStarDTO.getGmtCreate());
+        });
+        artistWithStars.forEach(n -> {
+            UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ARTIST.getCode(), n.getId()));
+            n.setStarred(userStarDTO.getGmtCreate());
+        });
+
+
 
         return UserStarResourceDTO.builder().userId(userId)
-                .songs(songs).albums(albums).artists(artists).build();
+                .songs(songWithStars).albums(albumWithStars).artists(artistWithStars).build();
+    }
+
+    private String buildUniqueKey(Integer userStarTypeCode, Integer relationId) {
+        return userStarTypeCode + "-" + relationId;
     }
 }

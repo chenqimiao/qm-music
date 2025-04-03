@@ -38,7 +38,8 @@ public class SongResponse extends SubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Boolean isDir;
+        @Builder.Default
+        private Boolean isDir = Boolean.FALSE;
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true, localName = "created")
@@ -67,6 +68,15 @@ public class SongResponse extends SubsonicResponse {
         private Integer artistId;
         @JacksonXmlProperty(isAttribute = true)
         private String type;
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        // mock: 私人乐库喜欢才收藏
+        private Integer rating = 5;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private Date starred;
 
     }
 }

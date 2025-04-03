@@ -17,9 +17,10 @@ public class UserStarResourceDTO {
 
     private Integer userId;
 
-    private List<AlbumDTO> albums;
+    private List<AlbumWithStarDTO> albums;
 
-    private List<ArtistDTO> artists;
+    private List<ArtistWithStarDTO> artists;
 
-    private List<SongDTO> songs;
+    private List<SongWithStarDTO> songs;
+
 }

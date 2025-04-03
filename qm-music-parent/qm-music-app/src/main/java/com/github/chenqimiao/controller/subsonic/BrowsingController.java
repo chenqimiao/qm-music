@@ -11,6 +11,8 @@ import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.GenreService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.service.complex.SongComplexService;
+import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -45,6 +47,9 @@ public class BrowsingController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private SongComplexService songComplexService;
 
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
@@ -148,13 +153,14 @@ public class BrowsingController {
     }
 
     @GetMapping("getSong")
-    public SongResponse getSong(@RequestParam("id") Integer songId) {
+    public SongResponse getSong(@RequestParam("id") Integer songId, HttpServletRequest servletRequest) {
+        Integer authedUserId = (Integer) servletRequest.getAttribute(ServerConstants.AUTHED_USER_ID);
+        List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(Lists.newArrayList(songId), authedUserId);
 
-        SongDTO songDTO = songService.queryBySongId(songId);
 
         SongResponse response = new SongResponse();
 
-        response.setSong(modelMapper.map(songDTO, SongResponse.Song.class));
+        response.setSong(modelMapper.map(complexSongs.getFirst(), SongResponse.Song.class));
 
         return response;
     }

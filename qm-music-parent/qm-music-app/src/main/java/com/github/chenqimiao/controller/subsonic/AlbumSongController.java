@@ -104,5 +104,11 @@ public class AlbumSongController {
 
 
     }
+
+    @GetMapping("/setRating")
+    public SubsonicPong setRating(String id, Integer rating) {
+        return new SubsonicPong();
+    }
+
 }
 

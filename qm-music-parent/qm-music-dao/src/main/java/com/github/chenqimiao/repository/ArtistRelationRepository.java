@@ -26,7 +26,7 @@ public class ArtistRelationRepository {
     public List<ArtistRelationDO> search(Map<String, Object> params) {
 
         StringBuffer sqlSb = new StringBuffer();
-        sqlSb.append("select id from artist_relation where 1=1 ");
+        sqlSb.append("select * from artist_relation where 1=1 ");
         if (params.get("id") != null) {
             sqlSb.append(" and `id` = :id ");
         }

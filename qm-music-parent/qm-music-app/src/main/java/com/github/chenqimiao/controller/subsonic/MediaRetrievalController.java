@@ -49,7 +49,9 @@ public class MediaRetrievalController {
         if (id.startsWith("al-")){
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
         }else if (id.startsWith("ar-")){
-            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
+            // do not support artist cover art
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            //return ResponseEntity.ok().body(null);
         }else {
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Long.valueOf(id), size);
         }

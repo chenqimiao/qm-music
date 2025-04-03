@@ -21,5 +21,5 @@ public class ArtistRelationDO {
 
     private Long gmt_create;
 
-    private Long gmt_modified;
+    private Long gmt_modify;
 }

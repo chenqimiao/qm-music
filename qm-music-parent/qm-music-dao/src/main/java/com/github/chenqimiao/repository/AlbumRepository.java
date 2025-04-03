@@ -46,15 +46,6 @@ public class AlbumRepository {
         }
     }
 
-
-    public List<AlbumDO> findByArtistId(Long artistId) {
-        String sql = """
-                        select * from album where `artist_id` = ?
-                     """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class), artistId);
-    }
-
-
     public List<AlbumDO> searchByTitle(String albumName, Integer pageSize, Integer offset) {
         String sql = """
                         select * from album where `title` like :albumName limit :offset, :pageSize;

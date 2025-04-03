@@ -63,20 +63,7 @@ public class ArtistRepository {
     }
 
 
-    public ArtistDO findByName(String artistName) {
-        String sql = """
-                    select * from artist where `name` = '?'
-                 """;
-        // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
-        // Integer :单列值  for select count(1) from xxx
-        try{
-            return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistName);
 
-        }catch (EmptyResultDataAccessException e){
-            return null;
-        }
-
-    }
 
     public List<ArtistDO> searchByName(String artistName, Integer pageSize, Integer offset) {
         String sql = """
@@ -86,32 +73,7 @@ public class ArtistRepository {
                  '%' + artistName + '%' , offset, pageSize);
     }
 
-    public int save(ArtistDO artistDO) {
-        String sql = """
-                     insert OR IGNORE into artist (`name`, `first_letter`) values (?, ?, ?)
-                     """;
-        return jdbcTemplate.update(sql, artistDO.getName(), artistDO.getFirst_letter());
-    }
 
-
-    public ArtistDO saveAndReturn(ArtistDO artistDO) {
-        int save = this.save(artistDO);
-        return this.findByName(artistDO.getName());
-    }
-
-
-    public ArtistDO queryByName(String artistName) {
-        String sql = """
-                        select * from artist where `name` = ?;
-                     """;
-         try {
-             return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
-                     artistName);
-         }catch (EmptyResultDataAccessException e){
-             return null;
-         }
-
-    }
     public List<ArtistDO> findByIds(List<Long> artistIds) {
 
         String sql = """

@@ -9,6 +9,7 @@ import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
 import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
+import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.service.PlaylistService;
 import com.github.chenqimiao.service.UserService;
 import com.github.chenqimiao.service.complex.PlaylistComplexService;
@@ -129,5 +130,18 @@ public class PlaylistsController {
                 request.getName(), request.getSongId(), WebUtils.currentUserId());
 
         return getPlaylist(playlistId);
+    }
+
+    @RequestMapping(value = "/deletePlaylist")
+    public SubsonicPong deletePlaylist(@RequestParam(value = "id") Long playlistId) {
+        PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
+
+        if (playlistDTO == null || !Objects.equals(playlistDTO.getId(), WebUtils.currentUserId())) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
+        }
+
+        playlistComplexService.deletePlaylistByPlaylistId(playlistId);
+
+        return new SubsonicPong();
     }
 }

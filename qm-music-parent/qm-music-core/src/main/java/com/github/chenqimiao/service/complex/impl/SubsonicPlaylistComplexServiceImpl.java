@@ -4,6 +4,8 @@ import com.github.chenqimiao.dto.ComplexPlaylistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistItemDTO;
+import com.github.chenqimiao.repository.PlaylistItemRepository;
+import com.github.chenqimiao.repository.PlaylistRepository;
 import com.github.chenqimiao.service.PlaylistService;
 import com.github.chenqimiao.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
@@ -34,6 +36,12 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PlaylistRepository playlistRepository;
+
+    @Autowired
+    private PlaylistItemRepository playlistItemRepository;
 //
 //    @Autowired
 //    private TransactionTemplate transactionTemplate;
@@ -72,6 +80,8 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     }
 
 
+
+
     @Transactional
     public Long doCreateOrUpdatePlaylist(PlaylistDTO existPlaylist ,
                                          Long playlistId, String name, Long songId, Long userId){
@@ -99,6 +109,14 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         }
 
         return playlistDTO.getId();
+    }
+
+
+    @Override
+    @Transactional
+    public void deletePlaylistByPlaylistId(Long playlistId) {
+        playlistItemRepository.deleteByPlaylistId(playlistId);
+        playlistRepository.delById(playlistId);
     }
 
 }

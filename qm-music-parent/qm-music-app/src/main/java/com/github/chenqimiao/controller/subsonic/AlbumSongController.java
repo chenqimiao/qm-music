@@ -16,7 +16,6 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -99,10 +98,9 @@ public class AlbumSongController {
     private static final Type TYPE_STAR_LIST_ARTIST = new TypeToken<List<StarredResponse.Artist>>() {}.getType();
 
     @GetMapping("/getStarred")
-    public StarredResponse getStarred(@RequestParam(required = false) Long musicFolderId,
-                           HttpServletRequest servletRequest) {
+    public StarredResponse getStarred(@RequestParam(required = false) Long musicFolderId) {
 
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
         UserStarResourceDTO resource = mediaRetrievalService.getUserStarResourceDTO(authedUserId);
 
         return new StarredResponse(StarredResponse.Starred
@@ -124,7 +122,7 @@ public class AlbumSongController {
     private static final Type TYPE_LIST_RANDOM_SONG = new TypeToken<List<RandSongsResponse.Song>>() {}.getType();
 
     @GetMapping("/getRandomSongs")
-    public RandSongsResponse getRandomSongs(RandomSongsRequest request, HttpServletRequest servletRequest) {
+    public RandSongsResponse getRandomSongs(RandomSongsRequest request) {
         SongSearchRequest searchRequest = new SongSearchRequest();
         searchRequest.setToYear(request.getToYear());
         searchRequest.setFromYear(request.getFromYear());
@@ -136,7 +134,7 @@ public class AlbumSongController {
             return new RandSongsResponse();
         }
 
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
 
         List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
         RandSongsResponse.RandomSongs randomSongs = RandSongsResponse.RandomSongs.builder().songs(modelMapper.map(complexSongs, TYPE_LIST_RANDOM_SONG)).build();

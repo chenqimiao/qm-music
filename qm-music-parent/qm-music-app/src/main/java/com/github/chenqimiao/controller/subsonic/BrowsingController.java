@@ -75,7 +75,7 @@ public class BrowsingController {
     }
 
     @GetMapping(value = "/getIndexes")
-    public ArtistIndexResponse getIndexes(ArtistIndexRequest artistIndexRequest, HttpServletRequest servletRequest) {
+    public ArtistIndexResponse getIndexes(ArtistIndexRequest artistIndexRequest) {
         Map<String, List<ArtistDTO>> artistMap = artistService.searchArtistMap(artistIndexRequest.getIfModifiedSince());
         ArtistIndexResponse artistIndexResponse = new ArtistIndexResponse();
         ArtistIndexResponse.Indexes indexes = new ArtistIndexResponse.Indexes();
@@ -83,7 +83,7 @@ public class BrowsingController {
         indexes.setIgnoredArticles("The El La Los Las Le Les Os As O A");
         List<ArtistIndexResponse.Index> indexList = new ArrayList<>();
         List<Long> artistIds = artistMap.values().stream().flatMap(List::stream).map(ArtistDTO::getId).toList();
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
         BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder()
                         .userId(authedUserId).relationIds(artistIds).startType(EnumUserStarType.ARTIST).build();
         Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
@@ -175,8 +175,8 @@ public class BrowsingController {
     }
 
     @GetMapping("getSong")
-    public SongResponse getSong(@RequestParam("id") Long songId, HttpServletRequest servletRequest) {
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+    public SongResponse getSong(@RequestParam("id") Long songId) {
+        Long authedUserId = WebUtils.currentUserId();
         List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(Lists.newArrayList(songId), authedUserId);
 
 

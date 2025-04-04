@@ -1,6 +1,5 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.enums.EnumStarActionType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.request.StarOrNotRequest;
@@ -9,7 +8,6 @@ import com.github.chenqimiao.request.subsonic.UnStarRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.util.WebUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +25,13 @@ public class MediaAnnotationController {
     private UserStarService userStarService;
 
     @GetMapping("/star")
-    public SubsonicPong star(StarRequest starRequest, HttpServletRequest servletRequest){
+    public SubsonicPong star(StarRequest starRequest){
         if (starRequest.getAlbumId() == null
                 && starRequest.getId() == null
                     && starRequest.getArtistId() == null) {
             return new SubsonicPong();
         }
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
 
         if (starRequest.getId() != null) {
             StarOrNotRequest request = StarOrNotRequest.builder()
@@ -74,13 +72,13 @@ public class MediaAnnotationController {
 
 
     @GetMapping("/unstar")
-    public SubsonicPong unstar(UnStarRequest unStarRequest, HttpServletRequest servletRequest){
+    public SubsonicPong unstar(UnStarRequest unStarRequest){
         if (unStarRequest.getAlbumId() == null
                 && unStarRequest.getId() == null
                 && unStarRequest.getArtistId() == null) {
             return new SubsonicPong();
         }
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
         if (unStarRequest.getId() != null) {
             StarOrNotRequest request = StarOrNotRequest.builder()
                     .userId(authedUserId)

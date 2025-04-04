@@ -14,7 +14,6 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -62,7 +61,7 @@ public class SearchController {
     public static Type TYPE_LIST_SONG_2 = new TypeToken<List<SearchResult2Response.Song>>() {}.getType();
 
     @GetMapping("/search2")
-    public SearchResult2Response search2(SearchRequest searchRequest, HttpServletRequest servletRequest) {
+    public SearchResult2Response search2(SearchRequest searchRequest) {
 
         searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
         SearchResult2Response.SearchResult2.SearchResult2Builder builder = SearchResult2Response.SearchResult2.builder();
@@ -79,7 +78,7 @@ public class SearchController {
             builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2));
         }
 
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
 
@@ -130,13 +129,13 @@ public class SearchController {
     public static Type TYPE_LIST_SONG_3 = new TypeToken<List<SearchResult3Response.Song>>() {}.getType();
 
     @GetMapping("/search3")
-    public SearchResult3Response search3(SearchRequest searchRequest, HttpServletRequest servletRequest) {
+    public SearchResult3Response search3(SearchRequest searchRequest) {
 
         searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
 
         SearchResult3Response.SearchResult3.SearchResult3Builder builder = SearchResult3Response.SearchResult3.builder();
 
-        Long authedUserId = WebUtils.currentUserId(servletRequest);
+        Long authedUserId = WebUtils.currentUserId();
 
         if (searchRequest.getArtistCount() != null
                 && searchRequest.getArtistCount() > 0 ) {

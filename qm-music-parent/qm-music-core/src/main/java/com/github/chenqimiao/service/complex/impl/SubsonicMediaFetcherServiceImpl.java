@@ -143,15 +143,13 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @SneakyThrows
     private void save(MusicMeta musicMeta, Path path) {
-        List<String> delimiters = Arrays.asList("&", "and", ",","、");
+        String delimiterRegx = "\"(and|&|,|、)\"";
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
         List<ArtistDO> songArtists = new ArrayList<>();
         List<ArtistDO> albumArtists = new ArrayList<>();
         if (StringUtils.isNotBlank(musicMeta.getArtist())) {
-            String delimiter = delimiters.stream().filter(n ->
-                    musicMeta.getArtist().contains(n)).findFirst().orElse(",");
-            songArtists = Arrays.stream(musicMeta.getArtist().split(delimiter))
+            songArtists = Arrays.stream(musicMeta.getArtist().split(delimiterRegx))
                     .map(String::trim).distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
@@ -165,9 +163,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         }
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
-            String delimiter = delimiters.stream().filter(n ->
-                    musicMeta.getArtist().contains(n)).findFirst().orElse(",");
-            albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(delimiter))
+            albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(delimiterRegx))
                     .map(String::trim).distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();

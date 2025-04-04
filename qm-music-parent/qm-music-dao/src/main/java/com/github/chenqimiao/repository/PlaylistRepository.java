@@ -59,4 +59,17 @@ public class PlaylistRepository {
     }
 
 
+    public List<PlaylistDO> getPlaylistsByIds(List<Long> ids) {
+        String sql = """
+                    select * from playlist where id in(:ids) order by id desc
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+
+        paramMap.put("ids", ids);
+
+        return namedParameterJdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper(PlaylistDO.class));
+    }
+
+
 }

@@ -26,4 +26,10 @@ public class SubsonicUserServiceImpl implements UserService {
         UserDO userDO = userRepository.findByUsername(username);
         return ucModelMapper.map(userDO, UserDTO.class);
     }
+
+    @Override
+    public UserDTO findByUserId(Long userId) {
+        UserDO userDO = userRepository.findByUserId(userId);
+        return ucModelMapper.map(userDO, UserDTO.class);
+    }
 }

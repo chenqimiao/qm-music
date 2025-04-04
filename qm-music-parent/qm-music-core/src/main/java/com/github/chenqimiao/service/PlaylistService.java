@@ -1,6 +1,7 @@
 package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.PlaylistDTO;
+import com.github.chenqimiao.dto.PlaylistItemDTO;
 
 import java.util.List;
 
@@ -10,5 +11,10 @@ import java.util.List;
  **/
 
 public interface PlaylistService {
+
     List<PlaylistDTO> queryPlaylistsByUserId(Long userId);
+
+    List<PlaylistDTO> queryPlaylistsByPlaylistIds(List<Long> playlistIds);
+
+    List<PlaylistItemDTO> queryPlaylistItemsByPlaylistIds(List<Long> playlistIds);
 }

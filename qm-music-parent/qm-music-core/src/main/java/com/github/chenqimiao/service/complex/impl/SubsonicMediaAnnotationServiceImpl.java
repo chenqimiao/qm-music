@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @since 2025/4/3 11:28
  **/
 @Service("subsonicMediaAnnotationServiceImpl")
-public class MediaAnnotationServiceImpl implements MediaAnnotationService {
+public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationService {
 
     @Autowired
     private UserStarService userStarService;

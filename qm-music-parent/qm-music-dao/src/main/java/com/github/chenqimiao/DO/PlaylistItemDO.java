@@ -15,7 +15,7 @@ public class PlaylistItemDO {
 
     private Long playlist_id;
 
-    private Long song_id;
+    private Integer song_id;
 
     private Long sort_order;
 

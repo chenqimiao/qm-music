@@ -1,16 +1,20 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.dto.ComplexPlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
+import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
 import com.github.chenqimiao.service.PlaylistService;
 import com.github.chenqimiao.service.UserService;
+import com.github.chenqimiao.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Qimiao Chen
@@ -37,8 +42,11 @@ public class PlaylistsController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PlaylistComplexService playlistComplexService;
+
     @RequestMapping(value = "/getPlaylists")
-    public PlaylistResponse getPlaylists(@RequestParam(required = false) String username) {
+    public PlaylistsResponse getPlaylists(@RequestParam(required = false) String username) {
         boolean isAdmin = WebUtils.currentUserIsAdmin();
         if (!isAdmin && StringUtils.isNotBlank(username)) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_50);
@@ -64,20 +72,52 @@ public class PlaylistsController {
 
         List<PlaylistDTO> playlists = playlistService.queryPlaylistsByUserId(effectiveUserId);
 
-        List<PlaylistResponse.Playlist> playlistList = playlists.stream().map(n -> {
-            PlaylistResponse.Playlist playlist = modelMapper.map(n, PlaylistResponse.Playlist.class);
+        List<PlaylistsResponse.Playlist> playlistList = playlists.stream().map(n -> {
+            PlaylistsResponse.Playlist playlist = modelMapper.map(n, PlaylistsResponse.Playlist.class);
             playlist.setComment(n.getDescription());
             Long uId = n.getUserId();
             playlist.setOwner(userMap.get(uId).getUsername());
             playlist.set_public(EnumPlayListVisibility.PUBLIC.getCode().equals(n.getVisibility()));
 
-            playlist.setAllowedUsers(Lists.newArrayList(new PlaylistResponse.User(currentUser.getUsername())));
+            playlist.setAllowedUsers(Lists.newArrayList(new PlaylistsResponse.User(currentUser.getUsername())));
 
             return playlist;
         }).toList();
 
-        return new PlaylistResponse(PlaylistResponse.Playlists.builder().playlists(playlistList).build());
+        return new PlaylistsResponse(PlaylistsResponse.Playlists.builder().playlists(playlistList).build());
     }
 
 
+    @RequestMapping(value = "/getPlaylist")
+    public PlaylistResponse getPlaylist(@RequestParam() Long id) {
+        List<ComplexPlaylistDTO> complexPlaylists =
+                playlistComplexService.queryComplexPlaylist(Lists.newArrayList(id), WebUtils.currentUserId());
+        if (CollectionUtils.isEmpty(complexPlaylists)) {
+            return new PlaylistResponse();
+        }
+        ComplexPlaylistDTO complexPlaylist = complexPlaylists.getFirst();
+
+        PlaylistResponse.Playlist playlist = modelMapper.map(complexPlaylist, PlaylistResponse.Playlist.class);
+
+        playlist.setComment(complexPlaylist.getDescription());
+        Long userId = complexPlaylist.getUserId();
+        if (Objects.equals(userId, WebUtils.currentUserId())) {
+            playlist.setOwner(WebUtils.currentUser().getUsername());
+        }else {
+            UserDTO userDTO = userService.findByUserId(userId);
+            playlist.setOwner(userDTO.getUsername());
+        }
+
+        playlist.set_public(EnumPlayListVisibility.PUBLIC.getCode().equals(complexPlaylist.getVisibility()));
+
+        playlist.setAllowedUsers(Lists.newArrayList(new PlaylistsResponse.User(WebUtils.currentUser().getUsername())));
+
+        playlist.setComment(complexPlaylist.getDescription());
+
+        List<PlaylistResponse.Entry> entries = complexPlaylist.getComplexSongs().stream()
+                .map(n -> modelMapper.map(n, PlaylistResponse.Entry.class)).toList();
+        playlist.setEntries(entries);
+
+        return new PlaylistResponse(playlist);
+    }
 }

@@ -2,6 +2,7 @@ package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.PlaylistItemDO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -22,14 +23,14 @@ public class PlaylistItemRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
-    public void save(List<PlaylistItemDO> playlists) {
+    public void save(List<PlaylistItemDO> playlistItems) {
 
         String sql = """
                 
-                    insert into playlist(id, playlist_id, song_id, sort_order)
+                    insert into playlist_item(id, playlist_id, song_id, sort_order)
                     values(:id, :playlist_id, :song_id, :sort_order)
                 """;
-        SqlParameterSource[] batchArgs = playlists.stream()
+        SqlParameterSource[] batchArgs = playlistItems.stream()
                 .map(BeanPropertySqlParameterSource::new)
                 .toArray(SqlParameterSource[]::new);
        namedParameterJdbcTemplate.batchUpdate(sql, batchArgs);
@@ -39,7 +40,7 @@ public class PlaylistItemRepository {
     public int deleteByPlaylistId(Long playlistId) {
         String sql = """
                 
-                    delete from playlist where playlist_id = :playlistId
+                    delete from playlist_item where playlist_id = :playlistId
                 """;
 
         Map<String, Object> paramMap = new HashMap<>();
@@ -51,7 +52,7 @@ public class PlaylistItemRepository {
     public int deleteByPlaylistIdAndSortOrders(Long playlistId, List<Integer> sortOrders) {
         String sql = """
                 
-                    delete from playlist where playlist_id = :playlistId
+                    delete from playlist_item where playlist_id = :playlistId
                                            and sort_order in (:sort_order)
                 """;
 
@@ -62,4 +63,18 @@ public class PlaylistItemRepository {
         return namedParameterJdbcTemplate.update(sql, paramMap);
     }
 
+    public List<PlaylistItemDO> queryByPlaylistIds(List<Long> playlistIds) {
+
+            String sql = """
+                    select * from playlist_item where playlist_id in(:playlistIds) order by sort_order desc
+                """;
+
+            Map<String, Object> paramMap = new HashMap<>();
+
+            paramMap.put("playlistIds", playlistIds);
+
+            return namedParameterJdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper(PlaylistItemDO.class));
+
+
+    }
 }

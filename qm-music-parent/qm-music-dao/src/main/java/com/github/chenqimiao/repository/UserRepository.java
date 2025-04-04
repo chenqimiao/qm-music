@@ -70,4 +70,19 @@ public class UserRepository {
             return null;
         }
     }
+
+    public UserDO findByUserId(Long userId) {
+
+
+
+        String sql = "SELECT * FROM user WHERE `id` = ?";
+        try{
+
+
+            return (UserDO) jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper(UserDO.class) ,userId);
+
+        }catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+    }
 }

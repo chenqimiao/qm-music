@@ -9,4 +9,7 @@ import com.github.chenqimiao.dto.UserDTO;
 public interface UserService {
 
     UserDTO findByUsername(String username);
+
+
+    UserDTO findByUserId(Long userId);
 }

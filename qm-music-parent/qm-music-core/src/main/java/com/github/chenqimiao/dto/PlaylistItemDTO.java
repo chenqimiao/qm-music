@@ -17,7 +17,7 @@ public class PlaylistItemDTO {
 
     private Long songId;
 
-    private Long sortOrder;
+    private Integer sortOrder;
 
     private Long gmtCreate;
 

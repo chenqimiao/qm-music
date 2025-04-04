@@ -1,6 +1,8 @@
 package com.github.chenqimiao.util;
 
 import com.github.chenqimiao.constant.ServerConstants;
+import com.github.chenqimiao.dto.UserDTO;
+import com.github.chenqimiao.enums.EnumYesOrNo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -11,13 +13,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  **/
 public abstract class WebUtils {
 
-    public static Long currentUserId(HttpServletRequest request) {
-        return  (Long) request.getAttribute(ServerConstants.AUTHED_USER_ID);
-    }
-
-
     public static Long currentUserId() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return currentUserId(request);
+        return currentUser().getId();
     }
+
+    public static boolean currentUserIsAdmin() {
+        UserDTO userDTO = currentUser();
+        return EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin());
+    }
+
+    public static UserDTO currentUser() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        return  (UserDTO) request.getAttribute(ServerConstants.AUTHED_USER_KEY);
+    }
+
 }

@@ -106,6 +106,9 @@ CREATE TABLE playlist (
                           user_id INTEGER NOT NULL,
                           name VARCHAR(255) NOT NULL,
                           description VARCHAR(500),
+                          cover_art VARCHAR(64),
+                          song_count INTEGER NOT NULL,
+                          duration INTEGER,
                           visibility INT NOT NULL DEFAULT 0, -- 0-私有 1-公开 2-分享链接
                           gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                           gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))

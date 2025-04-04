@@ -26,4 +26,9 @@ public abstract class ModelMapperTypeConstants {
 
     public static final Type TYPE_LIST_SONG_WITH_STAR_DTO = new TypeToken<List<SongWithStarDTO>>() {}.getType();
 
+    public static final Type TYPE_LIST_PLAYLIST_DTO = new TypeToken<List<PlaylistDTO>>() {}.getType();
+
+    public static final Type TYPE_LIST_PLAYLIST_ITEM_DTO = new TypeToken<List<PlaylistItemDTO>>() {}.getType();
+
+
 }

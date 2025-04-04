@@ -1,8 +1,11 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,9 @@ public class UserRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Nullable
     public String findPassByUserName(String userName) {
@@ -44,6 +50,21 @@ public class UserRepository {
         String sql = "SELECT `id` FROM user WHERE `username` = ?";
         try{
             return jdbcTemplate.queryForObject(sql, Long.class, userName);
+
+        }catch (EmptyResultDataAccessException exception) {
+            return null;
+        }
+    }
+
+    public UserDO findByUsername(String username) {
+
+
+
+        String sql = "SELECT * FROM user WHERE `username` = ?";
+        try{
+
+
+            return (UserDO) jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper(UserDO.class) ,username);
 
         }catch (EmptyResultDataAccessException exception) {
             return null;

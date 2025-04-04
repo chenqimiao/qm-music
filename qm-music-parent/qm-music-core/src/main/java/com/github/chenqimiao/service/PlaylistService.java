@@ -17,4 +17,12 @@ public interface PlaylistService {
     List<PlaylistDTO> queryPlaylistsByPlaylistIds(List<Long> playlistIds);
 
     List<PlaylistItemDTO> queryPlaylistItemsByPlaylistIds(List<Long> playlistIds);
+
+    PlaylistDTO queryPlaylistByPlaylistId(Long playlistId);
+
+    PlaylistDTO createPlayListAndReturn(String name, Long userId);
+
+    int updatePlaylistNameByPlaylistId(String name, Long playlistId);
+
+    void saveSongToPlaylist(Long songId, Long userId, Long id);
 }

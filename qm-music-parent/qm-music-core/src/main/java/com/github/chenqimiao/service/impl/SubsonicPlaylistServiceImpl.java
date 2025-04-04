@@ -5,12 +5,18 @@ import com.github.chenqimiao.DO.PlaylistItemDO;
 import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistItemDTO;
+import com.github.chenqimiao.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.repository.PlaylistRepository;
 import com.github.chenqimiao.service.PlaylistService;
+import com.google.common.collect.Lists;
+import io.github.mocreates.Sequence;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +37,9 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
     @Autowired
     private PlaylistItemRepository playlistItemRepository;
 
+    @Autowired
+    private Sequence sequence;
+
     @Override
     public List<PlaylistDTO> queryPlaylistsByUserId(Long userId) {
         List<PlaylistDO> playlists = playlistRepository.getPlaylists(userId);
@@ -47,5 +56,44 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
     public List<PlaylistItemDTO> queryPlaylistItemsByPlaylistIds(List<Long> playlistIds) {
         List<PlaylistItemDO> playlistItems = playlistItemRepository.queryByPlaylistIds(playlistIds);
         return ucModelMapper.map(playlistItems, ModelMapperTypeConstants.TYPE_LIST_PLAYLIST_ITEM_DTO);
+    }
+
+    @Override
+    public PlaylistDTO queryPlaylistByPlaylistId(Long playlistId) {
+        List<PlaylistDTO> playlists = this.queryPlaylistsByPlaylistIds(Lists.newArrayList(playlistId));
+        return CollectionUtils.isEmpty(playlists) ? null : playlists.getFirst();
+    }
+
+    @Override
+    public PlaylistDTO createPlayListAndReturn(String name, Long userId) {
+        long id = sequence.nextId();
+        PlaylistDO playlistDO = new PlaylistDO();
+        playlistDO.setId(id);
+        playlistDO.setName(name);
+        playlistDO.setUserId(userId);
+        playlistDO.setDescription("");
+        playlistDO.setCover_art("");
+        playlistDO.setVisibility(EnumPlayListVisibility.PRIVATE.getCode());
+        playlistDO.setSong_count(NumberUtils.INTEGER_ZERO);
+        playlistRepository.save(playlistDO);
+        return this.queryPlaylistByPlaylistId(id);
+    }
+
+    @Override
+    public int updatePlaylistNameByPlaylistId(String name, Long playlistId) {
+
+       return playlistRepository.updateNameByPlaylistId(name, playlistId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveSongToPlaylist(Long songId, Long userId, Long playlistId) {
+        PlaylistItemDO playlistItemDO = new PlaylistItemDO();
+        playlistItemDO.setId(sequence.nextId());
+        playlistItemDO.setPlaylist_id(playlistId);
+        playlistItemDO.setSong_id(songId);
+        playlistItemRepository.save(playlistItemDO);
+
+        playlistRepository.incrSongCount(playlistId, 1);
     }
 }

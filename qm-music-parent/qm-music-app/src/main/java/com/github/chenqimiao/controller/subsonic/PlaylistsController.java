@@ -6,6 +6,7 @@ import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
 import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
 import com.github.chenqimiao.service.PlaylistService;
@@ -119,5 +120,14 @@ public class PlaylistsController {
         playlist.setEntries(entries);
 
         return new PlaylistResponse(playlist);
+    }
+
+    @RequestMapping(value = "/createPlaylist")
+    public PlaylistResponse createPlaylist(CreatePlaylistRequest request) {
+        // create or update playlist
+        Long playlistId = playlistComplexService.createOrUpdatePlaylist(request.getPlaylistId(),
+                request.getName(), request.getSongId(), WebUtils.currentUserId());
+
+        return getPlaylist(playlistId);
     }
 }

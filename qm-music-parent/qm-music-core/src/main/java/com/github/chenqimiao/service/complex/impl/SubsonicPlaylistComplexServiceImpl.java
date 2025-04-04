@@ -10,8 +10,12 @@ import com.github.chenqimiao.service.complex.SongComplexService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +34,10 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
 
     @Autowired
     private ModelMapper modelMapper;
+//
+//    @Autowired
+//    private TransactionTemplate transactionTemplate;
+
 
     @Override
     public List<ComplexPlaylistDTO> queryComplexPlaylist(List<Long> playlistIds, Long userId) {
@@ -54,4 +62,43 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             return complexPlaylistDTO;
         }).toList();
     }
+
+    @Override
+    public Long createOrUpdatePlaylist(Long playlistId, String name, Long songId, Long userId) {
+
+        PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
+
+        return this.doCreateOrUpdatePlaylist(playlistDTO, playlistId, name, songId, userId);
+    }
+
+
+    @Transactional
+    public Long doCreateOrUpdatePlaylist(PlaylistDTO existPlaylist ,
+                                         Long playlistId, String name, Long songId, Long userId){
+
+        PlaylistDTO playlistDTO ;
+
+        if (playlistId == null) {
+
+            playlistDTO =  playlistService.createPlayListAndReturn(name, userId);
+        }else {
+            if (existPlaylist == null
+                    || !Objects.equals(existPlaylist.getUserId(), userId)) {
+                throw new RuntimeException("業務異常");
+            }
+
+            playlistService.updatePlaylistNameByPlaylistId(name, playlistId);
+
+            playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
+        }
+
+
+        if (songId != null) {
+
+            playlistService.saveSongToPlaylist(songId, userId, playlistDTO.getId());
+        }
+
+        return playlistDTO.getId();
+    }
+
 }

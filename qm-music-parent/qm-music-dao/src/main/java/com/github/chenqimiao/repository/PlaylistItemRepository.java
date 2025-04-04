@@ -37,6 +37,26 @@ public class PlaylistItemRepository {
 
     }
 
+
+    public int save(PlaylistItemDO playlistItem) {
+
+        String sql = """
+                
+                   INSERT INTO playlist_item (id, playlist_id, song_id, sort_order)
+                                                                    VALUES (
+                                                                        :id,
+                                                                        :playlist_id,
+                                                                        :song_id,
+                                                                        COALESCE(
+                                                                            (SELECT MAX(sort_order) + 1 FROM playlist_item WHERE playlist_id = :playlist_id),
+                                                                            0
+                                                                        )
+                                                                    );
+                """;
+        BeanPropertySqlParameterSource beanPropertySqlParameterSource = new BeanPropertySqlParameterSource(playlistItem);
+        return namedParameterJdbcTemplate.update(sql, beanPropertySqlParameterSource);
+    }
+
     public int deleteByPlaylistId(Long playlistId) {
         String sql = """
                 

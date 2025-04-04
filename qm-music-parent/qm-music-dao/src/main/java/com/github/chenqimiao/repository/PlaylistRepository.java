@@ -72,4 +72,28 @@ public class PlaylistRepository {
     }
 
 
+    public int updateNameByPlaylistId(String name, Long playlistId) {
+        String sql = """
+                   update playlist set name = :name where id = :id
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("name", name);
+        paramMap.put("id", playlistId);
+
+       return namedParameterJdbcTemplate.update(sql, paramMap);
+    }
+
+    public int incrSongCount(Long playlistId, int num) {
+
+        String sql = """
+                   update playlist set song_count = song_count + :num where id = :id
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", playlistId);
+        paramMap.put("num", num);
+
+        return namedParameterJdbcTemplate.update(sql, paramMap);
+    }
 }

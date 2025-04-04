@@ -14,4 +14,5 @@ public interface PlaylistComplexService {
 
     List<ComplexPlaylistDTO> queryComplexPlaylist(List<Long> playlistIds, @Nullable Long userId);
 
+    Long createOrUpdatePlaylist(Long playlistId, String name, Long songId, Long userId);
 }

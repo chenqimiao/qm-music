@@ -114,7 +114,7 @@ CREATE TABLE playlist (
                           gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
 CREATE INDEX idx_playlist_user ON playlist(user_id);
-CREATE unique index idx_playlist_user ON playlist(user_id, name);
+CREATE unique index idx_playlist_user_name ON playlist(user_id, name);
 
 CREATE TRIGGER IF NOT EXISTS update_playlist_gmt_modify
     AFTER UPDATE ON playlist

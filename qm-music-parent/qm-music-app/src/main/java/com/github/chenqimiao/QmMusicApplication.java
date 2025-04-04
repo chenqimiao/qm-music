@@ -2,7 +2,6 @@ package com.github.chenqimiao;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * @author Qimiao Chen
@@ -12,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class QmMusicApplication  {
 
     public static void main(String[] args) {
+        System.setProperty("jsoup.unsafe.ssl", "true");
         SpringApplication.run(QmMusicApplication.class, args);
     }
 

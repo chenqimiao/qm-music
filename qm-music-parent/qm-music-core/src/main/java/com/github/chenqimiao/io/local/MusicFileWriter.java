@@ -1,7 +1,7 @@
 package com.github.chenqimiao.io.local;
 
-import com.github.chenqimiao.io.model.MusicAlbumMeta;
-import com.github.chenqimiao.io.model.MusicMeta;
+import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
+import com.github.chenqimiao.io.local.model.MusicMeta;
 import lombok.SneakyThrows;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;

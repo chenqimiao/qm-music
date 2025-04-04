@@ -112,4 +112,13 @@ public class SubsonicArtistServiceImpl implements ArtistService {
         return ucModelMapper.map(artistList, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
     }
 
+    @Override
+    public List<ArtistDTO> searchByNames(List<String> artistNames) {
+        if (CollectionUtils.isEmpty(artistNames)) {
+            return Collections.emptyList();
+        }
+        List<ArtistDO> artists = artistRepository.queryByUniqueKeys(artistNames);
+        return ucModelMapper.map(artists, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
+    }
+
 }

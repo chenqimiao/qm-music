@@ -31,4 +31,7 @@ public interface ArtistService {
     List<ArtistDTO> batchQueryArtistByArtistIds(List<Long> artistIds);
 
 
+    List<ArtistDTO> searchByNames(List<String> artistNames);
+
+
 }

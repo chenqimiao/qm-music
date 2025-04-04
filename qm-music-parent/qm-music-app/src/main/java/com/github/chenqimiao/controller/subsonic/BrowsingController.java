@@ -4,8 +4,11 @@ import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
+import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
+import com.github.chenqimiao.request.subsonic.ArtistInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.ArtistService;
@@ -19,12 +22,14 @@ import com.google.common.collect.Lists;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,6 +61,9 @@ public class BrowsingController {
 
     @Autowired
     private ArtistComplexService artistComplexService;
+
+    @Autowired
+    private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
     @GetMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
@@ -197,5 +205,55 @@ public class BrowsingController {
         albumResponse.setAlbum(album);
         return albumResponse;
     }
+
+    private static final Type TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST = new TypeToken<List<ArtistInfoResponse.Artist>>() {}.getType();
+
+    @GetMapping(value = "/getArtistInfo2")
+    public ArtistInfoResponse getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
+        List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(Lists.newArrayList(artistInfoRequest.getId()));
+        if (CollectionUtils.isEmpty(artists)) {
+            return new ArtistInfoResponse();
+        }
+        ArtistDTO artistDTO = artists.getFirst();
+        ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDTO.getName());
+        String musicBrainzId = metaDataFetchClientCommander.getMusicBrainzId(artistDTO.getName());
+        String lastFmUrl = metaDataFetchClientCommander.getLastFmUrl(artistDTO.getName());
+        List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
+        ArtistInfoResponse.ArtistInfo2 artistInfo2 = ArtistInfoResponse.ArtistInfo2.builder()
+                .biography(artistInfo != null ? artistInfo.getBiography() : null)
+                .musicBrainzId(musicBrainzId)
+                .lastFmUrl(lastFmUrl)
+                .smallImageUrl(artistInfo != null ? artistInfo.getSmallImageUrl() : null)
+                .mediumImageUrl(artistInfo != null ? artistInfo.getMediumImageUrl() : null)
+                .largeImageUrl(artistInfo != null ? artistInfo.getLargeImageUrl() : null)
+                .build();
+        if (CollectionUtils.isNotEmpty(similarArtistsName)) {
+            similarArtistsName = Lists.partition(similarArtistsName, artistInfoRequest.getCount()).getFirst();
+            List<ArtistDTO> similarArtists = artistService.searchByNames(similarArtistsName);
+            List<String> localArtistNames = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(similarArtists)) {
+                List<Long> artistIds = similarArtists.stream().map(ArtistDTO::getId).toList();
+                List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, null);
+                localArtistNames.addAll(complexArtists.stream().map(ComplexArtistDTO::getName).toList());
+                artistInfo2.setSimilarArtists(modelMapper.map(complexArtists, TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST));
+            }
+
+            if (Boolean.TRUE.equals(artistInfoRequest.getIncludeNotPresent())) {
+                List<String> diffSimilarArtistsNames = similarArtistsName
+                        .stream().filter(n -> !localArtistNames.contains(n)).toList();
+                List<ArtistInfoResponse.Artist> similarArtistsNotLocal = diffSimilarArtistsNames.stream().map(n -> {
+                    ArtistInfoResponse.Artist artist = new ArtistInfoResponse.Artist();
+                    artist.setName(n);
+                    artist.setAlbumCount(0);
+                    return artist;
+                }).toList();
+                artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);
+            }
+
+        }
+
+        return new ArtistInfoResponse(artistInfo2);
+    }
+
 
 }

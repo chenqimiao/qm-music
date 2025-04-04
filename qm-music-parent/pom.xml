@@ -141,6 +141,16 @@
                 <artifactId>guava</artifactId>
                 <version>33.4.6-jre</version>
             </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.19.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>2.9.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

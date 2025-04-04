@@ -1,4 +1,4 @@
-package com.github.chenqimiao.io.model;
+package com.github.chenqimiao.io.local.model;
 
 import lombok.*;
 

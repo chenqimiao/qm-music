@@ -96,4 +96,30 @@ public class PlaylistRepository {
 
         return namedParameterJdbcTemplate.update(sql, paramMap);
     }
+
+
+    public int updateByPlaylistId(Map<String, Object> paramMap) {
+
+        StringBuilder sqlSb = new StringBuilder();
+        sqlSb.append("update playlist ");
+
+        var playlistId = paramMap.get("playlistId");
+        var name = paramMap.get("name");
+        var description = paramMap.get("description");
+        var visibility = paramMap.get("visibility");
+
+        if (name != null) {
+            sqlSb.append ("set name = :name ");
+        }
+        if (description != null) {
+            sqlSb.append ("set description = :description ");
+        }
+        if (visibility != null) {
+            sqlSb.append ("set visibility = :visibility ");
+        }
+        sqlSb.append(" where id = :playlistId");
+
+        return namedParameterJdbcTemplate.update(sqlSb.toString(), paramMap);
+
+    }
 }

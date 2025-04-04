@@ -1,23 +1,23 @@
 package com.github.chenqimiao.service.complex.impl;
 
+import com.github.chenqimiao.DO.PlaylistItemDO;
 import com.github.chenqimiao.dto.ComplexPlaylistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistItemDTO;
 import com.github.chenqimiao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.repository.PlaylistRepository;
+import com.github.chenqimiao.request.UpdatePlaylistRequest;
 import com.github.chenqimiao.service.PlaylistService;
 import com.github.chenqimiao.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -117,6 +117,45 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     public void deletePlaylistByPlaylistId(Long playlistId) {
         playlistItemRepository.deleteByPlaylistId(playlistId);
         playlistRepository.delById(playlistId);
+    }
+
+    @Override
+    @Transactional
+    public void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest) {
+        Long playlistId = updatePlaylistRequest.getPlaylistId();
+        List<Long> songIdToAdd = updatePlaylistRequest.getSongIdToAdd();
+        if (CollectionUtils.isNotEmpty(songIdToAdd)) {
+            songIdToAdd.stream().forEach(songId -> {
+                PlaylistItemDO playlistItem = new PlaylistItemDO();
+                playlistItemRepository.save(playlistItem);
+            });
+        }
+        List<Long> songIndexToRemove = updatePlaylistRequest.getSongIndexToRemove();
+        if (CollectionUtils.isNotEmpty(songIndexToRemove)) {
+            playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
+        }
+
+        int incrNum = CollectionUtils.size(songIdToAdd) - CollectionUtils.size(songIndexToRemove);
+
+        if (incrNum != 0) {
+            playlistRepository.incrSongCount(playlistId, incrNum);
+        }
+
+        String name = updatePlaylistRequest.getName();
+        Integer visibility = updatePlaylistRequest.getVisibility();
+        String description = updatePlaylistRequest.getDescription();
+
+        if (name != null || description != null || visibility != null) {
+            Map<String, Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("playlistId", playlistId);
+            paramMap.put("name", name);
+            paramMap.put("description", description);
+            paramMap.put("visibility", visibility);
+            playlistRepository.updateByPlaylistId(paramMap);
+        }
+
+
+
     }
 
 }

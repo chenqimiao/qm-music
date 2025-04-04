@@ -1,6 +1,7 @@
 package com.github.chenqimiao.service.complex;
 
 import com.github.chenqimiao.dto.ComplexPlaylistDTO;
+import com.github.chenqimiao.request.UpdatePlaylistRequest;
 import jakarta.annotation.Nullable;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface PlaylistComplexService {
     Long createOrUpdatePlaylist(Long playlistId, String name, Long songId, Long userId);
 
     void deletePlaylistByPlaylistId(Long playlistId);
+
+    void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest);
 }

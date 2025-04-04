@@ -7,6 +7,7 @@ import com.github.chenqimiao.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
+import com.github.chenqimiao.request.UpdatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
 import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
@@ -141,6 +142,30 @@ public class PlaylistsController {
         }
 
         playlistComplexService.deletePlaylistByPlaylistId(playlistId);
+
+        return new SubsonicPong();
+    }
+
+
+    @RequestMapping(value = "/updatePlaylist")
+    public SubsonicPong updatePlaylist( @RequestParam Long playlistId, String name, String comment, List<Long> songIdToAdd,
+                                       List<Long> songIdToRemove, @RequestParam(value = "public", required = false)Boolean _public) {
+        PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
+
+        if (playlistDTO == null || !Objects.equals(playlistDTO.getId(), WebUtils.currentUserId())) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
+        }
+        com.github.chenqimiao.request.UpdatePlaylistRequest updatePlaylistRequest = new UpdatePlaylistRequest();
+        updatePlaylistRequest.setPlaylistId(playlistId);
+        updatePlaylistRequest.setName(name);
+        updatePlaylistRequest.setDescription(comment);
+        updatePlaylistRequest.setSongIdToAdd(songIdToAdd);
+        updatePlaylistRequest.setSongIndexToRemove(songIdToRemove);
+        if (_public != null) {
+            updatePlaylistRequest.setVisibility(Boolean.TRUE.equals(_public)? EnumPlayListVisibility.PUBLIC.getCode()
+                    : EnumPlayListVisibility.PRIVATE.getCode());
+        }
+        playlistComplexService.updatePlaylist(updatePlaylistRequest);
 
         return new SubsonicPong();
     }

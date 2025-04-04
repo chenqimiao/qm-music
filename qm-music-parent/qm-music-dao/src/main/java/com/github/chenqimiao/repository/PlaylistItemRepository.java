@@ -97,4 +97,24 @@ public class PlaylistItemRepository {
 
 
     }
+
+    public void deleteByPlaylistIdAndPositionIndex(Long playlistId, List<Long> songIndexToRemove) {
+        String sql = """
+                   delete from playlist_item where id in(
+                       SELECT id
+                       FROM (
+                           SELECT
+                               *,
+                               ROW_NUMBER() OVER (ORDER BY sort_order DESC) AS rank
+                           FROM playlist_item where playlist_id = :playlistId
+                       )
+                       WHERE rank IN (:ranks)
+                   );
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("playlistId", playlistId);
+        paramMap.put("ranks", songIndexToRemove);
+        namedParameterJdbcTemplate.update(sql, paramMap);
+    }
 }

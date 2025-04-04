@@ -143,7 +143,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @SneakyThrows
     private void save(MusicMeta musicMeta, Path path) {
-        String delimiterRegx = "\"(and|&|,|、)\"";
+        String delimiterRegx = "(and|&|,|、)+";
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
         List<ArtistDO> songArtists = new ArrayList<>();

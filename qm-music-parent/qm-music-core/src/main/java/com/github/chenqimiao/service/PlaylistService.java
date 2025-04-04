@@ -26,6 +26,6 @@ public interface PlaylistService {
 
     void saveSongToPlaylist(Long songId, Long userId, Long id);
 
-    List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Integer playlistId);
+    List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId);
 
 }

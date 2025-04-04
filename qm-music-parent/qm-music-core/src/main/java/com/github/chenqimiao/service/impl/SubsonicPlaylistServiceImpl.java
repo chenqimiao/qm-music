@@ -96,4 +96,10 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
 
         playlistRepository.incrSongCount(playlistId, 1);
     }
+
+    @Override
+    public List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId) {
+        List<PlaylistItemDTO> playlistItems = this.queryPlaylistItemsByPlaylistIds(Lists.newArrayList(playlistId));
+        return playlistItems;
+    }
 }

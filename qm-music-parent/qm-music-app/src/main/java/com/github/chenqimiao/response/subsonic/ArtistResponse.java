@@ -42,6 +42,11 @@ public class ArtistResponse extends SubsonicResponse {
         @JacksonXmlProperty(localName = "album")
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private List<Album> albumList;
+
+        // mock: 私人乐库喜欢才收藏
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 
     @Getter
@@ -79,12 +84,19 @@ public class ArtistResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true ,localName = "year")
         private String releaseYear;
         @Builder.Default
+        @JacksonXmlProperty(isAttribute = true)
         private Boolean isVideo = false;
         @Builder.Default
+        @JacksonXmlProperty(isAttribute = true)
         private String mediaType="album";
 
         public String getName() {
             return title;
         }
+
+        // mock: 私人乐库喜欢才收藏
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 }

@@ -60,6 +60,11 @@ public class AlbumResponse extends SubsonicResponse {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")
         private List<Song> songs;
+
+        // mock: 私人乐库喜欢才收藏
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 
     @Setter

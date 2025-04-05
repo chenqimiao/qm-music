@@ -31,14 +31,19 @@ public class InsecureHttpClient {
         HostnameVerifier allHostsValid = (hostname, session) -> true;
 
         // 3. 配置 SSLContext 完全开放
-        SSLContext sslContext = SSLContext.getInstance("SSL");
+        SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, trustAllCerts, new SecureRandom());
+        // 关闭主机校验
+        SSLParameters sslParams = new SSLParameters();
+        sslParams.setEndpointIdentificationAlgorithm(""); // 关闭主机名校验
+        sslParams.setProtocols(new String[]{"SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"}); // 设置支持的协议
 
-        // 4. 构建 HttpClient
+        // 5. 构建 HttpClient
         return HttpClient.newBuilder()
                 .sslContext(sslContext)
                 .sslParameters(getInsecureSSLParameters())  // 禁用协议检查
                 .connectTimeout(Duration.ofSeconds(15))
+                .sslParameters(sslParams)
                 .build();
     }
 

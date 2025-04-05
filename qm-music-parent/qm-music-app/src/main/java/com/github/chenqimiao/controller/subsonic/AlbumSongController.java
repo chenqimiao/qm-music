@@ -1,8 +1,10 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.CoverArtPrefixConstants;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
+import com.github.chenqimiao.dto.SongDTO;
 import com.github.chenqimiao.dto.UserStarResourceDTO;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
@@ -19,6 +21,7 @@ import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +57,7 @@ public class AlbumSongController {
 
     @Autowired
     private SongComplexService complexSongService;
+
 
     private static final Type TYPE_LIST_ALBUM = new TypeToken<List<AlbumList2Response.Album>>() {}.getType();
     private static final Type TYPE_LIST_SONG = new TypeToken<List<AlbumResponse.Song>>() {}.getType();
@@ -163,6 +168,61 @@ public class AlbumSongController {
 
         SongsByGenreResponse.SongsByGenre songsByGenre = SongsByGenreResponse.SongsByGenre.builder().songs(modelMapper.map(complexSongs, TYPE_LIST_RANDOM_SONG)).build();
         return new SongsByGenreResponse(songsByGenre);
+    }
+
+
+    public static final Type TYPE_LIST_SIMILAR_SONG = new TypeToken<List<GetSimilarSongsResponse.Song>>() {}.getType();
+
+    @RequestMapping("/getSimilarSongs")
+    public GetSimilarSongsResponse getSimilarSongs(@RequestParam("id") String vagueId
+            , @RequestParam(required = false, name = "count",defaultValue = "50") Long count) {
+
+        String[] split = vagueId.split("-");
+
+        if (split.length <= 1 ) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+        }
+
+        long bizId = NumberUtils.toLong(split[1] , NumberUtils.LONG_ZERO);
+
+        if (bizId <= NumberUtils.LONG_ZERO) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+        }
+
+        List<ComplexSongDTO> similarSongs = new ArrayList<>();
+
+        Long artistId = bizId;
+        if (vagueId.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){
+            AlbumDTO albumDTO = albumService.queryAlbumByAlbumId(bizId);
+
+            artistId = albumDTO.getArtistId();
+
+        }else if (vagueId.startsWith(CoverArtPrefixConstants.ARTIST_ID_PREFIX)){
+            // do nothing
+        }else {
+            SongDTO songDTO = songService.queryBySongId(bizId);
+            artistId = songDTO.getArtistId();
+        }
+
+        similarSongs = complexSongService.findSimilarSongsByArtistId(artistId, count);
+
+        List<GetSimilarSongsResponse.Song> similarSongList = modelMapper.map(similarSongs, TYPE_LIST_SIMILAR_SONG);
+
+        return new GetSimilarSongsResponse(new GetSimilarSongsResponse.SimilarSongs(similarSongList));
+    }
+
+    private static final Type TYPE_LIST_SIMILAR2_SONG = new TypeToken<List<GetSimilarSongs2Response.Song>>() {}.getType();
+
+
+    @RequestMapping("/getSimilarSongs2")
+    public GetSimilarSongs2Response getSimilarSongs2(@RequestParam("id") Long artistId
+            , @RequestParam(required = false, name = "count",defaultValue = "50") Long count) {
+       List<ComplexSongDTO> similarSongs = complexSongService.findSimilarSongsByArtistId(artistId, count);
+
+
+        List<GetSimilarSongs2Response.Song> similarSongList = modelMapper.map(similarSongs, TYPE_LIST_SIMILAR2_SONG);
+
+        return new GetSimilarSongs2Response(new GetSimilarSongs2Response.SimilarSongs(similarSongList));
     }
 
 }

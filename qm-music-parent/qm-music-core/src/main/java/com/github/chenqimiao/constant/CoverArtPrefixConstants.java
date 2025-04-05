@@ -6,10 +6,10 @@ package com.github.chenqimiao.constant;
  **/
 public abstract class CoverArtPrefixConstants {
 
-    public static final String ALBUM_COVER_ART_PREFIX = "al-";
+    public static final String ALBUM_ID_PREFIX = "al-";
 
 
-    public static final String ARTIST_COVER_ART_PREFIX = "ar-";
+    public static final String ARTIST_ID_PREFIX = "ar-";
 
 
     public static final String SONG_COVER_ART_PREFIX = "";

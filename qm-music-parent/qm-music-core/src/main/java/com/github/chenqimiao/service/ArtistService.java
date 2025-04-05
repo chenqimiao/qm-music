@@ -34,4 +34,8 @@ public interface ArtistService {
     List<ArtistDTO> searchByNames(List<String> artistNames);
 
 
+    ArtistDTO queryArtistByArtistId(Long artistId);
+
+
+
 }

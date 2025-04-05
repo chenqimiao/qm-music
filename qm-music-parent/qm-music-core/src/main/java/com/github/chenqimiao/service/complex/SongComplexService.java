@@ -13,4 +13,7 @@ public interface SongComplexService {
 
     List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId);
 
+    List<ComplexSongDTO> findSimilarSongsByArtistId(Long artistId, Long count);
+
+    List<ComplexSongDTO> findSongsByArtistId(List<Long> artistId);
 }

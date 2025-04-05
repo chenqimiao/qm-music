@@ -47,9 +47,9 @@ public class MediaRetrievalController {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }
 
-        if (id.startsWith(CoverArtPrefixConstants.ALBUM_COVER_ART_PREFIX)){
+        if (id.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
-        }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_COVER_ART_PREFIX)){
+        }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_ID_PREFIX)){
             // do not support artist cover art
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
             //return ResponseEntity.ok().body(null);

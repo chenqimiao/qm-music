@@ -31,7 +31,10 @@ public class ArtistRelationRepository {
             sqlSb.append(" and `id` = :id ");
         }
         if (params.get("artistId") != null) {
-            sqlSb.append(" and `artist_id` >= :artistId ");
+            sqlSb.append(" and `artist_id` = :artistId ");
+        }
+        if (params.get("artistIds") != null) {
+            sqlSb.append(" and `artist_id` in (:artistId) ");
         }
         if (params.get("type") != null) {
             sqlSb.append(" and `type` = :type ");

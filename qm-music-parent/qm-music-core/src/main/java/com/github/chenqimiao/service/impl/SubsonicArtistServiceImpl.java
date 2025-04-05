@@ -12,6 +12,7 @@ import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.util.TransliteratorUtils;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -134,6 +135,15 @@ public class SubsonicArtistServiceImpl implements ArtistService {
                     .collect(Collectors.toList());;
         }
         return ucModelMapper.map(artists, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
+    }
+
+    @Override
+    public ArtistDTO queryArtistByArtistId(Long artistId) {
+        List<ArtistDTO> artists = this.batchQueryArtistByArtistIds(Lists.newArrayList(artistId));
+        if (CollectionUtils.isNotEmpty(artists)) {
+            return artists.getFirst();
+        }
+        return null;
     }
 
 }

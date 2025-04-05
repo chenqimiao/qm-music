@@ -6,6 +6,7 @@ import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
+import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -73,6 +74,15 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
         List<AlbumDO> albums = albumRepository.queryByIds(albumIds);
         return ucModelMapper.map(albums, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO);
 
+    }
+
+    @Override
+    public AlbumDTO queryAlbumByAlbumId(Long albumId) {
+        List<AlbumDTO> albums = this.batchQueryAlbumByAlbumIds(Lists.newArrayList(albumId));
+        if (CollectionUtils.isNotEmpty(albums)) {
+            return albums.getFirst();
+        }
+        return null;
     }
 
 

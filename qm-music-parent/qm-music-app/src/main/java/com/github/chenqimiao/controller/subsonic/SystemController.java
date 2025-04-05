@@ -80,7 +80,7 @@ public class SystemController {
     private final Object lock = new Object();
     private final static Set<Object> lockCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    @GetMapping(value = "refresh")
+    @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
         try {
             if (lockCache.add(lock)) {

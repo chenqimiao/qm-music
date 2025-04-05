@@ -51,9 +51,13 @@ public class ArtistInfoResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Artist {
+        @JacksonXmlProperty(isAttribute = true)
         private Long id;
+        @JacksonXmlProperty(isAttribute = true)
         private String name;
+        @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
+        @JacksonXmlProperty(isAttribute = true)
         private Integer albumCount;
     }
 

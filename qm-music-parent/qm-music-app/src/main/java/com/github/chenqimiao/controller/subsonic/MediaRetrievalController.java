@@ -41,7 +41,7 @@ public class MediaRetrievalController {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }
 
-        long bizId = NumberUtils.toLong(split[1] , NumberUtils.LONG_ZERO);
+        long bizId = NumberUtils.toLong(split[split.length-1] , NumberUtils.LONG_ZERO);
 
         if (bizId <= NumberUtils.LONG_ZERO) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);

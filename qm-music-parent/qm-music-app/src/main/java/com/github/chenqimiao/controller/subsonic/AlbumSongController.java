@@ -19,6 +19,7 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -183,7 +184,7 @@ public class AlbumSongController {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }
 
-        long bizId = NumberUtils.toLong(split[1] , NumberUtils.LONG_ZERO);
+        long bizId = NumberUtils.toLong(split[split.length-1] , NumberUtils.LONG_ZERO);
 
         if (bizId <= NumberUtils.LONG_ZERO) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
@@ -206,7 +207,10 @@ public class AlbumSongController {
 
         similarSongs = complexSongService.findSimilarSongsByArtistId(artistId, count);
 
-        List<GetSimilarSongsResponse.Song> similarSongList = modelMapper.map(similarSongs, TYPE_LIST_SIMILAR_SONG);
+
+        List<ComplexSongDTO> limitedSongs = Lists.partition(similarSongs, count.intValue()).getFirst();
+
+        List<GetSimilarSongsResponse.Song> similarSongList = modelMapper.map(limitedSongs, TYPE_LIST_SIMILAR_SONG);
 
         return new GetSimilarSongsResponse(new GetSimilarSongsResponse.SimilarSongs(similarSongList));
     }

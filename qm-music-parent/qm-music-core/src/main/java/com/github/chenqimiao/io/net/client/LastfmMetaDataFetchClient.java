@@ -23,7 +23,8 @@ import java.util.List;
 @Component
 public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
 
-    private static final String BASE_URL = "https://www.lastfm.com/";
+    //private static final String BASE_URL = "https://www.lastfm.com/";
+    private static final String BASE_URL = "https://www.last.fm/";
 
     @Override
     @SneakyThrows

@@ -102,10 +102,10 @@ public class SubsonicSongComplexService implements SongComplexService {
     }
 
     @Override
-    public List<ComplexSongDTO> findSongsByArtistId(List<Long> artistId) {
+    public List<ComplexSongDTO> findSongsByArtistId(List<Long> artistIds) {
 
         Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
-        params.put("artistIds", artistId);
+        params.put("artistIds", artistIds);
         params.put("type", EnumArtistRelationType.SONG.getCode());
         List<ArtistRelationDO> artistRelationList = artistRelationRepository.search(params);
 

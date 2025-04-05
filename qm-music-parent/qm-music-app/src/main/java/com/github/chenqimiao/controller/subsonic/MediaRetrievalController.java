@@ -37,7 +37,7 @@ public class MediaRetrievalController {
         String[] split = id.split("-");
         CoverStreamDTO songCoverStreamDTO = null;
 
-        if (split.length <= 1 ) {
+        if (split.length <= 0 ) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }
 

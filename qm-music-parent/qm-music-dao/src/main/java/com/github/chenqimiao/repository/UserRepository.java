@@ -103,8 +103,8 @@ public class UserRepository {
 
 
         var sql = """
-                    insert into user(username, password, is_admin, email)
-                    values(:username,:password,:is_admin,:email);
+                    insert into user(username, password, is_admin, email, force_password_change)
+                    values(:username,:password,:is_admin,:email,:force_password_change);
                 """;
 
          namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(userDO));
@@ -117,6 +117,7 @@ public class UserRepository {
         var password = params.get("password");
         var isAdmin = params.get("isAdmin");
         var email = params.get("email");
+        var forcePasswordChange = params.get("forcePasswordChange");
 
         if (password != null) {
             sqlSb.append ("set password = :password ");
@@ -127,6 +128,9 @@ public class UserRepository {
         if (email != null) {
             sqlSb.append ("set email = :email ");
 
+        }
+        if (forcePasswordChange != null) {
+            sqlSb.append ("set force_password_change = :forcePasswordChange ");
         }
         sqlSb.append(" where username = :username");
 

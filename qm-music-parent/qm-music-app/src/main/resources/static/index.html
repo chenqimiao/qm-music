@@ -30,7 +30,30 @@
         .form-group label{display:block;margin-bottom:0.5rem;color:#4a5568}
         input{width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;transition:border-color 0.2s}
         input:focus{outline:none;border-color:#667eea}
-        .checkbox-group{display:flex;align-items:center;gap:8px}
+        /* 新增/修改的样式 */
+        .checkbox-container {
+            width: 100%;
+            margin-top: 8px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: flex-start; /* 左对齐 */
+            gap: 8px; /* 调整间距 */
+        }
+        .checkbox-group label {
+            order: 2; /* 文字在右边 */
+            margin: 0;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        input[type="checkbox"] {
+            order: 1; /* 复选框在左边 */
+            margin: 0;
+            width: 16px;
+            height: 16px;
+        }
         .modal-actions{margin-top:2rem;display:flex;gap:8px;justify-content:flex-end}
     </style>
 </head>
@@ -71,7 +94,6 @@
             </button>
         </div>
 
-        <!-- 修改密码弹窗 -->
         <div class="modal" v-if="showPasswordForm">
             <div class="modal-content">
                 <div class="modal-header"><h3>修改密码 - {{ currentUser.username }}</h3></div>
@@ -86,7 +108,6 @@
             </div>
         </div>
 
-        <!-- 用户信息弹窗 -->
         <div class="modal" v-if="showUserForm">
             <div class="modal-content">
                 <div class="modal-header"><h3>{{ isNewUser ? '新建用户' : '编辑用户' }}</h3></div>
@@ -102,7 +123,7 @@
                     <label>密码</label>
                     <input type="password" v-model="userForm.password">
                 </div>
-                <div class="form-group">
+                <div class="form-group checkbox-container">
                     <div class="checkbox-group">
                         <input type="checkbox" id="isAdmin" v-model="userForm.isAdmin">
                         <label for="isAdmin">管理员权限</label>
@@ -136,23 +157,53 @@
             }
         },
         async mounted() {
+            if (!this.verifyLogin()) return;
             await this.loadUsers();
         },
         methods: {
+            verifyLogin() {
+                const requiredKeys = ['u', 'v', 'c','t','s'];
+                if (requiredKeys.some(key => !localStorage.getItem(key))) {
+                    alert('登录状态已失效，请重新登录');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                return true;
+            },
+
             buildBaseParams() {
-                return new URLSearchParams({
-                    u: encodeURIComponent(localStorage.getItem('qm-music-user')),
-                    v: encodeURIComponent('1.0.0'),
-                    c: encodeURIComponent(navigator.userAgent),
-                    t: encodeURIComponent(localStorage.getItem('qm-music-t')),
-                    s: encodeURIComponent(localStorage.getItem('qm-music-s')),
+                const params = {
+                    u: localStorage.getItem('u'),
+                    v: '1.0.0',
+                    c: navigator.userAgent,
+                    t: localStorage.getItem('t'),
+                    s: localStorage.getItem('s'),
                     f: 'json'
+                };
+
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value === null) this.handleMissingParam(key);
                 });
+
+                return new URLSearchParams(
+                    Object.fromEntries(
+                        Object.entries(params).map(([k, v]) => [k, encodeURIComponent(v)])
+                    )
+                );
             },
+
+            handleMissingParam(key) {
+                console.error(`缺失参数: ${key}`);
+                alert('系统参数错误，请重新登录');
+                window.location.href = 'login.html';
+            },
+
             encryptPassword(pwd) {
-                return 'enc:' + Array.from(new TextEncoder().encode(pwd))
+                const hex = Array.from(new TextEncoder().encode(pwd))
                     .map(b => b.toString(16).padStart(2, '0')).join('');
+                return 'enc:' + hex;
             },
+
             async loadUsers() {
                 try {
                     const params = this.buildBaseParams();
@@ -162,11 +213,13 @@
                     console.error('获取用户列表失败:', error);
                 }
             },
+
             showCreateModal() {
                 this.isNewUser = true;
                 this.userForm = { username: '', email: '', password: '', isAdmin: false };
                 this.showUserForm = true;
             },
+
             showEditModal(user) {
                 this.currentUser = user;
                 this.userForm = {
@@ -177,10 +230,12 @@
                 };
                 this.showUserForm = true;
             },
+
             showPasswordModal(user) {
                 this.currentUser = user;
                 this.showPasswordForm = true;
             },
+
             async submitUser() {
                 try {
                     const params = this.buildBaseParams();
@@ -201,6 +256,7 @@
                     console.error('操作失败:', error);
                 }
             },
+
             async submitPassword() {
                 try {
                     const params = this.buildBaseParams();
@@ -212,6 +268,7 @@
                     console.error('修改密码失败:', error);
                 }
             },
+
             async deleteUser(user) {
                 if(!confirm(`确定删除用户 ${user.username} 吗？`)) return;
                 try {
@@ -223,6 +280,7 @@
                     console.error('删除用户失败:', error);
                 }
             },
+
             async refreshLibrary() {
                 try {
                     const params = this.buildBaseParams();
@@ -232,6 +290,7 @@
                     console.error('刷新曲库失败:', error);
                 }
             },
+
             startPolling() {
                 this.scanning = true;
                 this.intervalId = setInterval(async () => {
@@ -248,6 +307,7 @@
                     }
                 }, 5000);
             },
+
             closeModals() {
                 this.showUserForm = false;
                 this.showPasswordForm = false;

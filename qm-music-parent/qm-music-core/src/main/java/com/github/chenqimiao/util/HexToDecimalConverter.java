@@ -113,4 +113,9 @@ public abstract class HexToDecimalConverter {
         while (start < result.length-1 && result[start] == '0') start++;
         return new String(result, start, result.length - start);
     }
+
+    public static void main(String[] args) {
+        String convert = convert("abcz");
+        System.out.println(convert);
+    }
 }

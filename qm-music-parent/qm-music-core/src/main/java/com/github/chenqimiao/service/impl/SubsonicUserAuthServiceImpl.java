@@ -43,4 +43,5 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
         }
         return password;
     }
+
 }

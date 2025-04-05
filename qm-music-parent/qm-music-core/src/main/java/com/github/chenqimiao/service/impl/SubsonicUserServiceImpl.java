@@ -54,9 +54,10 @@ public class SubsonicUserServiceImpl implements UserService {
     public void createUser(UserRequest userRequest) {
         UserDO userDO = new UserDO();
         userDO.setUsername(userRequest.getUsername());
-        userDO.setPassword(userRequest.getPassword());
+        userDO.setPassword(userAuthService.resolvePlainTextPassword(userRequest.getPassword()));
         userDO.setEmail(userRequest.getEmail());
         userDO.setIs_admin(userRequest.getIsAdmin());
+        userDO.setForce_password_change(Boolean.FALSE);
         userRepository.save(userDO);
     }
 
@@ -64,7 +65,7 @@ public class SubsonicUserServiceImpl implements UserService {
     public void changePassword(String username, String newPassword) {
         UserRequest request = new UserRequest();
         request.setUsername(username);
-        request.setPassword(newPassword);
+        request.setPassword(userAuthService.resolvePlainTextPassword(newPassword));
         this.updateUser(request);
     }
 
@@ -78,6 +79,7 @@ public class SubsonicUserServiceImpl implements UserService {
         param.put("username", request.getUsername());
         param.put("email", request.getEmail());
         param.put("isAdmin", request.getIsAdmin());
+        param.put("forcePasswordChange", Boolean.FALSE);
 
         userRepository.updateByUsername(param);
     }

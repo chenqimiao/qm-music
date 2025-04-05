@@ -47,6 +47,9 @@ public class ArtistResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private Integer userRating = 5;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String artistImageUrl;
     }
 
     @Getter

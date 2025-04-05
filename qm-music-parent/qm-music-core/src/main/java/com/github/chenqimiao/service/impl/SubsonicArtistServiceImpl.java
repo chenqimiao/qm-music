@@ -7,6 +7,8 @@ import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
+import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
@@ -41,6 +43,9 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
     @Resource
     private ArtistRelationRepository artistRelationRepository;
+
+    @Resource
+    private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
 
     @Override
@@ -84,6 +89,12 @@ public class SubsonicArtistServiceImpl implements ArtistService {
                     albumRepository.queryByIds(artistRelationList.stream().map(ArtistRelationDO::getRelation_id).collect(Collectors.toList()));
             artistAggDTO.setAlbumList(ucModelMapper.map(albumDOS, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO));
         }
+        ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDTO.getName());
+
+        if(artistInfo != null) {
+            artistAggDTO.setArtistImageUrl(artistInfo.getImageUrl());
+        }
+
         return artistAggDTO;
     }
 

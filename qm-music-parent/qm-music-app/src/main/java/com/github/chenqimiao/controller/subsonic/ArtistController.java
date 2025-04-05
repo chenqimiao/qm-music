@@ -36,10 +36,12 @@ public class ArtistController {
     private ArtistComplexService artistComplexService;
 
 
+
     @GetMapping(value = "/getArtist")
     public ArtistResponse getArtist(@RequestParam("id") Long artistId) {
         ArtistResponse artistResponse = new ArtistResponse();
         ArtistAggDTO artistAggDTO = artistService.queryArtistWithAlbums(artistId);
+
         ArtistResponse.Artist artist = artistAggDTO.getArtist() == null ? new ArtistResponse.Artist()
                 : modelMapper.map(artistAggDTO.getArtist(), ArtistResponse.Artist.class);
         artist.setAlbumCount(CollectionUtils.size(artistAggDTO.getAlbumList()));

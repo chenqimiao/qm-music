@@ -18,4 +18,6 @@ public class ArtistAggDTO {
     private ArtistDTO artist;
 
     private List<AlbumDTO> albumList;
+
+    private String artistImageUrl;
 }

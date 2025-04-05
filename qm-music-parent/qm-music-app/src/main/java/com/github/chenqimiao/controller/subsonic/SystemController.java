@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Qimiao Chen
@@ -80,20 +82,27 @@ public class SystemController {
     private final Object lock = new Object();
     private final static Set<Object> lockCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
+    private ExecutorService REFRESH_THREAD_POOL = Executors.newSingleThreadExecutor();
+
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
-        boolean locked = false;
-        try {
-            locked = lockCache.add(lock);
-            if (locked) {
-                // 并发控制
-                mediaFetcherService.fetchMusic(musicDir);
-            }
-        }finally {
-            if (locked) {
-                lockCache.remove(lock);
-            }
+        if (!lockCache.isEmpty()) {
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
+        REFRESH_THREAD_POOL.execute( () -> {
+            boolean locked = false;
+            try {
+                locked = lockCache.add(lock);
+                if (locked) {
+                    // 并发控制
+                    mediaFetcherService.fetchMusic(musicDir);
+                }
+            }finally {
+                if (locked) {
+                    lockCache.remove(lock);
+                }
+            }
+        });
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 

@@ -79,6 +79,10 @@ public class SearchResult3Response extends SubsonicResponse {
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 
 
@@ -151,6 +155,10 @@ public class SearchResult3Response extends SubsonicResponse {
         @Builder.Default
         private String mediaType = "song";
 
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating =5;
+
     }
     @Getter
     @Setter
@@ -172,5 +180,8 @@ public class SearchResult3Response extends SubsonicResponse {
         private Date starred;
         @JacksonXmlProperty(isAttribute = true)
         private Integer albumCount;
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating =5;
     }
 }

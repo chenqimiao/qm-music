@@ -52,8 +52,7 @@ public class ArtistResponse extends SubsonicResponse {
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
         private Long id;
-        @JacksonXmlProperty(isAttribute = true, localName = "name")
-        @JSONField(name = "name")
+        @JacksonXmlProperty(isAttribute = true)
         private String title;
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
@@ -71,5 +70,21 @@ public class ArtistResponse extends SubsonicResponse {
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
         private Long artistId;
+
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String name;
+        @JacksonXmlProperty(isAttribute = true)
+        private String genre;
+        @JacksonXmlProperty(isAttribute = true ,localName = "year")
+        private String releaseYear;
+        @Builder.Default
+        private Boolean isVideo = false;
+        @Builder.Default
+        private String mediaType="album";
+
+        public String getName() {
+            return title;
+        }
     }
 }

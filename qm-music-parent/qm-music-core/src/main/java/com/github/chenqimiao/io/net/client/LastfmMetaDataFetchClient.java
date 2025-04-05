@@ -33,7 +33,10 @@ public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
 
         Document doc = Jsoup.connect(url)
                 .userAgent(getUserAgent())
+                .header("User-Agent", getUserAgent())
                 .timeout(10000)
+                .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
+                .ignoreContentType(true)
                 .get();
 
         // 2. 获取不同尺寸的图片 URL

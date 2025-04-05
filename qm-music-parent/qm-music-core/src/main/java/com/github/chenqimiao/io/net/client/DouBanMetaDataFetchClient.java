@@ -2,6 +2,7 @@ package com.github.chenqimiao.io.net.client;
 
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -45,7 +46,12 @@ public class DouBanMetaDataFetchClient implements MetaDataFetchClient {
         ArtistInfo artistInfo = new ArtistInfo();
         artistInfo.setArtistName(artistName);
         this.parseArtistDetails(detailDoc, artistInfo);
-        return artistInfo;
+
+        if (!StringUtils.isAllBlank(artistInfo.getBiography(), artistInfo.getImageUrl(),
+                artistInfo.getLargeImageUrl(), artistInfo.getMediumImageUrl(), artistInfo.getSmallImageUrl())) {
+            return artistInfo;
+        }
+        return null;
     }
     /**
      * 解析详情页数据

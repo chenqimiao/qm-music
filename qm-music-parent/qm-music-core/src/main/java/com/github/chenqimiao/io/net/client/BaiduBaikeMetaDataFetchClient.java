@@ -2,6 +2,7 @@ package com.github.chenqimiao.io.net.client;
 
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,18 +42,25 @@ public class BaiduBaikeMetaDataFetchClient implements MetaDataFetchClient {
         artistInfo.setArtistName(artistName);
 
         // 解析字段
-        this.parseBiography(doc, artistInfo);
+        artistInfo.setBiography(this.parseBiography(doc));
         this.parseImageUrls(doc, artistInfo);
-        return artistInfo;
+
+        if (!StringUtils.isAllBlank(artistInfo.getBiography(), artistInfo.getImageUrl(),
+                artistInfo.getLargeImageUrl(), artistInfo.getMediumImageUrl(), artistInfo.getSmallImageUrl())) {
+            return artistInfo;
+        }
+
+        return null;
     }
 
 
     // 解析简介
-    private void parseBiography(Document doc, ArtistInfo artistInfo) {
+    private String parseBiography(Document doc) {
         Element summary = doc.select("div.lemma-summary").first();
         if (summary != null) {
-            artistInfo.setBiography(summary.text().replaceAll("\\s+", " "));
+            return (summary.text().replaceAll("\\s+", " "));
         }
+        return null;
     }
 
     // 解析图片 URL（动态生成多尺寸）

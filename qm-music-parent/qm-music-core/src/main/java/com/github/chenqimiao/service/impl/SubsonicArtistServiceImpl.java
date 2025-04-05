@@ -11,6 +11,7 @@ import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.service.ArtistService;
+import com.github.chenqimiao.util.TransliteratorUtils;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -118,6 +119,29 @@ public class SubsonicArtistServiceImpl implements ArtistService {
             return Collections.emptyList();
         }
         List<ArtistDO> artists = artistRepository.queryByUniqueKeys(artistNames);
+
+        Set<String> existArtistNameSet = artists.stream().map(ArtistDO::getName).collect(Collectors.toSet());
+
+        List<String> similarArtistNames = artistNames.stream().filter(n -> !existArtistNameSet.contains(n)).map(n -> {
+            TransliteratorUtils.ChineseType chineseType = TransliteratorUtils.detectChineseType(n.substring(0,0));
+
+            if (TransliteratorUtils.ChineseType.SIMPLIFIED == chineseType) {
+                return TransliteratorUtils.toTraditional(n);
+            } else if (TransliteratorUtils.ChineseType.TRADITIONAL == chineseType) {
+                return TransliteratorUtils.toSimplified(n);
+            } else {
+                return null;
+            }
+        }).filter(Objects::nonNull).toList();
+
+        if (CollectionUtils.isNotEmpty(similarArtistNames)) {
+            List<ArtistDO> similarArtists = artistRepository.queryByUniqueKeys(artistNames);
+            artists.addAll(similarArtists);
+            Set<String> seen = new HashSet<>(); // FieldType 是去重字段的类型，如 String、Long
+            artists = artists.stream()
+                    .filter(artist -> seen.add(artist.getName())) // 替换为对应字段的 getter
+                    .collect(Collectors.toList());;
+        }
         return ucModelMapper.map(artists, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
     }
 

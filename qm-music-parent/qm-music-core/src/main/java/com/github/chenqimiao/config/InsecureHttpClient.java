@@ -42,7 +42,7 @@ public class InsecureHttpClient {
         return HttpClient.newBuilder()
                 .sslContext(sslContext)
                 .sslParameters(getInsecureSSLParameters())  // 禁用协议检查
-                .connectTimeout(Duration.ofSeconds(15))
+                .connectTimeout(Duration.ofSeconds(30))
                 .sslParameters(sslParams)
                 .followRedirects(HttpClient.Redirect.NORMAL)  // 启用自动跟随重定向
                 .build();

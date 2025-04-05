@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.UserStarDO;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -10,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,18 +98,18 @@ public class UserStarRepository {
         param.put("user_id", userId);
         param.put("star_type", starType);
         param.put("relation_ids", relationIds);
-        Map<Long, Long> result = Maps.newHashMapWithExpectedSize(relationIds.size());
 
-        namedParameterJdbcTemplate.query(sql, param, rs -> {
+        return namedParameterJdbcTemplate.query(sql, param, rs -> {
+            Map<Long, Long> result = new LinkedHashMap<>();
+
             while (rs.next()) {
                 long gmtCreate = rs.getLong("gmt_create");
                 long relationId = rs.getLong("relation_id");
                 result.put(relationId, gmtCreate);
             }
+            return result;
 
         });
-
-        return result;
 
     }
 

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,16 +85,14 @@ public class ArtistRelationRepository {
         params.put("artist_ids", artistIds);
         params.put("type", type);
 
-        Map<Long, Integer> result = Maps.newLinkedHashMapWithExpectedSize(artistIds.size());
 
-        namedParameterJdbcTemplate.query(sql, params,
-            rs -> {
-                while (rs.next()) {
-                    result.put(rs.getLong("artist_id"), rs.getInt("count"));
-                }
+        return namedParameterJdbcTemplate.query(sql, params, rs -> {
+            Map<Long, Integer> resultMap = new LinkedHashMap<>();
+            while (rs.next()) {
+                resultMap.put(rs.getLong("artist_id"), rs.getInt("count"));
+            }
+            return resultMap;
         });
-
-         return result;
     }
 
     public List<ArtistRelationDO> findByArtistIdAndType(Long artistId, Integer type) {

@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -12,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,15 +86,15 @@ public class AlbumRepository {
         String sql = """
                     select count(1) as num, `genre` from album group by `genre`
                 """;
-        Map<String, Integer> result = Maps.newHashMap();
 
-        jdbcTemplate.query(sql, rs -> {
+        return jdbcTemplate.query(sql, rs -> {
+            Map<String, Integer> resultMap = new LinkedHashMap<>();
             while (rs.next()) {
-                result.put(rs.getString("genre"), rs.getInt("num"));
+                resultMap.put(rs.getString("genre"), rs.getInt("num"));
             }
+            return resultMap;
         });
 
-        return result;
     }
 
     public List<AlbumDO> queryByIds(List<Long> albumIds) {

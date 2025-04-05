@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.SongDO;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -145,15 +145,15 @@ public class SongRepository {
         String sql = """
                     select count(1) as num, `genre` from song group by `genre`
                 """;
-        Map<String, Integer> result = Maps.newHashMap();
 
-        jdbcTemplate.query(sql, rs -> {
+        return namedParameterJdbcTemplate.query(sql, rs -> {
+            Map<String, Integer> resultMap = new LinkedHashMap<>();
             while (rs.next()) {
-                result.put(rs.getString("genre"), rs.getInt("num"));
+                resultMap.put(rs.getString("genre"), rs.getInt("num"));
             }
+            return resultMap;
         });
 
-        return result;
     }
 
     public List<SongDO> findByIds(List<Long> songIds) {

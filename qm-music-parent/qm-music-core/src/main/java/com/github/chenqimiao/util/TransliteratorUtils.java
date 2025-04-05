@@ -73,5 +73,17 @@ public abstract class TransliteratorUtils {
         return text.chars().anyMatch(c -> isChineseCharacter((char)c));
     }
 
+    public static ChineseType quickDetect(String text, int sampleSize) {
+        int length = text.length();
+        if (length == 0) return ChineseType.NOT_CHINESE;
 
+        int step = Math.max(1, length / sampleSize);
+        int count = 0;
+        for (int i = 0; i < length && count < sampleSize; i += step) {
+            char c = text.charAt(i);
+            // 此处调用单字符检测逻辑
+            count++;
+        }
+        // 根据抽样结果判断
+    }
 }

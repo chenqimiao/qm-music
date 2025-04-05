@@ -50,6 +50,9 @@ public class ArtistResponse extends SubsonicResponse {
 
         @JacksonXmlProperty(isAttribute = true)
         private String artistImageUrl;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer songCount;
     }
 
     @Getter

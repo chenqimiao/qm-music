@@ -1,9 +1,11 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.dto.ArtistAggDTO;
+import com.github.chenqimiao.dto.ComplexArtistDTO;
 import com.github.chenqimiao.response.subsonic.ArtistResponse;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.complex.ArtistComplexService;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -45,6 +47,11 @@ public class ArtistController {
         ArtistResponse.Artist artist = artistAggDTO.getArtist() == null ? new ArtistResponse.Artist()
                 : modelMapper.map(artistAggDTO.getArtist(), ArtistResponse.Artist.class);
         artist.setAlbumCount(CollectionUtils.size(artistAggDTO.getAlbumList()));
+        List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(Lists.newArrayList(artistId), null);
+        if (CollectionUtils.isNotEmpty(complexArtists)) {
+            ComplexArtistDTO complexArtist = complexArtists.getFirst();
+            artist.setSongCount(complexArtist.getSongCount());
+        }
         artist.setAlbumList(modelMapper.map(artistAggDTO.getAlbumList(), TYPE_LIST_ALBUM));
         artistResponse.setArtist(artist);
         return artistResponse;

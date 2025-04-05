@@ -225,7 +225,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         Path path = Paths.get(lrcFile);
         if (Files.exists(path)) {
             lyrics = Files.readString(path);
-            return lyrics;
+            if (StringUtils.isNotBlank(lyrics)) {
+                return lyrics;
+            }
         }
 
         lyrics = metaDataFetchClientCommander.getLyrics(songTitle, artistName);

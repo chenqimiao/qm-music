@@ -89,7 +89,8 @@ public class UserStarRepository {
     public Map<Long, Long> batchQueryStarredTimeByUniqueKeys(Long userId, Integer starType,
                                                                 List<Long> relationIds) {
         var sql = """
-                    select gmt_create, relation_id from user_star where
+                    select CAST(STRFTIME('%s', gmt_create) AS INTEGER) * 1000 AS gmt_create
+                         , relation_id from user_star where
                     user_id = :user_id
                     and star_type = :star_type
                     and relation_id in (:relation_ids);

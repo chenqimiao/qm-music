@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.enums.EnumStarActionType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.request.StarOrNotRequest;
@@ -29,7 +30,7 @@ public class MediaAnnotationController {
         if (starRequest.getAlbumId() == null
                 && starRequest.getId() == null
                     && starRequest.getArtistId() == null) {
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
         Long authedUserId = WebUtils.currentUserId();
 
@@ -41,7 +42,7 @@ public class MediaAnnotationController {
                     .relationId(starRequest.getId())
                     .build();
             userStarService.starOrNot(request);
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
         if(starRequest.getArtistId() != null) {
@@ -52,7 +53,7 @@ public class MediaAnnotationController {
                     .relationId(starRequest.getArtistId())
                     .build();
             userStarService.starOrNot(request);
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
        if(starRequest.getAlbumId() != null){
@@ -63,10 +64,10 @@ public class MediaAnnotationController {
                     .relationId(starRequest.getAlbumId())
                     .build();
            userStarService.starOrNot(request);
-           return new SubsonicPong();
+           return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
 
@@ -76,7 +77,7 @@ public class MediaAnnotationController {
         if (unStarRequest.getAlbumId() == null
                 && unStarRequest.getId() == null
                 && unStarRequest.getArtistId() == null) {
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
         Long authedUserId = WebUtils.currentUserId();
         if (unStarRequest.getId() != null) {
@@ -87,7 +88,7 @@ public class MediaAnnotationController {
                     .relationId(unStarRequest.getId())
                     .build();
             userStarService.starOrNot(request);
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
         if(unStarRequest.getArtistId() != null) {
@@ -98,7 +99,7 @@ public class MediaAnnotationController {
                     .relationId(unStarRequest.getId())
                     .build();
             userStarService.starOrNot(request);
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
         if(unStarRequest.getAlbumId() != null){
@@ -109,9 +110,9 @@ public class MediaAnnotationController {
                     .relationId(unStarRequest.getId())
                     .build();
             userStarService.starOrNot(request);
-            return new SubsonicPong();
+            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }
 
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 }

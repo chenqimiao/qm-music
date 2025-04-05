@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.dto.UserStarResourceDTO;
@@ -116,7 +117,7 @@ public class AlbumSongController {
     @GetMapping("/setRating")
     public SubsonicPong setRating(String id, Integer rating) {
         // mock
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
     private static final Type TYPE_LIST_RANDOM_SONG = new TypeToken<List<RandSongsResponse.Song>>() {}.getType();

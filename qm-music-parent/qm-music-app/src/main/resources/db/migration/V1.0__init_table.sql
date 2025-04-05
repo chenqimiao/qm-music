@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS user (
                                     username VARCHAR(50) NOT NULL UNIQUE,
                                     password VARCHAR(255) NOT NULL,
                                     email VARCHAR(100),
-                                    is_admin INT NOT NULL DEFAULT 0, -- 0-普通用户 1-管理员 2-超级管理员
+                                    is_admin INT NOT NULL DEFAULT 0, -- 0-普通用户 1-管理员
                                     gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                                     gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );

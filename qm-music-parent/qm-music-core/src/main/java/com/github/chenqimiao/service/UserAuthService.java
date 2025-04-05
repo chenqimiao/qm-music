@@ -23,4 +23,11 @@ public interface UserAuthService {
      */
     boolean authCheck(String username, String token, String salt);
 
+    /**
+     *
+     * @param password
+     * @return
+     */
+    String resolvePlainTextPassword(String password);
+
 }

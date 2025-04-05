@@ -1,5 +1,7 @@
 package com.github.chenqimiao.constant;
 
+import com.github.chenqimiao.response.subsonic.SubsonicPong;
+
 /**
  * @author Qimiao Chen
  * @since 2025/3/28 23:42
@@ -20,5 +22,7 @@ public abstract class ServerConstants {
 
 
     public static final String AUTHED_USER_KEY = "authedUser";
+
+    public static final SubsonicPong SUBSONIC_EMPTY_RESPONSE = new SubsonicPong();
 
 }

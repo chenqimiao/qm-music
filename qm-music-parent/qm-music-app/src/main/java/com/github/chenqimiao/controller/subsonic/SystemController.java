@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.request.subsonic.SubsonicRequest;
@@ -46,7 +47,7 @@ public class SystemController {
 
     @GetMapping(value = {"/ping","/ping.view"})
     public SubsonicPong ping() {
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
 
@@ -89,7 +90,7 @@ public class SystemController {
         }finally {
             lockCache.remove(lock);
         }
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
 }

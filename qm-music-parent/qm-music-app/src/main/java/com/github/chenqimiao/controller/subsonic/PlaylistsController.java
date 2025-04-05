@@ -1,13 +1,14 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.ComplexPlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
-import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.request.UpdatePlaylistRequest;
+import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
 import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
@@ -143,7 +144,7 @@ public class PlaylistsController {
 
         playlistComplexService.deletePlaylistByPlaylistId(playlistId);
 
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
 
@@ -167,6 +168,6 @@ public class PlaylistsController {
         }
         playlistComplexService.updatePlaylist(updatePlaylistRequest);
 
-        return new SubsonicPong();
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 }

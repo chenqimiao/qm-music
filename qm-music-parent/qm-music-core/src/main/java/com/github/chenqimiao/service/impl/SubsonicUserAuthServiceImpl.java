@@ -23,11 +23,7 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
     @Override
     public boolean authCheck(String username, String password) {
         String pass = userRepository.findPassByUserName(username);
-        if(password.startsWith("enc:")){
-            password = password.substring(4);
-            password = HexToDecimalConverter.convert(password);
-            return Objects.equals(password, pass);
-        }
+        password = this.resolvePlainTextPassword(password);
         return Objects.equals(password, pass);
     }
 
@@ -35,5 +31,15 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
     public boolean authCheck(String username, String token, String salt) {
         String pass = userRepository.findPassByUserName(username);
         return Objects.equals(MD5Utils.md5(pass + salt).toLowerCase(), token);
+    }
+
+    @Override
+    public String resolvePlainTextPassword(String password) {
+
+        if(password.startsWith("enc:")){
+            password = password.substring(4);
+            password = HexToDecimalConverter.convert(password);
+        }
+        return password;
     }
 }

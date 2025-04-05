@@ -1,6 +1,9 @@
 package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.UserDTO;
+import com.github.chenqimiao.request.UserRequest;
+
+import java.util.List;
 
 /**
  * @author Qimiao Chen
@@ -12,4 +15,15 @@ public interface UserService {
 
 
     UserDTO findByUserId(Long userId);
+
+
+    List<UserDTO> findAllUsers();
+
+    void createUser(UserRequest userRequest);
+
+    void changePassword(String username, String newPassword);
+
+    void updateUser(UserRequest request);
+
+    void delByUsername(String username);
 }

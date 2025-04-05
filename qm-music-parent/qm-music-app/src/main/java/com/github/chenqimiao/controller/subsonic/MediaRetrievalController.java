@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.CoverArtPrefixConstants;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
@@ -46,9 +47,9 @@ public class MediaRetrievalController {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
         }
 
-        if (id.startsWith("al-")){
+        if (id.startsWith(CoverArtPrefixConstants.ALBUM_COVER_ART_PREFIX)){
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
-        }else if (id.startsWith("ar-")){
+        }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_COVER_ART_PREFIX)){
             // do not support artist cover art
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
             //return ResponseEntity.ok().body(null);

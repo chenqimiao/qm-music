@@ -25,8 +25,8 @@ public class PlaylistRepository {
 
     public int save(PlaylistDO playlistDO) {
         String sql = """
-                    insert into playlist (id, user_id, name, description, visibility)
-                    values (:id, :user_id, :name, :description, :visibility)
+                    insert into playlist (id, user_id, name, description, visibility, song_count)
+                    values (:id, :user_id, :name, :description, :visibility, :song_count)
                 """;
 
         return namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(playlistDO));
@@ -61,7 +61,7 @@ public class PlaylistRepository {
 
     public List<PlaylistDO> getPlaylistsByIds(List<Long> ids) {
         String sql = """
-                    select * from playlist where id in(:ids) order by id desc
+                    select *  from playlist where id in(:ids) order by id desc
                 """;
 
         Map<String, Object> paramMap = new HashMap<>();
@@ -103,10 +103,10 @@ public class PlaylistRepository {
         StringBuilder sqlSb = new StringBuilder();
         sqlSb.append("update playlist ");
 
-        var playlistId = paramMap.get("playlistId");
         var name = paramMap.get("name");
         var description = paramMap.get("description");
         var visibility = paramMap.get("visibility");
+        var coverArt = paramMap.get("coverArt");
 
         if (name != null) {
             sqlSb.append ("set name = :name ");
@@ -116,6 +116,10 @@ public class PlaylistRepository {
         }
         if (visibility != null) {
             sqlSb.append ("set visibility = :visibility ");
+        }
+        if (coverArt != null) {
+            sqlSb.append ("set cover_art = :coverArt ");
+
         }
         sqlSb.append(" where id = :playlistId");
 

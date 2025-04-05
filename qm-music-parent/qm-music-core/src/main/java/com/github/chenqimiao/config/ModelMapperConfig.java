@@ -6,12 +6,12 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NameTokenizers;
-import org.modelmapper.internal.util.Assert;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -38,6 +38,16 @@ public class ModelMapperConfig {
                 return null;
             }
             return new Date(timestamp);
+        }
+    };
+
+    private final Converter<Timestamp, Long> timestampToLongConverter = new AbstractConverter<>() {
+        @Override
+        protected Long convert(Timestamp timestamp) {
+            if (timestamp == null) {
+                return null;
+            }
+            return timestamp.getTime();
         }
     };
 
@@ -113,6 +123,8 @@ public class ModelMapperConfig {
                 .setSourceNameTokenizer(NameTokenizers.UNDERSCORE)
                 .setDestinationNameTokenizer(NameTokenizers.CAMEL_CASE);
 
+        modelMapper.addConverter(timestampToLongConverter);
+
         return modelMapper;
     }
 
@@ -131,6 +143,7 @@ public class ModelMapperConfig {
                 .setSourceNameTokenizer(NameTokenizers.CAMEL_CASE)
                 .setDestinationNameTokenizer(NameTokenizers.UNDERSCORE);
 
+        modelMapper.addConverter(timestampToLongConverter);
         return modelMapper;
     }
 

@@ -15,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -56,6 +60,6 @@ public class SubsonicSongComplexService implements SongComplexService {
             complexSongDTO.setStarred(starredTimeMap.get(n.getAlbumId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
             return complexSongDTO;
-        }).toList();
+        }).collect(Collectors.toList());
     }
 }

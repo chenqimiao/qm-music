@@ -114,7 +114,7 @@ public class PlaylistItemRepository {
 
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("playlistId", playlistId);
-        paramMap.put("ranks", songIndexToRemove);
+        paramMap.put("ranks", songIndexToRemove.stream().map(n -> n + 1L).toList());
         namedParameterJdbcTemplate.update(sql, paramMap);
     }
 }

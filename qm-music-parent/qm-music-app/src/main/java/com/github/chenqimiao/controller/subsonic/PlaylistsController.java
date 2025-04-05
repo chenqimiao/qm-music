@@ -137,7 +137,7 @@ public class PlaylistsController {
     public SubsonicPong deletePlaylist(@RequestParam(value = "id") Long playlistId) {
         PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
 
-        if (playlistDTO == null || !Objects.equals(playlistDTO.getId(), WebUtils.currentUserId())) {
+        if (playlistDTO == null || !Objects.equals(playlistDTO.getUserId(), WebUtils.currentUserId())) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
         }
 
@@ -148,19 +148,19 @@ public class PlaylistsController {
 
 
     @RequestMapping(value = "/updatePlaylist")
-    public SubsonicPong updatePlaylist( @RequestParam Long playlistId, String name, String comment, List<Long> songIdToAdd,
-                                       List<Long> songIdToRemove, @RequestParam(value = "public", required = false)Boolean _public) {
+    public SubsonicPong updatePlaylist( @RequestParam Long playlistId, String name, String comment, @RequestParam(name ="songIdToAdd", required = false)  List<Long> songIdsToAdd,
+                                        @RequestParam(name = "songIndexToRemove", required = false) List<Long> songIndexesToRemove, @RequestParam(value = "public", required = false)Boolean _public) {
         PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
 
-        if (playlistDTO == null || !Objects.equals(playlistDTO.getId(), WebUtils.currentUserId())) {
+        if (playlistDTO == null || !Objects.equals(playlistDTO.getUserId(), WebUtils.currentUserId())) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
         }
         com.github.chenqimiao.request.UpdatePlaylistRequest updatePlaylistRequest = new UpdatePlaylistRequest();
         updatePlaylistRequest.setPlaylistId(playlistId);
         updatePlaylistRequest.setName(name);
         updatePlaylistRequest.setDescription(comment);
-        updatePlaylistRequest.setSongIdToAdd(songIdToAdd);
-        updatePlaylistRequest.setSongIndexToRemove(songIdToRemove);
+        updatePlaylistRequest.setSongIdToAdd(songIdsToAdd);
+        updatePlaylistRequest.setSongIndexToRemove(songIndexesToRemove);
         if (_public != null) {
             updatePlaylistRequest.setVisibility(Boolean.TRUE.equals(_public)? EnumPlayListVisibility.PUBLIC.getCode()
                     : EnumPlayListVisibility.PRIVATE.getCode());

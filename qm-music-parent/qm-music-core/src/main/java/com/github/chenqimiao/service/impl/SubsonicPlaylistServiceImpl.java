@@ -11,6 +11,7 @@ import com.github.chenqimiao.repository.PlaylistRepository;
 import com.github.chenqimiao.service.PlaylistService;
 import com.google.common.collect.Lists;
 import io.github.mocreates.Sequence;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -31,7 +32,7 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
     @Autowired
     private PlaylistRepository playlistRepository;
 
-    @Autowired
+    @Resource
     private ModelMapper ucModelMapper;
 
     @Autowired
@@ -70,7 +71,7 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
         PlaylistDO playlistDO = new PlaylistDO();
         playlistDO.setId(id);
         playlistDO.setName(name);
-        playlistDO.setUserId(userId);
+        playlistDO.setUser_id(userId);
         playlistDO.setDescription("");
         playlistDO.setCover_art("");
         playlistDO.setVisibility(EnumPlayListVisibility.PRIVATE.getCode());

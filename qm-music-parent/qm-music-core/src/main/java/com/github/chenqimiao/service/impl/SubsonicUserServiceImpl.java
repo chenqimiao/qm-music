@@ -4,6 +4,7 @@ import com.github.chenqimiao.DO.UserDO;
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.UserService;
+import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class SubsonicUserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
+    @Resource
     private ModelMapper ucModelMapper;
 
     @Override

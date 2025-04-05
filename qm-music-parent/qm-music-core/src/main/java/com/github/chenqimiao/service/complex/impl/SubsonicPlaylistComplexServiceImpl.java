@@ -1,10 +1,7 @@
 package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.PlaylistItemDO;
-import com.github.chenqimiao.dto.ComplexPlaylistDTO;
-import com.github.chenqimiao.dto.ComplexSongDTO;
-import com.github.chenqimiao.dto.PlaylistDTO;
-import com.github.chenqimiao.dto.PlaylistItemDTO;
+import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.repository.PlaylistRepository;
 import com.github.chenqimiao.request.UpdatePlaylistRequest;
@@ -56,16 +53,18 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
 
         return playlists.stream().map(n -> {
             ComplexPlaylistDTO complexPlaylistDTO = modelMapper.map(n, ComplexPlaylistDTO.class);
-            List<PlaylistItemDTO> playlistItems = playlistItemMap.get(complexPlaylistDTO.getId());
-            Map<Long, Integer> sortOrderMap = playlistItems.stream().collect(Collectors.toMap(PlaylistItemDTO::getSongId,
-                    PlaylistItemDTO::getSortOrder));
+
+            List<PlaylistItemDTO> playlistItems = playlistItemMap.getOrDefault(complexPlaylistDTO.getId(), Collections.emptyList());
 
             List<Long> songIds = playlistItems.stream().map(PlaylistItemDTO::getSongId).toList();
 
             List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, userId);
 
-            complexSongs.sort(Comparator.comparingInt(sortOrderMap::get));
-            complexPlaylistDTO.setComplexSongs(complexSongs);
+            Map<Long, ComplexSongDTO> complexSongMap = complexSongs.stream().collect(Collectors.toMap(SongDTO::getId, m -> m));
+
+            List<ComplexSongDTO> sortedComplexSongs = playlistItems.stream()
+                    .map(x -> complexSongMap.get(x.getSongId())).collect(Collectors.toList());
+            complexPlaylistDTO.setComplexSongs(sortedComplexSongs);
 
             return complexPlaylistDTO;
         }).toList();
@@ -127,6 +126,8 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         if (CollectionUtils.isNotEmpty(songIdToAdd)) {
             songIdToAdd.stream().forEach(songId -> {
                 PlaylistItemDO playlistItem = new PlaylistItemDO();
+                playlistItem.setPlaylist_id(playlistId);
+                playlistItem.setSong_id(songId);
                 playlistItemRepository.save(playlistItem);
             });
         }
@@ -145,12 +146,14 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         Integer visibility = updatePlaylistRequest.getVisibility();
         String description = updatePlaylistRequest.getDescription();
 
-        if (name != null || description != null || visibility != null) {
+        if (name != null || description != null || visibility != null
+                || CollectionUtils.isNotEmpty(songIdToAdd)) {
             Map<String, Object> paramMap = new HashMap<String, Object>();
             paramMap.put("playlistId", playlistId);
             paramMap.put("name", name);
             paramMap.put("description", description);
             paramMap.put("visibility", visibility);
+            paramMap.put("coverArt", songIdToAdd.getLast());
             playlistRepository.updateByPlaylistId(paramMap);
         }
 

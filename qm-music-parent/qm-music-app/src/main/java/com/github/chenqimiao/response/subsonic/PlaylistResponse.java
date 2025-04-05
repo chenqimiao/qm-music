@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistResponse {
+public class PlaylistResponse extends SubsonicResponse {
 
     private Playlist playlist;
 

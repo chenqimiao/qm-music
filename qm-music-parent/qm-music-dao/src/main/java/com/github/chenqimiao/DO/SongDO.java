@@ -3,6 +3,8 @@ package com.github.chenqimiao.DO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 /**
  * @author Qimiao Chen
  * @since 2025/3/30 15:50
@@ -23,8 +25,8 @@ public class SongDO {
     private Integer bit_rate;
     private String file_path;
     private String file_hash;
-    private Long gmt_create;
-    private Long gmt_modify;
+    private Timestamp gmt_create;
+    private Timestamp gmt_modify;
     private Long size;
     private String year;
     private String artist_name;

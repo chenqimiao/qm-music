@@ -47,7 +47,11 @@ public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
         String largeImageUrl = baseImageUrl; // 原图
 
         // 3. 获取简介 (biography)
-        String biography = doc.select(".wiki-content p").first().text();
+        String biography = null;
+        Element first = doc.select(".wiki-content p").first();
+        if (first != null) {
+            biography = first.text();
+        }
 
         return ArtistInfo.builder().artistName(artistName).biography(biography)
                 .smallImageUrl(smallImageUrl).largeImageUrl(largeImageUrl).mediumImageUrl(mediumImageUrl)

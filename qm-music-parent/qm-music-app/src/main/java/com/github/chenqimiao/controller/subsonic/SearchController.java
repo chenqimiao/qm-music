@@ -4,6 +4,8 @@ import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.enums.EnumUserStarType;
+import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.SearchResult2Response;
@@ -14,6 +16,7 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -128,6 +131,9 @@ public class SearchController {
 
     public static Type TYPE_LIST_SONG_3 = new TypeToken<List<SearchResult3Response.Song>>() {}.getType();
 
+    @Resource
+    private MetaDataFetchClientCommander metaDataFetchClientCommander;
+
     @GetMapping("/search3")
     public SearchResult3Response search3(SearchRequest searchRequest) {
 
@@ -160,8 +166,18 @@ public class SearchController {
 
         SearchResult3Response.SearchResult3 searchResult3 = builder.build();
         this.wrapStarredTime(searchResult3, authedUserId);
+        this.wrapArtistImgUrl(searchResult3);
         return SearchResult3Response.builder().searchResult3(searchResult3).build();
 
+    }
+
+    private void wrapArtistImgUrl(SearchResult3Response.SearchResult3 searchResult3) {
+        searchResult3.getArtists().forEach(artist -> {
+            ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artist.getName());
+            if (artistInfo != null) {
+                artist.setArtistImageUrl(artistInfo.getImageUrl());
+            }
+        });
     }
 
     private void wrapStarredTime(SearchResult3Response.SearchResult3 searchResult3Response, Long authedUserId) {

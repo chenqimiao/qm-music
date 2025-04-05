@@ -98,7 +98,7 @@ public class ArtistRelationRepository {
 
     public List<ArtistRelationDO> findByArtistIdAndType(Long artistId, Integer type) {
         Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
-        params.put("artist_id", artistId);
+        params.put("artistId", artistId);
         params.put("type", type);
         return this.search(params);
     }

@@ -1,8 +1,6 @@
 package com.github.chenqimiao.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * @author Qimiao Chen
@@ -11,6 +9,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CoverStreamDTO {
 
     private byte[] cover;

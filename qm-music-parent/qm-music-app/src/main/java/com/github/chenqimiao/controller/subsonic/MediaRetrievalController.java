@@ -6,6 +6,7 @@ import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
+import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -29,6 +30,8 @@ public class MediaRetrievalController {
 
     @Autowired
     private MediaRetrievalService mediaRetrievalService;
+    @Autowired
+    private ArtistService artistService;
 
     @RequestMapping(value = "/getCoverArt")
     @SneakyThrows
@@ -51,7 +54,9 @@ public class MediaRetrievalController {
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
         }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_ID_PREFIX)){
             // do not support artist cover art
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+           // throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
+
             //return ResponseEntity.ok().body(null);
         }else {
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Long.valueOf(id), size);

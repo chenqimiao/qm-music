@@ -1,5 +1,6 @@
 package com.github.chenqimiao.service.complex.impl;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
@@ -12,13 +13,13 @@ import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
-import com.github.chenqimiao.util.FFmpegStreamUtils;
-import com.github.chenqimiao.util.FileUtils;
-import com.github.chenqimiao.util.ImageResizer;
+import com.github.chenqimiao.util.*;
+import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -98,10 +100,16 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                 || (artwork.getWidth() == size && artwork.getHeight() == size)) {
             return artwork.getBinaryData();
         }
-
-        return ImageResizer.processImage(artwork.getBinaryData(), size,
-                size, true, ImageResolver.resolveArtwork(artwork), 0.8);
+        return this.scaleImg(artwork.getBinaryData(), size, ImageResolver.resolveArtwork(artwork));
     }
+
+    @SneakyThrows
+    private byte[] scaleImg(byte[] binaryData, Integer size, String outputFormat) {
+
+        return ImageResizer.processImage(binaryData, size,
+                size, true, outputFormat, 0.8);
+    }
+
 
 
     private List<Artwork> getSongArtworks(Long songId) {
@@ -156,7 +164,52 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return CoverStreamDTO.builder().build();
     }
 
+    @Deprecated
+    public CoverStreamDTO getArtistCoverStreamDTO1(Long artistId, Integer size) {
 
+        ArtistDO artistDO = artistRepository.findByArtistId(artistId);
+
+        if (artistDO == null) {
+            return new CoverStreamDTO();
+        }
+
+        ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDO.getName());
+
+        if (artistInfo == null) {
+            return new CoverStreamDTO();
+        }
+        String imageUrl = artistInfo.getImageUrl();
+
+        String smallImageUrl = artistInfo.getSmallImageUrl();
+        String mediumImageUrl = artistInfo.getMediumImageUrl();
+        String largeImageUrl = artistInfo.getLargeImageUrl();
+
+        List<String> images = Lists.newArrayList(imageUrl, smallImageUrl, mediumImageUrl, largeImageUrl);
+
+        images =  images.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        if (images.isEmpty()) {
+            return new CoverStreamDTO();
+        }
+
+        String properImg = images.get(images.size() - 1);
+        try {
+            byte[] bytes = ImageToByteConverter.convertWithHttpClient(properImg);
+            String sourceFormat = ImageUtils.resolveType(bytes);
+            byte[] target = this.scaleImg(bytes, size, sourceFormat);
+
+            return CoverStreamDTO.builder()
+                    .cover(target)
+                    .mimeType(StringUtils.isNotBlank(sourceFormat)? "image/" + sourceFormat: null)
+                    .build();
+        }catch (Exception e) {
+            log.warn("CoverStreamDTO.getArtistCoverStreamDTO() artistId {}, size {} , properImg {}", artistId, size, properImg, e);
+            return new CoverStreamDTO();
+        }
+
+
+
+
+    }
     @Override
     public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
 

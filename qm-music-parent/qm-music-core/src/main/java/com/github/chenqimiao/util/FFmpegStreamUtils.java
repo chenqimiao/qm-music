@@ -1,18 +1,12 @@
 package com.github.chenqimiao.util;
 
 import com.github.chenqimiao.enums.EnumAudioCodec;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.BufferedInputStream;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
-
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class FFmpegStreamUtils {
 
-
+    private static String FFMPEG = getFFmpegCommand();
 
     private static final ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("ffmpeg-pool-%d").build();
 
@@ -44,6 +38,54 @@ public abstract class FFmpegStreamUtils {
     };
 
 
+
+    private static String getFFmpegCommand() {
+        if (!OSValidator.isWindows()) {
+            return "ffmpeg";
+        }
+
+        String ffmpeg = resolveFFmpegCommandFromSystemEnvForWindows();
+        if(StringUtils.isNotBlank(ffmpeg)) {
+            return ffmpeg;
+        }
+
+        ffmpeg = resolveFFmpegCommandFromCmdForWindows();
+
+        return ffmpeg;
+
+    }
+
+    private static String resolveFFmpegCommandFromSystemEnvForWindows() {
+        // 尝试从环境变量获取
+        String path = SystemEnvUtils.getPathFromEnv();
+        String[] paths = SystemEnvUtils.getPaths(path);
+        return resolveFFmpegCommandFromPathsForWindows(paths);
+    }
+
+
+
+    private static String resolveFFmpegCommandFromCmdForWindows() {
+        String path = SystemEnvUtils.getPathFromCmd();
+        String[] paths = SystemEnvUtils.getPaths(path);
+        return resolveFFmpegCommandFromPathsForWindows(paths);
+    }
+
+    // for windows
+    private static String resolveFFmpegCommandFromPathsForWindows(String[] paths) {
+        for (String p : paths) {
+            if (p.contains("ffmpeg")) {
+                if(p.contains("ffmpeg.exe")){
+                    return p;
+                }else if(p.charAt(p.length()-1) == '\\'){
+                    return p + "ffmpeg.exe";
+                }else {
+                    return p + "\\ffmpeg.exe";
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * 启动转码并实时获取流
      * @param inputPath 输入文件路径
@@ -52,9 +94,8 @@ public abstract class FFmpegStreamUtils {
     @SneakyThrows
     public static InputStream streamByOutFFmpeg(String inputPath, Integer maxBitRate,
                                             String outputFormat) {
-
         ProcessBuilder pb = new ProcessBuilder(
-                "ffmpeg",
+                FFMPEG,
                 "-i", inputPath,       // 输入文件
                 "-vn",                // 禁用视频
                 "-f", outputFormat,          // 强制输出格式为MP3
@@ -72,7 +113,8 @@ public abstract class FFmpegStreamUtils {
                 byte[] buffer = new byte[1024];
                 while (errorStream.read(buffer) != -1) {
                     // 可在此处理错误日志
-                    log.error(new String(buffer));
+                    log.error(new String(buffer, SystemEnvUtils
+                            .guessCharsetNameInCurrentOperatingSystem()));
                 }
             } catch (Exception e) {
                 log.error("ffmpeg stream error, inputPath: {}", inputPath, e);
@@ -83,4 +125,13 @@ public abstract class FFmpegStreamUtils {
         return process.getInputStream();
 
     }
+
+    public static void main(String[] args) {
+
+        String fFmpegCommand = getFFmpegCommand();
+
+        System.out.println(fFmpegCommand);
+    }
+
+
 }

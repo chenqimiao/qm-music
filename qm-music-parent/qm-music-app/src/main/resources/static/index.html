@@ -459,31 +459,13 @@
                             clearInterval(this.statusInterval);
                             this.scanning = false;
                         }
-                    }, 3000);
+                    }, 5000);
 
                 } catch (error) {
                     console.error('刷新曲库失败:', error);
                     this.scanning = false;
                 }
             },
-
-            startPolling() {
-                this.scanning = true;
-                this.intervalId = setInterval(async () => {
-                    try {
-                        const params = this.buildBaseParams();
-                        const res = await axios.get(`/rest/getScanStatus?${params}`);
-                        this.scanCount = res.data.scanStatus.count;
-                        if(!res.data.scanStatus.scanning) {
-                            clearInterval(this.intervalId);
-                            this.scanning = false;
-                        }
-                    } catch (error) {
-                        console.error('获取扫描状态失败:', error);
-                    }
-                }, 5000);
-            },
-
             closeModals() {
                 this.showUserForm = false;
                 this.showPasswordForm = false;

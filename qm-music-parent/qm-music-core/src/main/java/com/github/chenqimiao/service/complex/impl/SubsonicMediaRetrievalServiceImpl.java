@@ -11,6 +11,7 @@ import com.github.chenqimiao.io.local.ImageResolver;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
+import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
@@ -18,6 +19,7 @@ import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.FFmpegStreamUtils;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.ImageResizer;
+import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -53,6 +55,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Autowired
     private ArtistRelationRepository artistRelationRepository;
+
+    @Resource
+    private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
@@ -220,6 +225,12 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         Path path = Paths.get(lrcFile);
         if (Files.exists(path)) {
             lyrics = Files.readString(path);
+            return lyrics;
+        }
+
+        lyrics = metaDataFetchClientCommander.getLyrics(songTitle, artistName);
+
+        if (StringUtils.isNotBlank(lyrics)) {
             return lyrics;
         }
 

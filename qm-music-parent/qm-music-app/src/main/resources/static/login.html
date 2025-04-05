@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QM-Music 后台登录</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -88,6 +88,30 @@
         .error-message.show {
             display: block;
         }
+
+        .github-corner {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .github-corner a {
+            color: #764ba2;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .github-corner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -121,6 +145,15 @@
             </div>
         </form>
     </div>
+
+    <div class="github-corner">
+        <a href="https://github.com/chenqimiao/qm-music" target="_blank" rel="noopener noreferrer">
+            <svg style="width:16px;height:16px;margin-right:6px" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.07.63-1.32-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+            </svg>
+            Star on GitHub
+        </a>
+    </div>
 </div>
 
 <script>
@@ -141,33 +174,30 @@
                 this.errorMessage = '';
 
                 try {
-                    // 生成随机salt（6位字母数字）
-                    const salt = this.generateSalt(6);
+                    const s = this.generateSalt(6);
+                    const t = md5(this.password + s).toLowerCase();
 
-                    // 计算token
-                    const token = md5(this.password + salt).toLowerCase();
-
-                    // 构建请求参数
                     const params = new URLSearchParams({
                         u: encodeURIComponent(this.username),
-                        v: encodeURIComponent('1.0.0'), // 版本号示例
-                        c: encodeURIComponent(navigator.userAgent), // 客户端信息
-                        t: encodeURIComponent(token),
-                        s: encodeURIComponent(salt),
+                        v: encodeURIComponent('1.0.0'),
+                        c: encodeURIComponent(navigator.userAgent),
+                        t: encodeURIComponent(t),
+                        s: encodeURIComponent(s),
                         f: 'json'
                     });
 
-                    // 发送GET请求
                     const response = await axios.get(`/rest/ping?${params}`);
 
-                    if (response.data.success) {
-                        // 保存登录信息
-                        localStorage.setItem('qm-music-token', token);
-                        localStorage.setItem('qm-music-username', this.username);
+                    if (response.data.status?.toLowerCase() === 'ok') {
+                        localStorage.setItem('qm-music-t', t);
+                        localStorage.setItem('qm-music-user', this.username);
 
-                        window.location.href = '/admin';
+                        if(confirm('登录成功！\n\n欢迎给项目点个Star支持我们！')) {
+                            window.open('https://github.com/chenqimiao/qm-music', '_blank');
+                        }
+                        window.location.href = 'index.html';
                     } else {
-                        this.errorMessage = response.data.message || '认证失败';
+                        this.errorMessage = '认证失败，请检查登录信息';
                     }
                 } catch (error) {
                     this.errorMessage = error.response?.data?.message || '网络请求失败';
@@ -176,14 +206,9 @@
                 }
             },
 
-            // 生成随机salt
             generateSalt(length) {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let salt = '';
-                for(let i=0; i<length; i++){
-                    salt += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return salt;
+                return Array.from({length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
             }
         }
     }).mount('#app');

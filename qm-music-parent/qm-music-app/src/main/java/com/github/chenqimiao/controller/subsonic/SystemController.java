@@ -1,6 +1,8 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
+import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
+import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.request.subsonic.SubsonicRequest;
@@ -9,6 +11,7 @@ import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.response.subsonic.SubsonicResponse;
 import com.github.chenqimiao.service.complex.MediaFetcherService;
+import com.github.chenqimiao.util.WebUtils;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +89,9 @@ public class SystemController {
 
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
+        if(!WebUtils.currentUserIsAdmin()) {
+            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_50);
+        }
         if (!lockCache.isEmpty()) {
             return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
         }

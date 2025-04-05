@@ -8,6 +8,7 @@ package com.github.chenqimiao.io.net;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.github.chenqimiao.config.InsecureHttpClient;
 import com.github.chenqimiao.io.net.model.Artist;
 import com.github.chenqimiao.io.net.model.ArtistDetail;
 import com.github.chenqimiao.util.UserAgentGenerator;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MusicBrainzClient {
-    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
+    private static final HttpClient HTTP_CLIENT = InsecureHttpClient.createInsecureClient();
     private static final String BASE_URL = "https://musicbrainz.org/ws/2/artist/";
     private static final String USER_AGENT = UserAgentGenerator.generateUserAgent();
 

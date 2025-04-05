@@ -74,6 +74,8 @@ public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .header("User-Agent", getUserAgent())
+
                 .GET()
                 .build();
 

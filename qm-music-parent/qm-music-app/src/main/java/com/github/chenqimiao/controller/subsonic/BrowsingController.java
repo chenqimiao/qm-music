@@ -19,7 +19,6 @@ import com.github.chenqimiao.service.complex.ArtistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -228,10 +227,11 @@ public class BrowsingController {
                 .largeImageUrl(artistInfo != null ? artistInfo.getLargeImageUrl() : null)
                 .build();
         if (CollectionUtils.isNotEmpty(similarArtistsName)) {
-            similarArtistsName = Lists.partition(similarArtistsName, artistInfoRequest.getCount()).getFirst();
+            // similarArtistsName = Lists.partition(similarArtistsName, artistInfoRequest.getCount()).getFirst();
             List<ArtistDTO> similarArtists = artistService.searchByNames(similarArtistsName);
             List<String> localArtistNames = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(similarArtists)) {
+                similarArtists = Lists.partition(similarArtists, artistInfoRequest.getCount()).getFirst();
                 List<Long> artistIds = similarArtists.stream().map(ArtistDTO::getId).toList();
                 List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, null);
                 localArtistNames.addAll(complexArtists.stream().map(ComplexArtistDTO::getName).toList());

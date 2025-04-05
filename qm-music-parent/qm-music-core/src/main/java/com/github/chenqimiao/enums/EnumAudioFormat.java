@@ -15,7 +15,7 @@ import java.util.Optional;
 @Getter
 public enum EnumAudioFormat {
 
-    MP3("map3", "mp3"),
+    MP3("mp3", "mp3"),
     FLV("flv", "flv"),
     MP4("mp4", "mp4"),
     WEBM("webm", "webm")

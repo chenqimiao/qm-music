@@ -115,4 +115,12 @@ public class MediaAnnotationController {
 
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
+
+
+    @RequestMapping("/scrobble")
+    public SubsonicPong scrobble(Long id, Long time, Boolean submission) {
+
+        // 暂不实现，需要存储大量的播放记录？个人服务器不太合适
+        return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
+    }
 }

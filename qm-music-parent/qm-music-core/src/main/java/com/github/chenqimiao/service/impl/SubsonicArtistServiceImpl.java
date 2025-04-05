@@ -122,17 +122,8 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
         Set<String> existArtistNameSet = artists.stream().map(ArtistDO::getName).collect(Collectors.toSet());
 
-        List<String> similarArtistNames = artistNames.stream().filter(n -> !existArtistNameSet.contains(n)).map(n -> {
-            TransliteratorUtils.ChineseType chineseType = TransliteratorUtils.detectChineseType(n.substring(0,1));
-
-            if (TransliteratorUtils.ChineseType.SIMPLIFIED == chineseType) {
-                return TransliteratorUtils.toTraditional(n);
-            } else if (TransliteratorUtils.ChineseType.TRADITIONAL == chineseType) {
-                return TransliteratorUtils.toSimplified(n);
-            } else {
-                return null;
-            }
-        }).filter(Objects::nonNull).toList();
+        List<String> similarArtistNames = artistNames.stream().filter(n -> !existArtistNameSet.contains(n))
+                .map(TransliteratorUtils::reverseSimpleTraditional).filter(Objects::nonNull).toList();
 
         if (CollectionUtils.isNotEmpty(similarArtistNames)) {
             List<ArtistDO> similarArtists = artistRepository.queryByUniqueKeys(similarArtistNames);

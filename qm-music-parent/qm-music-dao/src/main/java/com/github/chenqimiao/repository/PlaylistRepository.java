@@ -101,26 +101,26 @@ public class PlaylistRepository {
     public int updateByPlaylistId(Map<String, Object> paramMap) {
 
         StringBuilder sqlSb = new StringBuilder();
-        sqlSb.append("update playlist ");
+        sqlSb.append("update playlist set ");
 
         var name = paramMap.get("name");
         var description = paramMap.get("description");
         var visibility = paramMap.get("visibility");
         var coverArt = paramMap.get("coverArt");
-
         if (name != null) {
-            sqlSb.append ("set name = :name ");
+            sqlSb.append ("name = :name, ");
         }
         if (description != null) {
-            sqlSb.append ("set description = :description ");
+            sqlSb.append ("description = :description, ");
         }
         if (visibility != null) {
-            sqlSb.append ("set visibility = :visibility ");
+            sqlSb.append ("visibility = :visibility, ");
         }
         if (coverArt != null) {
-            sqlSb.append ("set cover_art = :coverArt ");
+            sqlSb.append ("cover_art = :coverArt, ");
 
         }
+        sqlSb.deleteCharAt(sqlSb.lastIndexOf(","));
         sqlSb.append(" where id = :playlistId");
 
         return namedParameterJdbcTemplate.update(sqlSb.toString(), paramMap);

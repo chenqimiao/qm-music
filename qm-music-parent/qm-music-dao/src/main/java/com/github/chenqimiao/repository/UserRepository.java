@@ -112,26 +112,27 @@ public class UserRepository {
 
     public int updateByUsername(Map<String, Object> params) {
         StringBuilder sqlSb = new StringBuilder();
-        sqlSb.append("update playlist ");
+        sqlSb.append("update user set ");
 
         var password = params.get("password");
         var isAdmin = params.get("isAdmin");
         var email = params.get("email");
         var forcePasswordChange = params.get("forcePasswordChange");
-
         if (password != null) {
-            sqlSb.append ("set password = :password ");
+            sqlSb.append ("password = :password, ");
         }
         if (isAdmin != null) {
-            sqlSb.append ("set is_admin = :isAdmin ");
+            sqlSb.append ("is_admin = :isAdmin, ");
         }
         if (email != null) {
-            sqlSb.append ("set email = :email ");
+            sqlSb.append ("email = :email ,");
 
         }
         if (forcePasswordChange != null) {
-            sqlSb.append ("set force_password_change = :forcePasswordChange ");
+            sqlSb.append ("force_password_change = :forcePasswordChange, ");
         }
+        sqlSb.deleteCharAt(sqlSb.lastIndexOf(","));
+
         sqlSb.append(" where username = :username");
 
         return namedParameterJdbcTemplate.update(sqlSb.toString(), params);

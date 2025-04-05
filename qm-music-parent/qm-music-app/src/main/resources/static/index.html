@@ -55,6 +55,36 @@
             height: 16px;
         }
         .modal-actions{margin-top:2rem;display:flex;gap:8px;justify-content:flex-end}
+        /* 新增强制修改密码样式 */
+        .force-modal {
+            background: rgba(0,0,0,0.8) !important;
+        }
+        .force-modal .modal-content {
+            max-width: 400px;
+            pointer-events: all;
+        }
+        .force-modal .modal-header {
+            background: #e53e3e;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem;
+        }
+        .force-modal h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .force-modal .warning-icon {
+            width: 24px;
+            height: 24px;
+        }
+        .force-modal .modal-actions {
+            justify-content: center;
+        }
+        .force-modal input {
+            border: 2px solid #e53e3e;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +93,31 @@
         <h1>QM-Music 管理后台</h1>
         <div class="user-info">当前用户：{{ currentUsername }}</div>
     </div>
-
+    <div class="force-modal modal" v-if="forcePasswordChange">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <svg class="warning-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+                    </svg>
+                    為了您的安全，請修改初始密碼
+                </h3>
+            </div>
+            <div class="form-group">
+                <input type="password"
+                       v-model="forcePasswordForm.newPassword"
+                       placeholder="请输入新密码"
+                       @keyup.enter="submitForcePassword">
+            </div>
+            <div class="modal-actions">
+                <button class="button button-danger"
+                        :disabled="!forcePasswordForm.newPassword"
+                        @click="submitForcePassword">
+                    提交修改
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="section">
             <h2>用户管理</h2>
@@ -143,6 +197,8 @@
     createApp({
         data() {
             return {
+                forcePasswordChange: false,
+                forcePasswordForm: { newPassword: '' },
                 users: [],
                 currentUsername: localStorage.getItem('qm-music-user'),
                 currentUser: {},
@@ -158,6 +214,9 @@
         },
         async mounted() {
             if (!this.verifyLogin()) return;
+            // 第二步：获取用户信息
+            await this.checkPasswordStatus();
+
             await this.loadUsers();
         },
         methods: {
@@ -190,6 +249,46 @@
                         Object.entries(params).map(([k, v]) => [k, encodeURIComponent(v)])
                     )
                 );
+            },
+            async checkPasswordStatus() {
+                const params = this.buildBaseParams();
+                params.append('username', localStorage.getItem('u'));
+                const res = await axios.get(`/rest/getUser?${params}`);
+                if (res.data.user?.forcePasswordChange) {
+                    this.forcePasswordChange = true; // 触发强制弹窗
+                } else {
+                    await this.loadUsers(); // 正常加载页面
+                }
+            },
+            // 强制修改密码提交
+            async submitForcePassword() {
+                if (!this.forcePasswordForm.newPassword) return;
+
+                try {
+                    const params = this.buildBaseParams();
+                    params.append('username', localStorage.getItem('u'));
+                    params.append('password', this.encryptPassword(this.forcePasswordForm.newPassword));
+
+                    const res = await axios.get(`/rest/changePassword?${params}`);
+
+                    if (res.data.status === 'ok') {
+                        alert('密码修改成功，请重新登录');
+                        this.logout();
+                    }
+                } catch (error) {
+                    console.error('强制修改密码失败:', error);
+                    alert('修改失败: ' + (error.response?.data?.message || '服务器错误'));
+                }
+            },
+            // 退出清理
+            logout() {
+                localStorage.removeItem('u');
+                localStorage.removeItem('v');
+                localStorage.removeItem('c');
+                localStorage.removeItem('t');
+                localStorage.removeItem('s');
+                localStorage.removeItem('f');
+                window.location.href = 'login.html';
             },
 
             handleMissingParam(key) {

@@ -65,13 +65,13 @@ public class SubsonicUserServiceImpl implements UserService {
     public void changePassword(String username, String newPassword) {
         UserRequest request = new UserRequest();
         request.setUsername(username);
-        request.setPassword(userAuthService.resolvePlainTextPassword(newPassword));
+        request.setPassword(newPassword);
         this.updateUser(request);
     }
 
     @Override
     public void updateUser(UserRequest request) {
-        String plainTextPassword = userAuthService.resolvePlainTextPassword(request.getUsername());
+        String plainTextPassword = userAuthService.resolvePlainTextPassword(request.getPassword());
 
         Map<String, Object> param = new HashMap<>();
 

@@ -41,7 +41,7 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
         String clientVersion = request.getParameter("v");
         // like 'agent'
         String c = request.getParameter("c");
-        boolean necessary = StringUtils.isNoneBlank(username, clientVersion, clientVersion, c);
+        boolean necessary = StringUtils.isNoneBlank(username, clientVersion, c);
         String password = request.getParameter("p");
         String token = request.getParameter("t");
         String salt = request.getParameter("s");

@@ -4,6 +4,7 @@ import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.UserAuthService;
 import com.github.chenqimiao.util.HexToDecimalConverter;
 import com.github.chenqimiao.util.MD5Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
     @Override
     public boolean authCheck(String username, String token, String salt) {
         String pass = userRepository.findPassByUserName(username);
-        return Objects.equals(MD5Utils.md5(pass + salt).toLowerCase(), token);
+        return StringUtils.equalsIgnoreCase(MD5Utils.md5(pass + salt), token);
     }
 
     @Override

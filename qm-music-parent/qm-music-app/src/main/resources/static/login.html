@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QM-Music 后台登录</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="login-container">
+        <div class="logo">
+            <h1>QM-Music</h1>
+        </div>
+        <form @submit.prevent="handleLogin">
+            <div class="form-group">
+                <input
+                        type="text"
+                        placeholder="用户名"
+                        v-model="username"
+                        required
+                >
+            </div>
+            <div class="form-group">
+                <input
+                        type="password"
+                        placeholder="密码"
+                        v-model="password"
+                        required
+                >
+            </div>
+            <button type="submit" :disabled="loading">
+                {{ loading ? '登录中...' : '登录' }}
+            </button>
+            <div class="error-message" :class="{ show: errorMessage }">
+                {{ errorMessage }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                username: '',
+                password: '',
+                loading: false,
+                errorMessage: ''
+            }
+        },
+        methods: {
+            async handleLogin() {
+                this.loading = true;
+                this.errorMessage = '';
+
+                try {
+                    // 生成随机salt（6位字母数字）
+                    const salt = this.generateSalt(6);
+
+                    // 计算token
+                    const token = md5(this.password + salt).toLowerCase();
+
+                    // 构建请求参数
+                    const params = new URLSearchParams({
+                        u: encodeURIComponent(this.username),
+                        v: encodeURIComponent('1.0.0'), // 版本号示例
+                        c: encodeURIComponent(navigator.userAgent), // 客户端信息
+                        t: encodeURIComponent(token),
+                        s: encodeURIComponent(salt),
+                        f: 'json'
+                    });
+
+                    // 发送GET请求
+                    const response = await axios.get(`/rest/ping?${params}`);
+
+                    if (response.data.success) {
+                        // 保存登录信息
+                        localStorage.setItem('qm-music-token', token);
+                        localStorage.setItem('qm-music-username', this.username);
+
+                        window.location.href = '/admin';
+                    } else {
+                        this.errorMessage = response.data.message || '认证失败';
+                    }
+                } catch (error) {
+                    this.errorMessage = error.response?.data?.message || '网络请求失败';
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            // 生成随机salt
+            generateSalt(length) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let salt = '';
+                for(let i=0; i<length; i++){
+                    salt += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return salt;
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>

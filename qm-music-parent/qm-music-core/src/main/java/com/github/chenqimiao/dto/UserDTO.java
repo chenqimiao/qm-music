@@ -26,4 +26,6 @@ public class UserDTO implements Serializable {
     private Long gmtCreate;
 
     private Long gmtModify;
+
+    private Boolean forcePasswordChange;
 }

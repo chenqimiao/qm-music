@@ -33,6 +33,9 @@ public class SubsonicUser {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Folder> folders = Lists.newArrayList(new Folder());
 
+    @JacksonXmlProperty(isAttribute = true)
+    private Boolean forcePasswordChange;
+
 
 
 

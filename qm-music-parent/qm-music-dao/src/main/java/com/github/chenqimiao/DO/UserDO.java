@@ -25,4 +25,6 @@ public class UserDO {
     private Timestamp gmt_create;
 
     private Timestamp gmt_modify;
+
+    private Boolean force_password_change;
 }

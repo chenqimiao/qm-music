@@ -36,7 +36,8 @@ public class UserController {
         UserDTO userDTO = userService.findByUsername(username);
         SubsonicUser subsonicUser = SubsonicUser
                 .builder().username(userDTO.getUsername()).email(userDTO.getEmail())
-                        .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin())).build();
+                        .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin()))
+                .forcePasswordChange(userDTO.getForcePasswordChange()).build();
 
         return new UserResponse(subsonicUser);
     }
@@ -50,7 +51,8 @@ public class UserController {
         List<SubsonicUser> users = allUsers.stream().map(userDTO -> {
             SubsonicUser subsonicUser = SubsonicUser
                     .builder().username(userDTO.getUsername()).email(userDTO.getEmail())
-                    .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin())).build();
+                    .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin()))
+                    .forcePasswordChange(userDTO.getForcePasswordChange()).build();
             return subsonicUser;
         }).toList();
 

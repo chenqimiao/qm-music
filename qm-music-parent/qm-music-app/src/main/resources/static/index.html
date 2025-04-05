@@ -85,6 +85,38 @@
         .force-modal input {
             border: 2px solid #e53e3e;
         }
+        /* 新增样式 */
+        .library-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 480px) {
+            .library-control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     </style>
 </head>
 <body>
@@ -143,9 +175,17 @@
 
         <div class="section">
             <h2>曲库管理</h2>
-            <button class="button button-primary" :disabled="scanning" @click="refreshLibrary">
-                {{ scanning ? `扫描中 (${scanCount})` : '刷新曲库' }}
-            </button>
+            <div class="library-control">
+                <div class="stats">
+                    <span class="stat-label">当前曲目数量：</span>
+                    <span class="stat-value">{{ libraryCount }}</span>
+                </div>
+                <button class="button button-primary"
+                        :disabled="scanning"
+                        @click="refreshLibrary">
+                    {{ scanning ? `扫描中 (${scanCount})` : '刷新曲库' }}
+                </button>
+            </div>
         </div>
 
         <div class="modal" v-if="showPasswordForm">
@@ -207,9 +247,12 @@
                 showUserForm: false,
                 showPasswordForm: false,
                 isNewUser: false,
-                scanning: false,
-                scanCount: 0,
-                intervalId: null
+                intervalId: null,
+                libraryCount: 0,   // 新增曲库数量
+                scanCount: 0,     // 扫描计数
+                scanning: false,  // 扫描状态
+                statusInterval: null, // 状态轮询定时器
+                statsInterval: null   // 统计定时器
             }
         },
         async mounted() {
@@ -218,8 +261,26 @@
             await this.checkPasswordStatus();
 
             await this.loadUsers();
+
+            await this.loadLibraryStats();
+            this.statsInterval = setInterval(this.loadLibraryStats, 30000);
+
+        },
+        beforeUnmount() {
+            clearInterval(this.statusInterval);
+            clearInterval(this.statsInterval);
         },
         methods: {
+            // 获取曲库统计
+            async loadLibraryStats() {
+                try {
+                    const params = this.buildBaseParams();
+                    const res = await axios.get(`/rest/getScanStatus?${params}`);
+                    this.libraryCount = res.data.scanStatus.count;
+                } catch (error) {
+                    console.error('获取曲库统计失败:', error);
+                }
+            },
             verifyLogin() {
                 const requiredKeys = ['u', 'v', 'c','t','s'];
                 if (requiredKeys.some(key => !localStorage.getItem(key))) {
@@ -382,11 +443,27 @@
 
             async refreshLibrary() {
                 try {
+                    this.scanning = true;
                     const params = this.buildBaseParams();
                     await axios.get(`/rest/refresh?${params}`);
-                    this.startPolling();
+
+                    // 启动轮询
+                    this.statusInterval = setInterval(async () => {
+                        const params = this.buildBaseParams();
+                        const res = await axios.get(`/rest/getScanStatus?${params}`);
+
+                        this.scanCount = res.data.scanStatus.count;
+                        this.libraryCount = res.data.scanStatus.count; // 实时更新总数
+
+                        if (!res.data.scanStatus.scanning) {
+                            clearInterval(this.statusInterval);
+                            this.scanning = false;
+                        }
+                    }, 5000);
+
                 } catch (error) {
                     console.error('刷新曲库失败:', error);
+                    this.scanning = false;
                 }
             },
 

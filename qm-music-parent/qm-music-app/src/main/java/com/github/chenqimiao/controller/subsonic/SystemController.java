@@ -82,13 +82,17 @@ public class SystemController {
 
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
+        boolean locked = false;
         try {
-            if (lockCache.add(lock)) {
+            locked = lockCache.add(lock);
+            if (locked) {
                 // 并发控制
                 mediaFetcherService.fetchMusic(musicDir);
             }
         }finally {
-            lockCache.remove(lock);
+            if (locked) {
+                lockCache.remove(lock);
+            }
         }
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }

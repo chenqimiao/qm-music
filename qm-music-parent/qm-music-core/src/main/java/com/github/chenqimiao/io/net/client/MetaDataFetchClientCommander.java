@@ -1,5 +1,6 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.io.net.config.MetaDataFetchClientConfig;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.util.TimeZoneUtils;
@@ -9,9 +10,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,18 +43,44 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     @Nullable
     @Override
     public ArtistInfo fetchArtistInfo(String artistName) {
-        for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
-            try {
-                ArtistInfo artistInfo = metaDataFetchClient.fetchArtistInfo(artistName);
-                if (artistInfo != null) {
-                    return artistInfo;
-                }
-            }catch (Exception e) {
-                log.warn(e.getMessage());
-            }
+        List<ArtistInfo> artistInfos = getMetaDataFetchClients().stream().parallel()
+                .map(n -> {
+                    try{
+                        return n.fetchArtistInfo(artistName);
+                    }catch (Exception e){
+                        log.error("{} fetchArtistInfo error", n.getClass(), e);
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .sorted( (n1, n2) -> {
+                   return StringUtils.length(n2.getBiography()) - StringUtils.length(n1.getBiography()) ;
+                }).toList();
 
-        }
-        return null;
+        ArtistInfo properArtist = new ArtistInfo();
+
+        Field[] fields = ArtistInfo.class.getDeclaredFields();
+        Arrays.stream(fields).forEach(field -> {
+
+            field.setAccessible(true);
+            artistInfos.stream().map(n -> {
+                try {
+                    return field.get(n);
+                } catch (IllegalAccessException e) {
+                    log.error("map artist properties[{}] error", JSONObject.toJSONString(n), e);
+                    return null;
+                }
+            }).filter(Objects::nonNull).findFirst().ifPresent(n -> {
+                try {
+                    field.set(properArtist, n);
+                } catch (IllegalAccessException e) {
+                    log.error("set properArtist[{}] error", JSONObject.toJSONString(n), e);
+                    throw new RuntimeException(e);
+                }
+            });
+
+        });
+        return properArtist;
+
     }
 
     @Nullable
@@ -119,5 +145,18 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+
+        Field[] fields = ArtistInfo.class.getDeclaredFields();
+
+        System.out.println(fields[0]);
+        System.out.println(fields[1]);
+        System.out.println(fields[2]);
+        System.out.println(fields[3]);
+        System.out.println(fields[4]);
+        System.out.println(fields[5]);
+        System.out.println(fields.length);
     }
 }

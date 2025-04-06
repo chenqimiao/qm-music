@@ -30,6 +30,6 @@ ENV QM_FFMPEG_ENABLE=false
 EXPOSE 6688
 
 
-ENTRYPOINT nohup java -jar app.jar \
-    --spring.profiles.active=prod \
-    -Dqm.ffmpeg.enable=${QM_FFMPEG_ENABLE}
+ENTRYPOINT ["java", "-jar", "app.jar", \
+    "--spring.profiles.active=prod", \
+    "-Dqm.ffmpeg.enable=${QM_FFMPEG_ENABLE}"]

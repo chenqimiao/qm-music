@@ -172,6 +172,7 @@ public class SearchController {
     }
 
     private void wrapArtistImgUrl(SearchResult3Response.SearchResult3 searchResult3) {
+        if(CollectionUtils.isEmpty(searchResult3.getArtists()))return;
         searchResult3.getArtists().forEach(artist -> {
             ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artist.getName());
             if (artistInfo != null) {

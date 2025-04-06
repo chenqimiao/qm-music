@@ -17,7 +17,7 @@ on:
 
 env:
   REGISTRY_ALIYUN: registry.cn-hangzhou.aliyuncs.com
-  IMAGE_NAME: ${{ALIYUN_NAME_SPACE}}/qm-music
+  IMAGE_NAME: ${{ ALIYUN_NAME_SPACE }}/qm-music
 
 jobs:
   build:

@@ -219,13 +219,14 @@ public class BrowsingController {
         String musicBrainzId = metaDataFetchClientCommander.getMusicBrainzId(artistDTO.getName());
         String lastFmUrl = metaDataFetchClientCommander.getLastFmUrl(artistDTO.getName());
         List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
+        ;
         ArtistInfoResponse.ArtistInfo2 artistInfo2 = ArtistInfoResponse.ArtistInfo2.builder()
-                .biography(artistInfo != null ? artistInfo.getBiography() : null)
+                .biography(Optional.ofNullable(artistInfo).map(ArtistInfo::getBiography).orElse(null))
                 .musicBrainzId(musicBrainzId)
                 .lastFmUrl(lastFmUrl)
-                .smallImageUrl(artistInfo != null ? artistInfo.getSmallImageUrl() : null)
+                .smallImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getSmallImageUrl).orElse(null))
                 .mediumImageUrl(artistInfo != null ? StringUtils.isBlank(artistInfo.getMediumImageUrl())? artistInfo.getImageUrl():artistInfo.getMediumImageUrl() : null)
-                .largeImageUrl(artistInfo != null ? artistInfo.getLargeImageUrl() : null)
+                .largeImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getLargeImageUrl).orElse(null))
                 .build();
         if (CollectionUtils.isNotEmpty(similarArtistsName)) {
             // similarArtistsName = Lists.partition(similarArtistsName, artistInfoRequest.getCount()).getFirst();

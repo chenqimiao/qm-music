@@ -104,6 +104,7 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
                 .referrer(REFERER)
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                 .header("Accept-Language", "zh-CN,zh;q=0.9")
+                .cookie("_ntes_nnid", 上一级)
                 .ignoreContentType(true)
                 .get();
 

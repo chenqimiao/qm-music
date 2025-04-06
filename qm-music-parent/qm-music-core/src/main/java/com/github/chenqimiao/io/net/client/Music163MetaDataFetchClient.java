@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
+import com.github.chenqimiao.util.RandomStringUtils;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
@@ -104,7 +105,7 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
                 .referrer(REFERER)
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                 .header("Accept-Language", "zh-CN,zh;q=0.9")
-                .cookie("_ntes_nnid", 上一级)
+                .cookie("_ntes_nnid", RandomStringUtils.generate())
                 .ignoreContentType(true)
                 .get();
 

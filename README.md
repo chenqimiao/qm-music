@@ -24,8 +24,8 @@
 docker run -d \
   --name qm-music \
   -p 6688:6688 \
-  -v /data/qm-music/music_dir:/music \
-  -v /data/qm-music/db:/var/db \
+  -v [host_music_file_path]:/data/qm-music/music_dir \
+  -v [host_path]:/data/qm-music/db \
   -e QM_FFMPEG_ENABLE=true \
   chenqimiao/qm-music:latest
 ```

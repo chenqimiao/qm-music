@@ -12,12 +12,19 @@ RUN mvn clean package -DskipTests
 # 第二阶段：最终镜像
 FROM eclipse-temurin:21-jre-jammy
 
+# 安装基础工具
+RUN apt-get update && \
+    apt-get install -y wget tar && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # 根据目标架构自动获取对应FFmpeg
 ARG TARGETARCH
 COPY docker/download-ffmpeg.sh .
-RUN chmod +x download-ffmpeg.sh && \
-    ./download-ffmpeg.sh ${TARGETARCH} && \
-    rm download-ffmpeg.sh
+#RUN chmod +x download-ffmpeg.sh && \
+#    ./download-ffmpeg.sh ${TARGETARCH} && \
+#    rm download-ffmpeg.sh
+RUN ./download-ffmpeg.sh ${TARGETARCH}
 
 WORKDIR /app
 COPY --from=builder /app/qm-music-app/target/*.jar ./app.jar

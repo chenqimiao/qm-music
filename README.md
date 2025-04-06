@@ -32,7 +32,7 @@ docker run -d \
 
 ### ⚙️ 配置说明
 - **环境变量**  
-  `QM_FFMPEG_ENABLE=true` 启用智能音频转码（推荐户外使用用户开启），支持按网络状况自动切换 OPUS/AAC 编码，有效节省流量消耗（默认关闭）
+  `QM_FFMPEG_ENABLE=true` 启用智能音频转码（推荐在户外使用的用户开启），支持按网络状况自动切换 libmp3lame/acc 编码，有效节省流量消耗（默认关闭）
 
 - **卷挂载**  
   `/data/qm-music/music_dir`：音乐文件存储目录

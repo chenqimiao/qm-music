@@ -17,7 +17,7 @@ on:
 
 env:
   REGISTRY_ALIYUN: registry.cn-hangzhou.aliyuncs.com
-  IMAGE_NAME: ${{ secrets.ALIYUN_NAME_SPACE }}/qm-music
+  IMAGE_NAME: qm-music
 
 jobs:
   build:
@@ -47,7 +47,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.REGISTRY_ALIYUN }}/${{ env.IMAGE_NAME }}:${{ inputs.image_version }}
+            ${{ env.REGISTRY_ALIYUN }}/${{ secrets.ALIYUN_NAME_SPACE }}/${{ env.IMAGE_NAME }}:${{ inputs.image_version }}
 
       - name: Login to Docker Hub
         if: ${{ inputs.push_to_dockerhub }}

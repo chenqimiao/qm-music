@@ -23,7 +23,7 @@ public class MetaDataFetchClientCommanderTest {
 
     @Test
     public void metaDataFetchClientCommanderTest() {
-        String artistName = "张学友";
+        String artistName = "陈奕迅";
         String songName = "她来听我的演唱会";
         ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistName);
         log.info("metaDataFetchClientCommander artistInfo : {}", JSONObject.toJSONString(artistInfo));

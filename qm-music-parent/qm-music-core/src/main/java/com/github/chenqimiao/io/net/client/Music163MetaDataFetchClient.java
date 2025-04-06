@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.util.RandomStringUtils;
+import com.github.chenqimiao.util.TransliteratorUtils;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
@@ -22,6 +23,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Qimiao Chen
@@ -60,6 +62,18 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
 
         // 第一步：获取艺术家ID
         String artistId = getArtistId(artistName);
+
+        if (artistId == null) {
+            //retry
+            String simplifiedArtistName = TransliteratorUtils.toSimplified(artistName);
+            if(!Objects.equals(artistName, simplifiedArtistName)) {
+
+                artistId = getArtistId(artistName);
+            }
+
+        }
+
+
         if (artistId != null) {
             String biography = getArtistBiography(artistId);
             artistInfo.setBiography(biography);
@@ -110,8 +124,8 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
                 .get();
 
         // 定位目标元素
-        Elements descSection = Objects.requireNonNull(doc.selectFirst(".n-artdesc")).select("p");
-        if (!descSection.isEmpty()) {
+        Elements descSection = Optional.ofNullable(doc.selectFirst(".n-artdesc")).map(n -> n.select("p")).orElse(null);
+        if (descSection != null && !descSection.isEmpty()) {
             return Objects.requireNonNull(descSection.first()).text();
         } else {
           return null;

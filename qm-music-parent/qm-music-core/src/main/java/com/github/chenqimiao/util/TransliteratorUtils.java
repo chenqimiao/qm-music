@@ -30,7 +30,7 @@ public abstract class TransliteratorUtils {
     }
 
     // 繁体转简体
-    public static String toSimplified(String traditional) {
+    private static String doToSimplified(String traditional) {
         Transliterator transliterator = Transliterator.getInstance("Traditional-Simplified");
         return transliterator.transliterate(traditional);
     }
@@ -148,5 +148,14 @@ public abstract class TransliteratorUtils {
     private static boolean isTraditionalChar(char c) {
         String str = String.valueOf(c);
         return !str.equals(TRADITIONAL_TO_SIMPLIFIED.transliterate(str));
+    }
+
+    public static String toSimplified(String text) {
+        if (StringUtils.isBlank(text)) return text;
+        ChineseType chineseType = detectChineseType(text.substring(0, 1));
+        if (ChineseType.SIMPLIFIED != chineseType) {
+            return doToSimplified(text);
+        }
+        return text;
     }
 }

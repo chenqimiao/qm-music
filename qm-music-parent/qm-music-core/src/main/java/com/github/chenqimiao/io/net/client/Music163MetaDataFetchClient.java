@@ -36,6 +36,8 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
 
     private static final String REFERER = "https://music.163.com/";
 
+    private static final String ARTIST_INFO_API = "https://music.163.com/artist/desc?id=";
+
 
     @Override
     public Boolean supportChinaRegion() {
@@ -93,7 +95,7 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
 
     // 获取艺术家简介
     private  String getArtistBiography(String artistId) throws Exception {
-        String targetUrl = "https://music.163.com/artist/desc?id=" + artistId;
+        String targetUrl = ARTIST_INFO_API + artistId;
 
 
         // 关键：使用原生请求获取未渲染的HTML
@@ -106,7 +108,7 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
                 .get();
 
         // 定位目标元素
-        Elements descSection = doc.selectFirst(".n-artdesc").select("p");
+        Elements descSection = Objects.requireNonNull(doc.selectFirst(".n-artdesc")).select("p");
         if (!descSection.isEmpty()) {
             return Objects.requireNonNull(descSection.first()).text();
         } else {

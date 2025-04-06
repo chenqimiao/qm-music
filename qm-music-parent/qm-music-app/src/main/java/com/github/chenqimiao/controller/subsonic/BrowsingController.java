@@ -20,6 +20,7 @@ import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -223,7 +224,7 @@ public class BrowsingController {
                 .musicBrainzId(musicBrainzId)
                 .lastFmUrl(lastFmUrl)
                 .smallImageUrl(artistInfo != null ? artistInfo.getSmallImageUrl() : null)
-                .mediumImageUrl(artistInfo != null ? artistInfo.getMediumImageUrl() : null)
+                .mediumImageUrl(artistInfo != null ? StringUtils.isBlank(artistInfo.getMediumImageUrl())? artistInfo.getImageUrl():artistInfo.getMediumImageUrl() : null)
                 .largeImageUrl(artistInfo != null ? artistInfo.getLargeImageUrl() : null)
                 .build();
         if (CollectionUtils.isNotEmpty(similarArtistsName)) {

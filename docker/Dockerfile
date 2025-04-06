@@ -4,8 +4,8 @@ FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-jammy AS builder
 
 RUN apt-get update && apt-get install -y maven
 WORKDIR /app
-COPY qm-music-parent/pom.xml .
-RUN mvn dependency:go-offline -B
+#COPY qm-music-parent/pom.xml .
+#RUN mvn dependency:go-offline -B
 COPY qm-music-parent/ .
 RUN mvn clean package -DskipTests
 

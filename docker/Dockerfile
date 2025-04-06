@@ -12,6 +12,9 @@ RUN mvn clean package -DskipTests
 # 第二阶段：最终镜像
 FROM eclipse-temurin:21-jre-jammy
 
+# 强制声明需要用户映射的目录
+VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir"]
+
 # 安装基础工具
 #RUN apt-get update && \
 #    apt-get install -y wget tar xz-utils && \

@@ -29,33 +29,34 @@ public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
     @Override
     @SneakyThrows
     public ArtistInfo fetchArtistInfo(String artistName) {
-        String url = BASE_URL + encodeArtistName(artistName);
-
-        Document doc = Jsoup.connect(url)
-                .userAgent(getUserAgent())
-                .header("User-Agent", getUserAgent())
-                .timeout(10000)
-                .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
-                .ignoreContentType(true)
-                .get();
-
-        // 2. 获取不同尺寸的图片 URL
-        Element imageMeta = doc.select("meta[property=og:image]").first();
-        String baseImageUrl = imageMeta != null ? imageMeta.attr("content") : "";
-        String smallImageUrl = resizeImageUrl(baseImageUrl, "300x300");
-        String mediumImageUrl = resizeImageUrl(baseImageUrl, "600x600");
-        String largeImageUrl = baseImageUrl; // 原图
-
-        // 3. 获取简介 (biography)
-        String biography = null;
-        Element first = doc.select(".wiki-content p").first();
-        if (first != null) {
-            biography = first.text();
-        }
-
-        return ArtistInfo.builder().artistName(artistName).biography(biography)
-                .smallImageUrl(smallImageUrl).largeImageUrl(largeImageUrl).mediumImageUrl(mediumImageUrl)
-                .imageUrl(baseImageUrl).build();
+//        String url = BASE_URL + encodeArtistName(artistName);
+//
+//        Document doc = Jsoup.connect(url)
+//                .userAgent(getUserAgent())
+//                .header("User-Agent", getUserAgent())
+//                .timeout(10000)
+//                .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
+//                .ignoreContentType(true)
+//                .get();
+//
+//        // 2. 获取不同尺寸的图片 URL
+//        Element imageMeta = doc.select("meta[property=og:image]").first();
+//        String baseImageUrl = imageMeta != null ? imageMeta.attr("content") : "";
+//        String smallImageUrl = resizeImageUrl(baseImageUrl, "300x300");
+//        String mediumImageUrl = resizeImageUrl(baseImageUrl, "600x600");
+//        String largeImageUrl = baseImageUrl; // 原图
+//
+//        // 3. 获取简介 (biography)
+//        String biography = null;
+//        Element first = doc.select(".wiki-content p").first();
+//        if (first != null) {
+//            biography = first.text();
+//        }
+//
+//        return ArtistInfo.builder().artistName(artistName).biography(biography)
+//                .smallImageUrl(smallImageUrl).largeImageUrl(largeImageUrl).mediumImageUrl(mediumImageUrl)
+//                .imageUrl(baseImageUrl).build();
+        return null;
     }
 
     // 处理艺人名称编码（空格转为+）

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -164,8 +163,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return CoverStreamDTO.builder().build();
     }
 
-    @Deprecated
-    public CoverStreamDTO getArtistCoverStreamDTO1(Long artistId, Integer size) {
+    @Override
+    public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
 
         ArtistDO artistDO = artistRepository.findByArtistId(artistId);
 
@@ -176,7 +175,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDO.getName());
 
         if (artistInfo == null) {
-            return new CoverStreamDTO();
+            return this.getArtistCoverStreamByLocal(artistId, size);
         }
         String imageUrl = artistInfo.getImageUrl();
 
@@ -186,12 +185,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
         List<String> images = Lists.newArrayList(imageUrl, smallImageUrl, mediumImageUrl, largeImageUrl);
 
-        images =  images.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        images =  images.stream().filter(StringUtils::isNotBlank).toList();
         if (images.isEmpty()) {
-            return new CoverStreamDTO();
+            return this.getArtistCoverStreamByLocal(artistId, size);
+
         }
 
-        String properImg = images.get(images.size() - 1);
+        String properImg = images.getLast();
         try {
             byte[] bytes = ImageToByteConverter.convertWithHttpClient(properImg);
             String sourceFormat = ImageUtils.resolveType(bytes);
@@ -210,8 +210,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
 
     }
-    @Override
-    public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
+
+    public CoverStreamDTO getArtistCoverStreamByLocal(Long artistId, Integer size) {
 
         List<ArtistRelationDO> songRelations
                 = artistRelationRepository.findByArtistIdAndType(artistId, EnumArtistRelationType.SONG.getCode());

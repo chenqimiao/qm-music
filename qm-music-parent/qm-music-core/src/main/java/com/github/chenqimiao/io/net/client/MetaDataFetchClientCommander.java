@@ -8,6 +8,7 @@ import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -53,6 +54,12 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                     }
                 }).filter(Objects::nonNull)
                 .sorted( (n1, n2) -> {
+                    if (StringUtils.isBlank(n1.getBiography())) {
+                        return NumberUtils.INTEGER_ONE;
+                    }
+                    if (StringUtils.isBlank(n2.getBiography())) {
+                        return -NumberUtils.INTEGER_ONE;
+                    }
                    return StringUtils.length(n2.getBiography()) - StringUtils.length(n1.getBiography()) ;
                 }).toList();
 

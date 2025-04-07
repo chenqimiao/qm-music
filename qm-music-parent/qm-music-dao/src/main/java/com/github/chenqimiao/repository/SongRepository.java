@@ -1,10 +1,12 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -29,11 +31,14 @@ public class SongRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private final RowMapper<SongDO> ROW_MAPPER_SONG = new BeanPropertyRowMapper<>(SongDO.class);
+
+
     public List<SongDO> findByAlbumId(Long alumId) {
         String sql = """
                         select * from song where `album_id` = ?
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), alumId);
+        return jdbcTemplate.query(sql, ROW_MAPPER_SONG, alumId);
     }
 
     public SongDO findBySongId(Long songId) {
@@ -42,7 +47,7 @@ public class SongRepository {
             String sql = """
                         select * from song where `id` = ?
                      """;
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(SongDO.class), songId);
+            return jdbcTemplate.queryForObject(sql, ROW_MAPPER_SONG, songId);
         }catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -54,7 +59,7 @@ public class SongRepository {
         String sql = """
                         select * from song where `title` = ? and `artist_name`= ?
                      """;
-        List<SongDO> songs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), songTitle, artistName);
+        List<SongDO> songs = jdbcTemplate.query(sql, ROW_MAPPER_SONG, songTitle, artistName);
 
         if (CollectionUtils.isEmpty(songs)) {
             return null;
@@ -68,7 +73,7 @@ public class SongRepository {
         String sql = """
                         select * from song where `title` = ?
                      """;
-        List<SongDO> songs = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), songTitle);
+        List<SongDO> songs = jdbcTemplate.query(sql, ROW_MAPPER_SONG, songTitle);
 
         if (CollectionUtils.isEmpty(songs)) {
             return null;
@@ -81,7 +86,7 @@ public class SongRepository {
         String sql = """
                         select * from song where `artist_id` = ?
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class), artistId);
+        return jdbcTemplate.query(sql, ROW_MAPPER_SONG, artistId);
     }
 
 
@@ -89,7 +94,7 @@ public class SongRepository {
         String sql = """
                         select * from song where `title` like ? limit ?, ?;
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SongDO.class),
+        return jdbcTemplate.query(sql, ROW_MAPPER_SONG,
                 "%"+songTitle +"%", offset, pageSize);
     }
 

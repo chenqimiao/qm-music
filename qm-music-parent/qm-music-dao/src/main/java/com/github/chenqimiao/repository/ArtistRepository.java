@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -30,19 +31,20 @@ public class ArtistRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private final RowMapper<ArtistDO> ROW_MAPPER_ARTIST = new BeanPropertyRowMapper<>(ArtistDO.class);
 
     public List<ArtistDO> findArtistGtUpdateTime(Long timestamp) {
         String sql = """
                         select * from artist where `gmt_modify` >= ?
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class), timestamp);
+        return jdbcTemplate.query(sql, ROW_MAPPER_ARTIST, timestamp);
     }
 
     public List<ArtistDO> findAll() {
         String sql = """
                         select * from artist ;
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class));
+        return jdbcTemplate.query(sql, ROW_MAPPER_ARTIST);
 
     }
 
@@ -54,7 +56,7 @@ public class ArtistRepository {
         // new BeanPropertyRowMapper<>(ArtistDO.class) ： 多列值
         // Integer :单列值  for select count(1) from xxx
         try{
-            return jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper<>(ArtistDO.class), artistId);
+            return jdbcTemplate.queryForObject(sql, ROW_MAPPER_ARTIST, artistId);
 
         }catch (EmptyResultDataAccessException e){
             return null;
@@ -69,7 +71,7 @@ public class ArtistRepository {
         String sql = """
                         select * from artist where `name` like ? limit ?, ?;
                      """;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ArtistDO.class),
+        return jdbcTemplate.query(sql, ROW_MAPPER_ARTIST,
                  '%' + artistName + '%' , offset, pageSize);
     }
 
@@ -83,7 +85,7 @@ public class ArtistRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("ids", artistIds);
 
-        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ArtistDO.class));
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER_ARTIST);
     }
 
 
@@ -111,7 +113,7 @@ public class ArtistRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("artistNames", artistNames);
 
-        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ArtistDO.class));
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER_ARTIST);
 
     }
 

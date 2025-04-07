@@ -1,9 +1,11 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -23,6 +25,9 @@ public class ArtistRelationRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final RowMapper<ArtistRelationDO> ROW_MAPPER_ARTIST_RELATION_ITEM = new BeanPropertyRowMapper<>(ArtistRelationDO.class);
+
 
     public List<ArtistRelationDO> search(Map<String, Object> params) {
 
@@ -50,7 +55,7 @@ public class ArtistRelationRepository {
         }
 
         return namedParameterJdbcTemplate.query(sqlSb.toString(), params,
-                new BeanPropertyRowMapper(ArtistRelationDO.class));
+                ROW_MAPPER_ARTIST_RELATION_ITEM);
     }
 
 

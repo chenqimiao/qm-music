@@ -4,6 +4,7 @@ import com.github.chenqimiao.DO.UserStarDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,9 @@ public class UserStarRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final RowMapper<UserStarDO> ROW_MAPPER_USER_STAR = new BeanPropertyRowMapper<>(UserStarDO.class);
+
 
     public int save(UserStarDO userStarDO) {
 
@@ -123,7 +127,7 @@ public class UserStarRepository {
         param.put("user_id", userId);
 
 
-        return namedParameterJdbcTemplate.query(sql, param, new BeanPropertyRowMapper<> (UserStarDO.class));
+        return namedParameterJdbcTemplate.query(sql, param, ROW_MAPPER_USER_STAR);
 
     }
 

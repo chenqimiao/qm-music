@@ -1,10 +1,12 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
+import com.github.chenqimiao.DO.PlaylistItemDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -27,10 +29,12 @@ public class AlbumRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private final RowMapper<AlbumDO> ROW_MAPPER_ALBUM_ITEM = new BeanPropertyRowMapper<>(AlbumDO.class);
+
 
     public List<AlbumDO> searchAlbumList(String suffix) {
         String sql = "select * from album  " +  suffix;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AlbumDO.class));
+        return jdbcTemplate.query(sql, ROW_MAPPER_ALBUM_ITEM);
     }
 
 
@@ -40,7 +44,7 @@ public class AlbumRepository {
                         select * from album where `id` = ?
                      """;
         try {
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class), albumId);
+            return jdbcTemplate.queryForObject(sql, ROW_MAPPER_ALBUM_ITEM, albumId);
         }catch (EmptyResultDataAccessException e){
             return null;
         }
@@ -55,7 +59,7 @@ public class AlbumRepository {
         params.put("offset", offset);
         params.put("pageSize", pageSize);
 
-        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER_ALBUM_ITEM);
     }
 
     public AlbumDO queryByUniqueKey(String albumName) {
@@ -63,7 +67,7 @@ public class AlbumRepository {
                         select * from album where `title` = ?
                      """;
         try {
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(AlbumDO.class),
+            return jdbcTemplate.queryForObject(sql, ROW_MAPPER_ALBUM_ITEM,
                     albumName);
         }catch (EmptyResultDataAccessException e){
             return null;
@@ -105,7 +109,7 @@ public class AlbumRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("ids", albumIds);
 
-        return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(AlbumDO.class));
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER_ALBUM_ITEM);
 
     }
 

@@ -1,10 +1,12 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.DO.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -25,6 +27,9 @@ public class UserRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final RowMapper<UserDO> ROW_MAPPER_USER = new BeanPropertyRowMapper<>(UserDO.class);
+
 
     @Nullable
     public String findPassByUserName(String userName) {
@@ -68,7 +73,7 @@ public class UserRepository {
         try{
 
 
-            return (UserDO) jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper(UserDO.class) ,username);
+            return (UserDO) jdbcTemplate.queryForObject(sql,  ROW_MAPPER_USER ,username);
 
         }catch (EmptyResultDataAccessException exception) {
             return null;
@@ -83,7 +88,7 @@ public class UserRepository {
         try{
 
 
-            return (UserDO) jdbcTemplate.queryForObject(sql,  new BeanPropertyRowMapper(UserDO.class) ,userId);
+            return (UserDO) jdbcTemplate.queryForObject(sql,  ROW_MAPPER_USER ,userId);
 
         }catch (EmptyResultDataAccessException exception) {
             return null;
@@ -95,7 +100,7 @@ public class UserRepository {
 
         String sql = "SELECT * FROM user order by is_admin desc , id desc";
 
-        return jdbcTemplate.query(sql,  new BeanPropertyRowMapper(UserDO.class));
+        return jdbcTemplate.query(sql,  ROW_MAPPER_USER);
 
     }
 

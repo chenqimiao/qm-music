@@ -3,6 +3,7 @@ package com.github.chenqimiao.repository;
 import com.github.chenqimiao.DO.PlaylistItemDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -21,6 +22,8 @@ public class PlaylistItemRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    final RowMapper<PlaylistItemDO> ROW_MAPPER_PLAY_LIST_ITEM = new BeanPropertyRowMapper<>(PlaylistItemDO.class);
 
     public void save(List<PlaylistItemDO> playlistItems) {
 
@@ -92,7 +95,7 @@ public class PlaylistItemRepository {
 
             paramMap.put("playlistIds", playlistIds);
 
-            return namedParameterJdbcTemplate.query(sql, paramMap, new BeanPropertyRowMapper(PlaylistItemDO.class));
+            return namedParameterJdbcTemplate.query(sql, paramMap, ROW_MAPPER_PLAY_LIST_ITEM);
 
 
     }
@@ -134,6 +137,6 @@ public class PlaylistItemRepository {
                 """;
         Map<String, Object> param = new HashMap<>();
         param.put("songIds", songIds);
-        return namedParameterJdbcTemplate.query(sql, param, new BeanPropertyRowMapper(PlaylistItemDO.class));
+        return namedParameterJdbcTemplate.query(sql, param,ROW_MAPPER_PLAY_LIST_ITEM);
     }
 }

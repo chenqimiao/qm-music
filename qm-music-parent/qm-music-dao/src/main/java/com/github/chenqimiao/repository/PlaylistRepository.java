@@ -1,8 +1,10 @@
 package com.github.chenqimiao.repository;
 
+import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.PlaylistDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ public class PlaylistRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private final RowMapper<PlaylistDO> ROW_MAPPER_PLAYLIST = new BeanPropertyRowMapper<>(PlaylistDO.class);
 
     public int save(PlaylistDO playlistDO) {
         String sql = """

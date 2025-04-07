@@ -21,6 +21,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MusicBrainzClient {
@@ -62,6 +63,9 @@ public class MusicBrainzClient {
     private static List<Artist> parseSearchResponse(String json) {
         JSONObject root = JSON.parseObject(json);
         JSONArray artistsArray = root.getJSONArray("artists");
+        if (artistsArray == null) {
+            return Collections.emptyList();
+        }
         List<Artist> artists = new ArrayList<>();
 
         for (int i = 0; i < artistsArray.size(); i++) {

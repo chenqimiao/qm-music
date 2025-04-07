@@ -56,6 +56,9 @@ public class MediaRetrievalController {
             // do not support artist cover art
            // throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
             songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
+            if(songCoverStreamDTO == null){
+                 throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            }
 
             //return ResponseEntity.ok().body(null);
         }else {

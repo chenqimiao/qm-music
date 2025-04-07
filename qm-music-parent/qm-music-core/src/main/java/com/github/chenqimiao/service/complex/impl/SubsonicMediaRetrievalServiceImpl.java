@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.complex.impl;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.constant.RateLimiterConstants;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
@@ -20,6 +21,7 @@ import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.*;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Qimiao Chen
@@ -165,17 +168,41 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
+        RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_REMOTE_LIMIT_KEY,
+                key -> RateLimiter.create(5));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
+            return null;
+        }
+
+        CoverStreamDTO artistCoverStreamByLocal = this.getArtistCoverStreamByLocal(artistId, size);
+
+        if (artistCoverStreamByLocal != null) {
+            return artistCoverStreamByLocal;
+        }
+        CoverStreamDTO artistCoverStreamDTO = this.getArtistCoverStreamDTOByRemote(artistId, size);
+        if (artistCoverStreamDTO != null) {
+            return artistCoverStreamDTO;
+        }
+        return null;
+    }
+
+
+
+
+    private CoverStreamDTO getArtistCoverStreamDTOByRemote(Long artistId, Integer size) {
 
         ArtistDO artistDO = artistRepository.findByArtistId(artistId);
 
         if (artistDO == null) {
-            return new CoverStreamDTO();
+            return null;
         }
 
         ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDO.getName());
 
         if (artistInfo == null) {
-            return this.getArtistCoverStreamByLocal(artistId, size);
+            return null;
         }
         String imageUrl = artistInfo.getImageUrl();
 
@@ -187,7 +214,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
         images =  images.stream().filter(StringUtils::isNotBlank).toList();
         if (images.isEmpty()) {
-            return this.getArtistCoverStreamByLocal(artistId, size);
+            return null;
 
         }
 
@@ -203,15 +230,12 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                     .build();
         }catch (Exception e) {
             log.warn("CoverStreamDTO.getArtistCoverStreamDTO() artistId {}, size {} , properImg {}", artistId, size, properImg, e);
-            return new CoverStreamDTO();
+            return null;
         }
-
-
-
 
     }
 
-    public CoverStreamDTO getArtistCoverStreamByLocal(Long artistId, Integer size) {
+    private CoverStreamDTO getArtistCoverStreamByLocal(Long artistId, Integer size) {
 
         List<ArtistRelationDO> songRelations
                 = artistRelationRepository.findByArtistIdAndType(artistId, EnumArtistRelationType.SONG.getCode());

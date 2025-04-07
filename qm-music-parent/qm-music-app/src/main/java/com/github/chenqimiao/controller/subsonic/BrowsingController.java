@@ -1,5 +1,6 @@
 package com.github.chenqimiao.controller.subsonic;
 
+import com.github.chenqimiao.constant.RateLimiterConstants;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
@@ -19,6 +20,7 @@ import com.github.chenqimiao.service.complex.ArtistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -210,6 +213,14 @@ public class BrowsingController {
 
     @GetMapping(value = "/getArtistInfo2")
     public ArtistInfoResponse getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
+        RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_REMOTE_LIMIT_KEY,
+                key -> RateLimiter.create(5));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
+            return new ArtistInfoResponse();
+        }
+
         List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(Lists.newArrayList(artistInfoRequest.getId()));
         if (CollectionUtils.isEmpty(artists)) {
             return new ArtistInfoResponse();

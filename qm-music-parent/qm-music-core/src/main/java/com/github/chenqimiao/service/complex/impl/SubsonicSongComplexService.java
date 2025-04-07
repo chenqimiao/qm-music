@@ -8,6 +8,9 @@ import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
+import com.github.chenqimiao.repository.PlaylistItemRepository;
+import com.github.chenqimiao.repository.SongRepository;
+import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
@@ -54,6 +57,15 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Autowired
     private ArtistRelationRepository artistRelationRepository;
+
+    @Autowired
+    private UserStarRepository userStarRepository;
+
+    @Autowired
+    private PlaylistItemRepository playlistItemRepository;
+
+    @Autowired
+    private SongRepository songRepository;
 
     @Override
     public List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId) {
@@ -115,6 +127,13 @@ public class SubsonicSongComplexService implements SongComplexService {
 
         List<Long> songIds = artistRelationList.stream().map(ArtistRelationDO::getRelation_id).toList();
         return this.queryBySongIds(songIds, null);
+    }
+
+    @Override
+    public void cleanSongs(List<Long> songIds) {
+        userStarRepository.delByRelationIdsAndStartType(songIds, EnumUserStarType.SONG.getCode());
+        playlistItemRepository.delBySongIds(songIds);
+        songRepository.deleteByIds(songIds);
     }
 
 

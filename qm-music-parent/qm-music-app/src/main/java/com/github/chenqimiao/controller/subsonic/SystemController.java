@@ -85,7 +85,7 @@ public class SystemController {
     private final Object lock = new Object();
     private final static Set<Object> lockCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    private ExecutorService REFRESH_THREAD_POOL = Executors.newSingleThreadExecutor();
+    private final ExecutorService REFRESH_THREAD_POOL = Executors.newSingleThreadExecutor();
 
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {

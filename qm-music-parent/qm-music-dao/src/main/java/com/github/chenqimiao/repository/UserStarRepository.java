@@ -126,4 +126,18 @@ public class UserStarRepository {
         return namedParameterJdbcTemplate.query(sql, param, new BeanPropertyRowMapper<> (UserStarDO.class));
 
     }
+
+    public void delByRelationIdsAndStartType(List<Long> relationIds, Integer starType) {
+        var sql = """
+                    delete from user_star where
+                    relation_id in (:relationIds)
+                    and star_type = :starType;
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("relationIds", relationIds);
+        param.put("starType", starType);
+
+        namedParameterJdbcTemplate.update(sql, param);
+
+    }
 }

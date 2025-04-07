@@ -11,6 +11,7 @@ import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
 import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.service.complex.MediaFetcherService;
+import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.FileUtils;
 import com.github.chenqimiao.util.FirstLetterUtil;
 import com.github.chenqimiao.util.MD5Utils;
@@ -67,6 +68,15 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @Autowired
     private ArtistRelationRepository artistRelationRepository;
+
+    @Autowired
+    private UserStarRepository userStarRepository;
+
+    @Autowired
+    private PlaylistItemRepository playlistItemRepository;
+
+    @Autowired
+    private SongComplexService songComplexService;
 
 
     @Override
@@ -136,7 +146,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
             return false;
         }).map(SongDO::getId).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(toBeRemoveSongIds)) {
-            songRepository.deleteByIds(toBeRemoveSongIds);
+            songComplexService.cleanSongs(toBeRemoveSongIds);
         }
         return toBeRemoveSongIds;
     }

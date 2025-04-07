@@ -117,4 +117,15 @@ public class PlaylistItemRepository {
         paramMap.put("ranks", songIndexToRemove.stream().map(n -> n + 1L).toList());
         namedParameterJdbcTemplate.update(sql, paramMap);
     }
+
+    public void delBySongIds(List<Long> songIds) {
+        var sql = """
+                    delete from playlist_item where
+                    song_id in (:songIds)
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("songIds", songIds);
+
+        namedParameterJdbcTemplate.update(sql, param);
+    }
 }

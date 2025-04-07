@@ -18,7 +18,7 @@ on:
 env:
   REGISTRY_ALIYUN: registry.cn-hangzhou.aliyuncs.com
   IMAGE_NAME: qm-music
-  DOCKER_HUB_NAME_SPACE: chenqimiao
+  DOCKER_HUB_NAME_SPACE: qmmusic
 
 jobs:
   build:

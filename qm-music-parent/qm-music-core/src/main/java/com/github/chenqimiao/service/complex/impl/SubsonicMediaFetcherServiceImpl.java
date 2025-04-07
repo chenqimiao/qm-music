@@ -241,7 +241,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setGenre(musicMeta.getGenre());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
-        songDO.setTrack(musicMeta.getTrack() == null ? "1" : musicMeta.getTrack() );
+        songDO.setTrack(StringUtils.isBlank(musicMeta.getTrack()) ? "1" : musicMeta.getTrack() );
         songRepository.save(songDO);
 
         // save relation

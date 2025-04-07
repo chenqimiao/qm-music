@@ -28,6 +28,7 @@ docker run -d \
   -v [host_path]:/data/qm-music/db \
   -e QM_FFMPEG_ENABLE=true \
   -e TZ=Asia/Shanghai \
+  --restart unless-stopped \
   qmmusic/qm-music:latest
 ```
 

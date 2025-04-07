@@ -209,7 +209,7 @@ public class SongRepository {
         return namedParameterJdbcTemplate.queryForList(sqlSb.toString(), params, Long.class);
     }
 
-    public Map<String, Integer> countGroupByAlbumIds(List<Long> albumIds) {
+    public Map<Long, Integer> countGroupByAlbumIds(List<Long> albumIds) {
         String sql = """
                     select count(1) as num, `album_id` from song
                            where album_id in (:albumIds) group by `album_id`
@@ -219,9 +219,9 @@ public class SongRepository {
         params.put("albumIds", albumIds);
 
         return namedParameterJdbcTemplate.query(sql, params, rs -> {
-            Map<String, Integer> resultMap = new LinkedHashMap<>();
+            Map<Long, Integer> resultMap = new LinkedHashMap<>();
             while (rs.next()) {
-                resultMap.put(rs.getString("album_id"), rs.getInt("num"));
+                resultMap.put(rs.getLong("album_id"), rs.getInt("num"));
             }
             return resultMap;
         });

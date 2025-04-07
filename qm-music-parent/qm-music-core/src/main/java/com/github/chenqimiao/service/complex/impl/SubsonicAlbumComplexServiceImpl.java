@@ -36,7 +36,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
         if (CollectionUtils.isEmpty(albumIds)) {
             return;
         }
-        Map<String, Integer> songCountMap = songRepository.countGroupByAlbumIds(albumIds);
+        Map<Long, Integer> songCountMap = songRepository.countGroupByAlbumIds(albumIds);
 
         List<Long> toBeCleanAlbumIds = albumIds.stream().filter(n -> {
             Integer count = songCountMap.getOrDefault(n, NumberUtils.INTEGER_ZERO);
@@ -48,6 +48,9 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     }
 
     private void doOrganizeAlbums(List<Long> toBeCleanAlbumIds) {
+        if (CollectionUtils.isEmpty(toBeCleanAlbumIds)) {
+            return;
+        }
         // 1 clean star
         userStarRepository.delByRelationIdsAndStartType(toBeCleanAlbumIds, EnumUserStarType.ALBUM.getCode());
         // 2 clean album

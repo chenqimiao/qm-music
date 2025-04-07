@@ -5,7 +5,7 @@ import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
 import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -63,7 +63,7 @@ public abstract class MusicFileReader {
     }
 
     public static String beautifyReleaseYear(String releaseYear) {
-        if (CollectionUtils.size(releaseYear) <= 4) {
+        if (StringUtils.length(releaseYear) <= 4) {
             return releaseYear;
         }
         // maybe 2024-01-02

@@ -123,11 +123,11 @@ public class SongRepository {
 
     public void save(SongDO songDO) {
         String sql =  """
-                        insert into song(id, parent, title, album_id, artist_id,
+                        insert into song(id, parent, title, album_id, album_title, artist_id,
                                          artist_name, size, suffix, content_type,
                                          year, duration, bit_rate,file_path,
                                          file_hash, file_last_modified, genre, track)
-                          values(:id, :parent, :title, :album_id, :artist_id,
+                          values(:id, :parent, :title, :album_id, :album_title, :artist_id,
                                  :artist_name, :size, :suffix, :content_type, :year,
                                  :duration, :bit_rate, :file_path, :file_hash,
                                  :file_last_modified,:genre, :track)

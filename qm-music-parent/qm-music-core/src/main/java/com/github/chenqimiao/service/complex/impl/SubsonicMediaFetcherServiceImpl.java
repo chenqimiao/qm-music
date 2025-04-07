@@ -197,8 +197,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                 albumDO.setId(sequence.nextId());
                 albumDO.setTitle(musicAlbumMeta.getAlbum());
                 albumDO.setArtist_id(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getId(): null);
-                albumDO.setRelease_year(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
-                        : musicAlbumMeta.getOriginalYear());
+                String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
+                        : musicAlbumMeta.getOriginalYear();
+                albumDO.setRelease_year(MusicFileReader.beautifyReleaseYear(releaseYear));
                 albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
                 albumDO.setSong_count(0);
                 albumDO.setDuration(1234);
@@ -223,8 +224,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setFile_path(path.toAbsolutePath().normalize().toString());
         songDO.setFile_hash(MD5Utils.calculateMD5(path));
         songDO.setSize(Files.size(path));
-        songDO.setYear(StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
-                : musicAlbumMeta.getOriginalYear());
+        String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
+                : musicAlbumMeta.getOriginalYear();
+        songDO.setYear(MusicFileReader.beautifyReleaseYear(releaseYear));
         int bitRate = NumberUtils.toInt(musicMeta.getBitRate(), NumberUtils.INTEGER_ZERO);
         songDO.setBit_rate(bitRate == 0 ? null : bitRate);
         songDO.setGenre(musicMeta.getGenre());

@@ -1,6 +1,6 @@
 # QM-Music 🎵
 🎧☁️ Your Private Music Service
-[![Docker Pulls](https://img.shields.io/docker/pulls/chenqimiao/qm-music)](https://hub.docker.com/r/chenqimiao/qm-music)
+[![Docker Pulls](https://img.shields.io/docker/pulls/chenqimiao/qm-music)](https://hub.docker.com/r/qmmusic/qm-music)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 **QM-Music** 是一个基于 Subsonic 构建的私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Audinaut），让您随时随地安全访问个人音乐库。
@@ -28,7 +28,7 @@ docker run -d \
   -v [host_path]:/data/qm-music/db \
   -e QM_FFMPEG_ENABLE=true \
   -e TZ=Asia/Shanghai \
-  chenqimiao/qm-music:latest
+  qmmusic/qm-music:latest
 ```
 
 ### ⚙️ 配置说明

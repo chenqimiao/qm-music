@@ -2,6 +2,10 @@
 # 第一阶段：构建Java应用
 FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-jammy AS builder
 
+# 设置时区为东八区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get update && apt-get install -y maven
 WORKDIR /app
 #COPY qm-music-parent/pom.xml .

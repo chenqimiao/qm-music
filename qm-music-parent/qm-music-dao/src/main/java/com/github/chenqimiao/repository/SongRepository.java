@@ -1,6 +1,5 @@
 package com.github.chenqimiao.repository;
 
-import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,7 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -116,11 +114,11 @@ public class SongRepository {
 
     public void deleteByIds(List<Long> ids) {
         String sql = """
-                       delete from song where `id` in (?)
+                       delete from song where `id` in (:id)
                      """;
-         jdbcTemplate.update(sql, String.join(",", ids.stream()
-                 .map(Object::toString)  // 将 Integer 转为 String
-                 .collect(Collectors.joining(","))));
+        Map<String ,Object> params = new HashMap<>();
+        params.put("ids", ids);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     public void save(SongDO songDO) {

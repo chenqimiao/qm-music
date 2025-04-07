@@ -21,7 +21,7 @@ public class PlaylistItemRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    
+
     public void save(List<PlaylistItemDO> playlistItems) {
 
         String sql = """

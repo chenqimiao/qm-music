@@ -1,7 +1,6 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.PlaylistItemDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -118,5 +117,24 @@ public class AlbumRepository {
         this.save(albumDO);
 
         return this.queryByUniqueKey(albumDO.getTitle());
+    }
+
+    public List<Long> queryAllAlbumId() {
+        String sql = """
+                    select id from album;
+                """;
+
+
+
+        return jdbcTemplate.queryForList(sql, Long.class);
+    }
+
+    public void delByIds(List<Long> toBeCleanAlbumIds) {
+        var sql = """
+                    delete from album where id in (:albumIds);
+                """;
+        Map<String, Object> params = new HashMap<>();
+        params.put("albumIds", toBeCleanAlbumIds);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 }

@@ -114,7 +114,7 @@ public class SongRepository {
 
     public void deleteByIds(List<Long> ids) {
         String sql = """
-                       delete from song where `id` in (:id)
+                       delete from song where `id` in (:ids)
                      """;
         Map<String ,Object> params = new HashMap<>();
         params.put("ids", ids);

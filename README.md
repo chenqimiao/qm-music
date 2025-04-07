@@ -27,12 +27,14 @@ docker run -d \
   -v [host_music_file_path]:/data/qm-music/music_dir \
   -v [host_path]:/data/qm-music/db \
   -e QM_FFMPEG_ENABLE=true \
+  -e TZ=Asia/Shanghai \
   chenqimiao/qm-music:latest
 ```
 
 ### ⚙️ 配置说明
 - **环境变量**  
   `QM_FFMPEG_ENABLE=true` 启用智能音频转码（推荐在户外使用的用户开启），支持按网络状况自动切换 libmp3lame/acc 编码，有效节省流量消耗（默认关闭）
+  `TZ=Asia/Shanghai` 请务必根据所在地区设置
 
 - **卷挂载**  
   `/data/qm-music/music_dir`：音乐文件存储目录

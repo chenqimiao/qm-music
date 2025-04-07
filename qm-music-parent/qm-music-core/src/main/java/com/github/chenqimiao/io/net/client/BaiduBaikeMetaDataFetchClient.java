@@ -1,5 +1,6 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,7 @@ public class BaiduBaikeMetaDataFetchClient implements MetaDataFetchClient {
                 .userAgent(this.getUserAgent())
                 .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
                 .ignoreContentType(true)  // 忽略 Content-Type 检查 (false)  // 关闭 SSL 证书验证
-                .timeout(10_000)
+                .timeout(JsoupConstants.TIME_OUT)
                 .get();
 
         ArtistInfo artistInfo = new ArtistInfo();

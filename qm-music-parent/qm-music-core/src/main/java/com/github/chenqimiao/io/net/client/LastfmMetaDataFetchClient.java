@@ -1,5 +1,6 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
@@ -84,7 +85,6 @@ public class LastfmMetaDataFetchClient implements MetaDataFetchClient {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("User-Agent", getUserAgent())
-
                 .GET()
                 .build();
 

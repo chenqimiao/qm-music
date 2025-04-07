@@ -1,5 +1,6 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.util.UserAgentGenerator;
 import lombok.SneakyThrows;
@@ -30,7 +31,7 @@ public class WikipediaMetaDataFetchClient implements MetaDataFetchClient {
         // 发送请求（需设置 User-Agent）
         Document doc = Jsoup.connect(url)
                 .userAgent(UserAgentGenerator.generateUserAgent())
-                .timeout(10_000)
+                .timeout(JsoupConstants.TIME_OUT)
                 .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
                 .ignoreContentType(true)
                 .get();

@@ -1,5 +1,6 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ public class DouBanMetaDataFetchClient implements MetaDataFetchClient {
                 + URLEncoder.encode(artistName, StandardCharsets.UTF_8);
         Document searchDoc = Jsoup.connect(searchUrl)
                 .userAgent(this.getUserAgent())
-                .timeout(10000)
+                .timeout(JsoupConstants.TIME_OUT)
                 .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
                 .ignoreContentType(true)
                 .get();

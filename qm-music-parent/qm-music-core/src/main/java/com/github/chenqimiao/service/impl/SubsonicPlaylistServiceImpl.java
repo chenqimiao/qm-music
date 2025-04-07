@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -102,5 +104,23 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
     public List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId) {
         List<PlaylistItemDTO> playlistItems = this.queryPlaylistItemsByPlaylistIds(Lists.newArrayList(playlistId));
         return playlistItems;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteItemsBySongIds(List<Long> songIds) {
+        List<PlaylistItemDO> playlistItems = playlistItemRepository.queryBySongIds(songIds);
+        if (CollectionUtils.isEmpty(playlistItems)) {
+            return;
+        }
+        Map<Long, Long> songCountMap =
+                playlistItems.stream().collect(Collectors.groupingBy(PlaylistItemDO::getPlaylist_id, Collectors.counting()));
+
+        songCountMap.forEach((k, v) -> {
+            playlistRepository.incrSongCount(k, -v.intValue());
+        });
+
+        playlistItemRepository.delBySongIds(songIds);
+
     }
 }

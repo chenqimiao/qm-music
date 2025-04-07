@@ -28,4 +28,5 @@ public interface PlaylistService {
 
     List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId);
 
+    void deleteItemsBySongIds(List<Long> songIds);
 }

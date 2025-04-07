@@ -12,10 +12,7 @@ import com.github.chenqimiao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
-import com.github.chenqimiao.service.AlbumService;
-import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.SongService;
-import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.service.*;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.TransliteratorUtils;
 import com.google.common.collect.Maps;
@@ -66,6 +63,8 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Autowired
     private SongRepository songRepository;
+    @Autowired
+    private PlaylistService playlistService;
 
     @Override
     public List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId) {
@@ -132,7 +131,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     @Override
     public void cleanSongs(List<Long> songIds) {
         userStarRepository.delByRelationIdsAndStartType(songIds, EnumUserStarType.SONG.getCode());
-        playlistItemRepository.delBySongIds(songIds);
+        playlistService.deleteItemsBySongIds(songIds);
         songRepository.deleteByIds(songIds);
     }
 

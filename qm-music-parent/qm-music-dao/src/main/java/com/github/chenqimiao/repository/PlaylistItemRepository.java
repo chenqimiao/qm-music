@@ -21,8 +21,7 @@ public class PlaylistItemRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-
+    
     public void save(List<PlaylistItemDO> playlistItems) {
 
         String sql = """
@@ -127,5 +126,14 @@ public class PlaylistItemRepository {
         param.put("songIds", songIds);
 
         namedParameterJdbcTemplate.update(sql, param);
+    }
+
+    public List<PlaylistItemDO> queryBySongIds(List<Long> songIds) {
+        var sql = """
+                    select * from playlist_item where song_id in(:songIds)
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("songIds", songIds);
+        return namedParameterJdbcTemplate.query(sql, param, new BeanPropertyRowMapper(PlaylistItemDO.class));
     }
 }

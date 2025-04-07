@@ -35,7 +35,7 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        log.info("request uri :{}, param: {}", request.getRequestURI(), request.getQueryString());
+        log.debug("request uri :{}, param: {}", request.getRequestURI(), request.getQueryString());
         String username = request.getParameter("u");
 
         String clientVersion = request.getParameter("v");

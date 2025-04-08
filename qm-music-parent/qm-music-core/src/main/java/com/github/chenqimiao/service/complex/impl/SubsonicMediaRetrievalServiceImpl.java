@@ -37,11 +37,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -242,7 +240,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         // fallback
         Artwork fallback = null;
 
-        List<Long> songIds = songRelations.stream().map(ArtistRelationDO::getRelation_id).toList();
+        List<Long> songIds = songRelations.stream().map(ArtistRelationDO::getRelation_id).collect(Collectors.toList());
+        Collections.shuffle(songIds);
+        songIds = Lists.partition(songIds, 3).getFirst();
         for (Long songId : songIds) {
             List<Artwork> artworks = this.getSongArtworks(songId);
             if (CollectionUtils.isEmpty(artworks)) {

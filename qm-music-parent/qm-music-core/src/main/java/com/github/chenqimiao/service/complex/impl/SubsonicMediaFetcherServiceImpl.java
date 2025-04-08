@@ -163,7 +163,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @SneakyThrows
     private void save(MusicMeta musicMeta, Path path) {
-        String delimiterRegx = CommonConstants.DELIMITER_REGX;
+        String delimiterRegx = CommonConstants.ARTIST_NAME_DELIMITER_REGX;
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
         List<ArtistDO> songArtists = new ArrayList<>();

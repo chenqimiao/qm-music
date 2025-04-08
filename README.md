@@ -19,7 +19,7 @@
 ## 🚀 快速开始
 
 ### 基本部署
-
+#### docker run
 ```bash
 docker run -d \
   --name qm-music \
@@ -30,6 +30,24 @@ docker run -d \
   -e TZ=Asia/Shanghai \
   --restart unless-stopped \
   qmmusic/qm-music:latest
+```
+#### docker compose
+```bash
+version: '3'
+
+services:
+  qm-music:
+    container_name: qm-music
+    image: qmmusic/qm-music:latest
+    ports:
+      - "6688:6688"
+    volumes:
+      - [host_music_file_path]:/data/qm-music/music_dir
+      - [host_path]:/data/qm-music/db
+    environment:
+      - QM_FFMPEG_ENABLE=true
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
 ```
 
 ### ⚙️ 配置说明

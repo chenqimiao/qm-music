@@ -169,10 +169,10 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     @Override
     public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_REMOTE_LIMIT_KEY,
-                key -> RateLimiter.create(1));
+                key -> RateLimiter.create(3));
 
         // 尝试获取令牌
-        if (!limiter.tryAcquire(10, TimeUnit.MILLISECONDS)) {
+        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
             return null;
         }
 

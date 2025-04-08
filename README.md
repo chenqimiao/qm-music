@@ -6,8 +6,6 @@
 
 **QM-Music** 是一个基于 Subsonic 构建的私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Audinaut），让您随时随地安全访问个人音乐库。
 
-![QM-Music Screenshot](https://via.placeholder.com/800x400.png?text=QM-Music+Demo+Interface)
-
 ## 🌟 核心特性
 
 - 🐳 **Docker 容器化部署** - 快速启动，零环境依赖

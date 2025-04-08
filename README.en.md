@@ -6,7 +6,6 @@
 
 **QM-Music** is a private cloud music server based on Subsonic, designed as a lightweight high-performance solution for music enthusiasts. Supports one-click Docker deployment and provides full compatibility with Subsonic ecosystem clients (e.g. StreamMusic/Audinaut), enabling secure access to your personal music library anytime, anywhere.
 
-![QM-Music Screenshot](https://via.placeholder.com/800x400.png?text=QM-Music+Demo+Interface)
 
 ## 🌟 Core Features
 

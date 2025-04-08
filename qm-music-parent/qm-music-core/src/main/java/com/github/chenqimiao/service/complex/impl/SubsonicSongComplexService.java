@@ -84,10 +84,10 @@ public class SubsonicSongComplexService implements SongComplexService {
         params.put("relationIds", songIds);
         params.put("type", EnumArtistRelationType.SONG.getCode());
         List<ArtistRelationDO> songArtists = artistRelationRepository.search(params);
-        Map<Long, List<ArtistRelationDO>> artiastMap = songArtists.stream().collect(Collectors.groupingBy(ArtistRelationDO::getRelation_id));
+        Map<Long, List<ArtistRelationDO>> artistRelationMap = songArtists.stream().collect(Collectors.groupingBy(ArtistRelationDO::getRelation_id));
 
         List<Long> extArtistIds = new ArrayList<>();
-        artiastMap.forEach((k, v) -> {
+        artistRelationMap.forEach((songId, v) -> {
             if (CollectionUtils.size(v) > 1) {
                 extArtistIds.addAll(v.stream().map(ArtistRelationDO::getArtist_id).toList());
             }
@@ -102,7 +102,7 @@ public class SubsonicSongComplexService implements SongComplexService {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);
             complexSongDTO.setStarred(starredTimeMap.get(n.getAlbumId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
-            List<ArtistRelationDO> artistsWithSong = artiastMap.get(n.getId());
+            List<ArtistRelationDO> artistsWithSong = artistRelationMap.get(n.getId());
             if (CollectionUtils.size(artistsWithSong) <= 1) {
                 complexSongDTO.setArtistsName(n.getArtistName());
             }else {

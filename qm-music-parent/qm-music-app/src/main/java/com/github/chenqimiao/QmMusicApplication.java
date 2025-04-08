@@ -14,6 +14,7 @@ public class QmMusicApplication  {
 
     public static void main(String[] args) {
         System.setProperty("jsoup.unsafe.ssl", "true");
+        System.setProperty("jdk.httpclient.connectionPoolSize", "100");
         SpringApplication.run(QmMusicApplication.class, args);
     }
 

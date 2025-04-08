@@ -4,6 +4,7 @@ import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.MusicFileReader;
@@ -162,7 +163,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
     @SneakyThrows
     private void save(MusicMeta musicMeta, Path path) {
-        String delimiterRegx = "(and|&|,|、|，|；)+";
+        String delimiterRegx = CommonConstants.DELIMITER_REGX;
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
         List<ArtistDO> songArtists = new ArrayList<>();

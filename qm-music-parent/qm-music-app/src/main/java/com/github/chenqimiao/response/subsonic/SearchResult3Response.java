@@ -103,7 +103,7 @@ public class SearchResult3Response extends SubsonicResponse {
         private String albumTitle;
         @JacksonXmlProperty(isAttribute = true, localName = "artist")
         @JSONField(name = "artist")
-        private String artistName;
+        private String artistsName;
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private Boolean isDir = Boolean.FALSE;

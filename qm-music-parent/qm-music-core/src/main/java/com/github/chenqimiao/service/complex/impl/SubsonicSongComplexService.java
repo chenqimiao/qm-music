@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -109,7 +110,11 @@ public class SubsonicSongComplexService implements SongComplexService {
                 List<String> artistNameList = artistsWithSong.stream()
                         .map(a -> artistMap.get(a.getArtist_id())).collect(Collectors.toList());
                 complexSongDTO.setArtistsName(String.join("&", artistNameList));
+                if (StringUtils.isBlank(complexSongDTO.getArtistsName())) {
+                    complexSongDTO.setArtistsName(n.getArtistName());
+                }
             }
+
             return complexSongDTO;
         }).collect(Collectors.toList());
     }

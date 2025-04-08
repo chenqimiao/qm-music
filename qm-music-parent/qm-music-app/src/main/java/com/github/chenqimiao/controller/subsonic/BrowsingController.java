@@ -214,10 +214,10 @@ public class BrowsingController {
     @GetMapping(value = "/getArtistInfo2")
     public ArtistInfoResponse getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.GET_ARTIST_INFO2_BY_REMOTE_LIMIT_KEY,
-                key -> RateLimiter.create(3));
+                key -> RateLimiter.create(1));
 
         // 尝试获取令牌
-        if (!limiter.tryAcquire(50, TimeUnit.MILLISECONDS)) {
+        if (!limiter.tryAcquire(10, TimeUnit.MILLISECONDS)) {
             return new ArtistInfoResponse();
         }
 

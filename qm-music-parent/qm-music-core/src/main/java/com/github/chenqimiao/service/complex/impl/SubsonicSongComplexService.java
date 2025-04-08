@@ -103,7 +103,7 @@ public class SubsonicSongComplexService implements SongComplexService {
             complexSongDTO.setStarred(starredTimeMap.get(n.getAlbumId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
             List<ArtistRelationDO> artistsWithSong = artiastMap.get(n.getId());
-            if (CollectionUtils.isEmpty(artistsWithSong)) {
+            if (CollectionUtils.size(artistsWithSong) <= 1) {
                 complexSongDTO.setArtistsName(n.getArtistName());
             }else {
                 List<String> artistNameList = artistsWithSong.stream()

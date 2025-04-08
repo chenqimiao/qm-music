@@ -1,4 +1,5 @@
 # QM-Music 🎵
+[中文](README.md) | [English](README.en.md)
 🎧☁️ Your Private Music Service
 [![Docker Pulls](https://img.shields.io/docker/pulls/chenqimiao/qm-music)](https://hub.docker.com/r/qmmusic/qm-music)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -32,7 +33,7 @@ docker run -d \
   qmmusic/qm-music:latest
 ```
 #### docker compose
-```bash
+```yaml
 version: '3'
 
 services:

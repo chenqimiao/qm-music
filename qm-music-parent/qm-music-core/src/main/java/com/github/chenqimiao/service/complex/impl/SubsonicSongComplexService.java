@@ -66,6 +66,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     @Autowired
     private PlaylistService playlistService;
 
+
     @Override
     public List<ComplexSongDTO> queryBySongIds(List<Long> songIds, @Nullable Long userId) {
         if (CollectionUtils.isEmpty(songIds)) {
@@ -79,11 +80,36 @@ public class SubsonicSongComplexService implements SongComplexService {
                     .relationIds(songIds).startType(EnumUserStarType.SONG).build();
             starredTimeMap.putAll(userStarService.batchQueryStarredTime(batchStarInfoRequest));
         }
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
+        params.put("relationIds", songIds);
+        params.put("type", EnumArtistRelationType.SONG);
+        List<ArtistRelationDO> songArtists = artistRelationRepository.search(params);
+        Map<Long, List<ArtistRelationDO>> artiastMap = songArtists.stream().collect(Collectors.groupingBy(ArtistRelationDO::getRelation_id));
+
+        List<Long> extArtistIds = new ArrayList<>();
+        artiastMap.forEach((k, v) -> {
+            if (CollectionUtils.size(v) > 1) {
+                extArtistIds.add(k);
+            }
+        });
+        Map<Long, String> artistMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(extArtistIds)) {
+            List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(extArtistIds);
+            artistMap.putAll(artists.stream().collect(Collectors.toMap(ArtistDTO::getId, ArtistDTO::getName)));
+        }
 
         return songs.stream().map(n -> {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);
             complexSongDTO.setStarred(starredTimeMap.get(n.getAlbumId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
+            List<ArtistRelationDO> artistsWithSong = artiastMap.get(n.getId());
+            if (CollectionUtils.isEmpty(artistsWithSong)) {
+                complexSongDTO.setArtistsName(n.getArtistName());
+            }else {
+                List<String> artistNameList = artistsWithSong.stream()
+                        .map(a -> artistMap.get(a.getArtist_id())).collect(Collectors.toList());
+                complexSongDTO.setArtistsName(String.join("&", artistNameList));
+            }
             return complexSongDTO;
         }).collect(Collectors.toList());
     }

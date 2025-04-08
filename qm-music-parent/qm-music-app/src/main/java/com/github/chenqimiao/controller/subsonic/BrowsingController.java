@@ -184,9 +184,9 @@ public class BrowsingController {
 
 
         SongResponse response = new SongResponse();
-
-        response.setSong(modelMapper.map(complexSongs.getFirst(), SongResponse.Song.class));
-
+        SongResponse.Song song = modelMapper.map(complexSongs.getFirst(), SongResponse.Song.class);
+        song.setArtistName(complexSongs.stream().findFirst().map(ComplexSongDTO::getArtistsName).orElse(""));
+        response.setSong(song);
         return response;
     }
 

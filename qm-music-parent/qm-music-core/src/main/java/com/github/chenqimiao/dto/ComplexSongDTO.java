@@ -16,4 +16,6 @@ public class ComplexSongDTO extends SongDTO {
 
     private Boolean isStar;
 
+    private String artistsName;
+
 }

@@ -1,6 +1,5 @@
 package com.github.chenqimiao.repository;
 
-import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,10 @@ public class ArtistRelationRepository {
         if (params.get("type") != null) {
             sqlSb.append(" and `type` = :type ");
         }
-        if (params.get("relation_id") != null) {
+        if(params.get("relationIds") != null) {
+            sqlSb.append(" and `relation_id` in(:relationIds) ");
+        }
+        if (params.get("relationId") != null) {
             sqlSb.append(" and `relation_id` = :relationId ");
         }
         if (params.get("offset") != null

@@ -21,7 +21,7 @@ public abstract class ImageToByteConverter {
 
     public static byte[] convertWithHttpClient(String imageUrl) throws IOException, InterruptedException {
 
-        HttpClient insecureClient = InsecureHttpClient.createInsecureClient();
+        HttpClient insecureClient = InsecureHttpClient.getInstance();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(imageUrl))

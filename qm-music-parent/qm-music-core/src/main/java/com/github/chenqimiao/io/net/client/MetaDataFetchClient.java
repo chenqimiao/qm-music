@@ -20,7 +20,7 @@ public interface MetaDataFetchClient {
 
      String USER_AGENT = UserAgentGenerator.generateUserAgent();
 
-     HttpClient HTTP_CLIENT = InsecureHttpClient.createInsecureClient();
+     HttpClient HTTP_CLIENT = InsecureHttpClient.getInstance();
 
      Boolean supportChinaRegion();
 

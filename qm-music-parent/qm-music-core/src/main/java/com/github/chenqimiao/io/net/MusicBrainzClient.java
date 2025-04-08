@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MusicBrainzClient {
-    private static final HttpClient HTTP_CLIENT = InsecureHttpClient.createInsecureClient();
+    private static final HttpClient HTTP_CLIENT = InsecureHttpClient.getInstance();
     private static final String BASE_URL = "https://musicbrainz.org/ws/2/artist/";
     private static final String USER_AGENT = UserAgentGenerator.generateUserAgent();
 

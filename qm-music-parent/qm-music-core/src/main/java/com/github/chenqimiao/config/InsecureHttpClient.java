@@ -13,11 +13,16 @@ import java.time.Duration;
  * @since 2025/4/4 17:55
  **/
 public class InsecureHttpClient {
+    private static final HttpClient INSTANCE = createInsecureClient();
+
+    public static HttpClient getInstance() {
+        return INSTANCE;
+    }
     /**
      * 创建完全绕过 SSL 验证的 HttpClient
      */
     @SneakyThrows
-    public static HttpClient createInsecureClient() {
+    private static HttpClient createInsecureClient() {
         // 1. 创建 TrustManager 信任所有证书
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
@@ -43,6 +48,7 @@ public class InsecureHttpClient {
                 .sslContext(sslContext)
                 .sslParameters(getInsecureSSLParameters())  // 禁用协议检查
                 .connectTimeout(Duration.ofSeconds(3))
+                .version(HttpClient.Version.HTTP_2)
                 .sslParameters(sslParams)
                 .followRedirects(HttpClient.Redirect.NORMAL)  // 启用自动跟随重定向
                 .build();

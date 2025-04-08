@@ -172,7 +172,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                 key -> RateLimiter.create(5));
 
         // 尝试获取令牌
-        if (!limiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
+        if (!limiter.tryAcquire(50, TimeUnit.MILLISECONDS)) {
             return null;
         }
 

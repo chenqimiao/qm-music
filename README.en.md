@@ -11,7 +11,7 @@
 ## 🌟 Core Features
 
 - 🐳 **Docker Containerization** - Instant deployment with zero environment dependencies
-- 🎧 **Full Subsonic Protocol Compatibility** - Supports 50+ mainstream music clients
+- 🎧 **Subsonic Protocol Compatibility** - ​​Seamless integration with any Subsonic-compatible client​​
 - ⚡ **High-Performance Streaming** - Low-latency media transmission
 - 🔄 **Smart Transcoding** - On-demand libmp3lame/acc transcoding to save bandwidth (optional)
 - 📁 **Multi-Format Support** - Comprehensive compatibility with MP3/FLAC/AAC/WAV formats

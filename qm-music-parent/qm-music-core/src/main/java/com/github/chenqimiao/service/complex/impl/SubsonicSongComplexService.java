@@ -82,14 +82,14 @@ public class SubsonicSongComplexService implements SongComplexService {
         }
         Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
         params.put("relationIds", songIds);
-        params.put("type", EnumArtistRelationType.SONG);
+        params.put("type", EnumArtistRelationType.SONG.getCode());
         List<ArtistRelationDO> songArtists = artistRelationRepository.search(params);
         Map<Long, List<ArtistRelationDO>> artiastMap = songArtists.stream().collect(Collectors.groupingBy(ArtistRelationDO::getRelation_id));
 
         List<Long> extArtistIds = new ArrayList<>();
         artiastMap.forEach((k, v) -> {
             if (CollectionUtils.size(v) > 1) {
-                extArtistIds.add(k);
+                extArtistIds.addAll(v.stream().map(ArtistRelationDO::getArtist_id).toList());
             }
         });
         Map<Long, String> artistMap = new HashMap<>();

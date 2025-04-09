@@ -4,7 +4,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/chenqimiao/qm-music)](https://hub.docker.com/r/qmmusic/qm-music)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**QM-Music** 是一个基于 Subsonic 构建的私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Audinaut），让您随时随地安全访问个人音乐库。
+**QM-Music** 是一个基于 Subsonic 构建的轻量级私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Audinaut），让您随时随地安全访问个人音乐库。
 
 ## 🌟 核心特性
 
@@ -72,3 +72,25 @@ services:
    账户: 修改后的管理员账号
    密码: 修改后的管理员密码
    ```
+## 功能列表
+### 已支持
+- docker 部署
+- subsonic 协议兼容
+- 智能转码
+- 多格式支持
+- 歌单
+- 收藏喜欢
+- 专辑列表
+- 艺术家列表
+- 歌曲、艺术家、专辑搜索
+- 相似歌手、歌曲检索
+- 歌曲风格检索
+- 歌曲歌词匹配
+
+### TODO
+- 图片资源（艺术家、歌曲、专辑）缓存
+- last.fm api 接入
+- Spotify api 接入
+- 客户端开发
+- unitest补充（减少修改引入）
+  ...

@@ -1,4 +1,4 @@
-package controller;
+package com.github.chenqimiao.controller;
 
 import com.github.chenqimiao.QmMusicApplication;
 import com.github.chenqimiao.constant.ServerConstants;

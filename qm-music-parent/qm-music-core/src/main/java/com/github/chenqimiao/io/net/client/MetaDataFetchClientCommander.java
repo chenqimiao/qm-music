@@ -100,7 +100,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                     return lyrics;
                 }
             }catch (Exception e) {
-                log.warn(e.getMessage());
+                log.warn("getLyrics error", e );
             }
 
         }
@@ -116,7 +116,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                     return similarArtists;
                 }
             }catch (Exception e) {
-                log.warn(e.getMessage());
+                log.warn("scrapeSimilarArtists error", e );
             }
 
         }

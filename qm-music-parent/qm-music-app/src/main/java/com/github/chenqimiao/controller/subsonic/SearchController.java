@@ -85,8 +85,8 @@ public class SearchController {
 
         if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
 
-            List<Long> songIds = songService.searchSongIdsByTitle(searchRequest.getQuery(), searchRequest.getSongCount()
-                    , searchRequest.getAlbumOffset());
+            List<Long> songIds = songComplexService.searchSongs(searchRequest.getQuery(), searchRequest.getSongCount(), searchRequest.getSongOffset());
+
             List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
             List<SearchResult2Response.Song> songList = modelMapper.map(complexSongs, TYPE_LIST_SONG_2);
             builder.songs(songList);

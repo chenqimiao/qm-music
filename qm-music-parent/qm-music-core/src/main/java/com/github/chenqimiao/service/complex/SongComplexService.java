@@ -18,4 +18,6 @@ public interface SongComplexService {
     List<ComplexSongDTO> findSongsByArtistId(List<Long> artistIds);
 
     void cleanSongs(List<Long> songIds);
+
+    List<Long> searchSongs(String query, Integer songCount, Integer songOffset);
 }

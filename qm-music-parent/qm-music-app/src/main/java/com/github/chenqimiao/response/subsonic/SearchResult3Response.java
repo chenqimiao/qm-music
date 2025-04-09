@@ -57,8 +57,9 @@ public class SearchResult3Response extends SubsonicResponse {
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
         private Long id;
-        @JacksonXmlProperty(isAttribute = true)
-        private String name;
+        @JacksonXmlProperty(isAttribute = true, localName = "name")
+        @JSONField(name ="name")
+        private String title;
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
@@ -70,8 +71,9 @@ public class SearchResult3Response extends SubsonicResponse {
         private Date gmtCreate;
         @JacksonXmlProperty(isAttribute = true)
         private Integer duration;
-        @JacksonXmlProperty(isAttribute = true)
-        private String artist;
+        @JacksonXmlProperty(isAttribute = true, localName = "artist")
+        @JSONField(name ="artist")
+        private String artistName;
         @JacksonXmlProperty(isAttribute = true)
         private Long artistId;
 

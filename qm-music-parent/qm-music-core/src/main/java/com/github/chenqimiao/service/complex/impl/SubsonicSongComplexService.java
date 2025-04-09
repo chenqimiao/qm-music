@@ -1,9 +1,8 @@
 package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.ArtistRelationDO;
-import com.github.chenqimiao.dto.ArtistDTO;
-import com.github.chenqimiao.dto.ComplexSongDTO;
-import com.github.chenqimiao.dto.SongDTO;
+import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
@@ -164,6 +163,41 @@ public class SubsonicSongComplexService implements SongComplexService {
         userStarRepository.delByRelationIdsAndStartType(songIds, EnumUserStarType.SONG.getCode());
         playlistService.deleteItemsBySongIds(songIds);
         songRepository.deleteByIds(songIds);
+    }
+
+    @Override
+    public List<Long> searchSongs(String query, Integer songCount, Integer songOffset) {
+        List<Long> songIds = songService.searchSongIdsByTitle(query, songCount
+                , songOffset);
+        if (StringUtils.isBlank(query)) {
+            return songIds;
+        }
+        if (CollectionUtils.size(songIds) >= songCount) {
+            return songIds;
+        }
+
+        List<ArtistDTO> artists = artistService.searchByName(query,1, 0);
+
+        if (CollectionUtils.isNotEmpty(artists)) {
+            List<ArtistRelationDO> relationDOList = artistRelationRepository.findByArtistIdAndType(artists.getFirst().getId(), EnumArtistRelationType.SONG.getCode());
+            List<Long> songIdsSearchByArtistName = relationDOList.stream().map(ArtistRelationDO::getRelation_id).toList();
+            songIds.addAll(songIdsSearchByArtistName);
+        }
+
+        if (CollectionUtils.size(songIds) >= songCount) {
+            return songIds;
+        }
+
+        List<AlbumDTO> albums = albumService.searchByName(query, 1, 0);
+
+        if(CollectionUtils.isNotEmpty(albums)) {
+            Long albumId = albums.getFirst().getId();
+            List<SongDO> songsSearchByAlbumName = songRepository.findByAlbumId(albumId);
+            List<Long> songIdsSearchByAlbumName = songsSearchByAlbumName.stream().map(SongDO::getId).toList();
+            songIds.addAll(songIdsSearchByAlbumName);
+        }
+
+        return songIds.stream().distinct().toList();
     }
 
 

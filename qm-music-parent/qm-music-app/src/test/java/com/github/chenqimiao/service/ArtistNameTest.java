@@ -24,7 +24,7 @@ public class ArtistNameTest {
 
         List<String> originalArtistNames = Lists.newArrayList("pp and cqm"
                 , "pp & cqm", "pp , cqm", "pp 、 cqm", "pp ， cqm", "pp ； cqm"
-                , "pp \\ cqm", "pp / cqm"
+                , "pp \\ cqm", "pp / cqm", "pp/cqm"
                  );
 
         originalArtistNames.forEach(originalArtistName -> {

@@ -168,6 +168,21 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Override
     public List<Long> searchSongs(String query, Integer songCount, Integer songOffset) {
+        List<Long> songIds = this.doSearchSongs(query, songCount, songOffset);
+        if(CollectionUtils.isNotEmpty(songIds)) {
+            return songIds;
+        }
+        if (StringUtils.isNotBlank(query)){
+            String reversedQueryText = TransliteratorUtils.reverseSimpleTraditional(query);
+            if (!Objects.equals(reversedQueryText, query)) {
+                return this.doSearchSongs(reversedQueryText, songCount, songOffset);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+
+    private List<Long> doSearchSongs(String query, Integer songCount, Integer songOffset) {
         List<Long> songIds = songService.searchSongIdsByTitle(query, songCount
                 , songOffset);
         if (StringUtils.isBlank(query)) {
@@ -203,6 +218,7 @@ public class SubsonicSongComplexService implements SongComplexService {
         }
         return songIds.stream().distinct().toList();
     }
+
 
 
 }

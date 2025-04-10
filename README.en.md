@@ -10,6 +10,7 @@
 ## 🌟 Core Features
 
 - 🐳 **Docker Containerization** - Instant deployment with zero environment dependencies
+- 🌱 **Lightweight Deployment** - Requires only ~150MB memory usage, low resource consumption, compatible with Raspberry Pi and other embedded devices
 - 🎧 **Subsonic Protocol Compatibility** - ​​Seamless integration with any Subsonic-compatible client​​
 - ⚡ **High-Performance Streaming** - Low-latency media transmission
 - 🔄 **Smart Transcoding** - On-demand libmp3lame/acc transcoding to save bandwidth (optional)

@@ -109,7 +109,7 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
                 }).toList();
                 List<Long> artistRelationIds = relations.stream().filter(n -> {
                     return Objects.equals(n.getType(), EnumArtistRelationType.SONG.getCode())
-                            && diffSongIds.contains(n.getId());
+                            && diffSongIds.contains(n.getRelation_id());
                 }).map(ArtistRelationDO::getId).toList();
                 toBeRemoveArtistRelationIds.addAll(artistRelationIds);
 
@@ -122,7 +122,7 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
                 }).toList();
                 List<Long> artistRelationIds = relations.stream().filter(n -> {
                     return Objects.equals(n.getType(), EnumArtistRelationType.ALBUM.getCode())
-                            && diffAlbumIds.contains(n.getId());
+                            && diffAlbumIds.contains(n.getRelation_id());
                 }).map(ArtistRelationDO::getId).toList();
                 toBeRemoveArtistRelationIds.addAll(artistRelationIds);
             }

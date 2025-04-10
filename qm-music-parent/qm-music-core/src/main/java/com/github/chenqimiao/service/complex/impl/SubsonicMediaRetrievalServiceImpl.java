@@ -242,7 +242,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
         List<Long> songIds = songRelations.stream().map(ArtistRelationDO::getRelation_id).collect(Collectors.toList());
         Collections.shuffle(songIds);
-        songIds = Lists.partition(songIds, 3).getFirst();
+        if (CollectionUtils.size(songIds) > 3) {
+            songIds = Lists.partition(songIds, 3).getFirst();
+        }
         for (Long songId : songIds) {
             List<Artwork> artworks = this.getSongArtworks(songId);
             if (CollectionUtils.isEmpty(artworks)) {

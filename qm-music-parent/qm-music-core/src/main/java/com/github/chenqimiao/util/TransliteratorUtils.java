@@ -82,7 +82,9 @@ public abstract class TransliteratorUtils {
             return TransliteratorUtils.toTraditional(text);
         } else if (TransliteratorUtils.ChineseType.TRADITIONAL == chineseType) {
             return TransliteratorUtils.toSimplified(text);
-        } else {
+        } else if (TransliteratorUtils.ChineseType.MIXED == chineseType) {
+            return TransliteratorUtils.doToSimplified(text);
+        }else {
             return text;
         }
     }

@@ -1,12 +1,11 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.dto.AlbumDTO;
-import com.github.chenqimiao.dto.ArtistDTO;
-import com.github.chenqimiao.dto.ComplexSongDTO;
+import com.github.chenqimiao.dto.SearchResultDTO;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
+import com.github.chenqimiao.request.CommonSearchRequest;
 import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.SearchResult2Response;
 import com.github.chenqimiao.response.subsonic.SearchResult3Response;
@@ -14,6 +13,7 @@ import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.service.complex.SearchService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import jakarta.annotation.Resource;
@@ -68,29 +68,19 @@ public class SearchController {
 
         searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
         SearchResult2Response.SearchResult2.SearchResult2Builder builder = SearchResult2Response.SearchResult2.builder();
-
-        if (searchRequest.getArtistCount() != null && searchRequest.getArtistCount() > 0 ) {
-            List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
-            builder.artists(modelMapper.map(artists, TYPE_LIST_ARTIST_2));
-        }
-
-        if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
-            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getAlbumCount()
-                    , searchRequest.getAlbumOffset());
-            builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_2));
-        }
-
         Long authedUserId = WebUtils.currentUserId();
 
-        if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
+        CommonSearchRequest commonSearchRequest = modelMapper.map(searchRequest, CommonSearchRequest.class);
+        commonSearchRequest.setAuthedUserId(authedUserId);
+        SearchResultDTO searchResultDTO = searchService.search(commonSearchRequest);
 
-            List<Long> songIds = songComplexService.searchSongs(searchRequest.getQuery(), searchRequest.getSongCount(), searchRequest.getSongOffset());
 
-            List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
-            List<SearchResult2Response.Song> songList = modelMapper.map(complexSongs, TYPE_LIST_SONG_2);
-            builder.songs(songList);
-        }
+        builder.artists(modelMapper.map(searchResultDTO.getArtists(), TYPE_LIST_ARTIST_2));
+
+        builder.albums(modelMapper.map(searchResultDTO.getAlbums(), TYPE_LIST_ALBUM_2));
+
+        List<SearchResult2Response.Song> songList = modelMapper.map(searchResultDTO.getComplexSongs(), TYPE_LIST_SONG_2);
+        builder.songs(songList);
 
         SearchResult2Response.SearchResult2 searchResult2 = builder.build();
         this.wrapStarredTime(searchResult2, authedUserId);
@@ -134,6 +124,9 @@ public class SearchController {
     @Resource
     private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
+    @Autowired
+    private SearchService searchService;
+
     @GetMapping("/search3")
     public SearchResult3Response search3(SearchRequest searchRequest) {
 
@@ -143,25 +136,14 @@ public class SearchController {
 
         Long authedUserId = WebUtils.currentUserId();
 
-        if (searchRequest.getArtistCount() != null
-                && searchRequest.getArtistCount() > 0 ) {
-            List<ArtistDTO> artists = artistService.searchByName(searchRequest.getQuery(), searchRequest.getArtistCount()
-                    , searchRequest.getArtistOffset());
-            builder.artists(modelMapper.map(artists, TYPE_LIST_ARTIST_3));
-        }
+        CommonSearchRequest commonSearchRequest = modelMapper.map(searchRequest, CommonSearchRequest.class);
+        commonSearchRequest.setAuthedUserId(authedUserId);
+        SearchResultDTO searchResultDTO = searchService.search(commonSearchRequest);
 
-        if (searchRequest.getAlbumCount() != null && searchRequest.getAlbumCount() > 0 ) {
-            List<AlbumDTO> albums = albumService.searchByName(searchRequest.getQuery(), searchRequest.getAlbumCount()
-                    , searchRequest.getAlbumOffset());
-            builder.albums(modelMapper.map(albums, TYPE_LIST_ALBUM_3));
-        }
-
-        if (searchRequest.getSongCount() != null && searchRequest.getSongCount() > 0 ) {
-            List<Long> songIds = songComplexService.searchSongs(searchRequest.getQuery(), searchRequest.getSongCount(), searchRequest.getSongOffset());
-            List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIds, authedUserId);
-            List<SearchResult3Response.Song> songList = modelMapper.map(complexSongs, TYPE_LIST_SONG_3);
-            builder.songs(songList);
-        }
+        builder.artists(modelMapper.map(searchResultDTO.getArtists(), TYPE_LIST_ARTIST_3));
+        builder.albums(modelMapper.map(searchResultDTO.getAlbums(), TYPE_LIST_ALBUM_3));
+        List<SearchResult3Response.Song> songList = modelMapper.map(searchResultDTO.getComplexSongs(), TYPE_LIST_SONG_3);
+        builder.songs(songList);
 
         SearchResult3Response.SearchResult3 searchResult3 = builder.build();
         this.wrapStarredTime(searchResult3, authedUserId);

@@ -14,6 +14,7 @@ import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.service.*;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.TransliteratorUtils;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -196,7 +197,10 @@ public class SubsonicSongComplexService implements SongComplexService {
             List<Long> songIdsSearchByAlbumName = songsSearchByAlbumName.stream().map(SongDO::getId).toList();
             songIds.addAll(songIdsSearchByAlbumName);
         }
-
+        songIds = songIds.stream().distinct().collect(Collectors.toList());
+        if (CollectionUtils.size(songIds) > songCount) {
+            songIds = Lists.partition(songIds, songCount).getFirst();
+        }
         return songIds.stream().distinct().toList();
     }
 

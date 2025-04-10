@@ -159,6 +159,15 @@ public class SongRepository {
 
     }
 
+
+    public Integer countBySongIds(List<Long> songIds) {
+        String sql = """
+                   select count(1) from song where id in(:songIds)
+                """;
+
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
     public List<SongDO> findByIds(List<Long> songIds) {
 
         String sql = """
@@ -169,6 +178,18 @@ public class SongRepository {
         params.put("ids", songIds);
 
         return namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(SongDO.class));
+    }
+
+    public List<Long> findSongIdsByIds(List<Long> songIds) {
+
+        String sql = """
+                    select id from song where `id` in (:ids)
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", songIds);
+
+        return namedParameterJdbcTemplate.queryForList(sql, params, Long.class);
     }
 
     public List<Long> search(Map<String, Object> params) {

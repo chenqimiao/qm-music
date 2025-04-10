@@ -14,4 +14,5 @@ public interface ArtistComplexService {
 
     List<ComplexArtistDTO> queryByArtistIds(List<Long> artistIds, @Nullable Long userId);
 
+    void organizeArtists();
 }

@@ -1,6 +1,7 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.ArtistDO;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -30,6 +31,7 @@ public class ArtistRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
 
     private final RowMapper<ArtistDO> ROW_MAPPER_ARTIST = new BeanPropertyRowMapper<>(ArtistDO.class);
 
@@ -124,5 +126,22 @@ public class ArtistRepository {
         this.save(artistList);
         List<String> names = artistList.stream().map(ArtistDO::getName).toList();
         return this.queryByUniqueKeys(names);
+    }
+
+    public List<Long> findAllArtistIds() {
+        String sql = """
+                select id from artist
+                """;
+        return jdbcTemplate.queryForList(sql, Long.class);
+    }
+
+    public void delByIds(List<Long> artistIds) {
+        var sql = """
+                delete from artist where id in(:ids)
+            """;
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(1);
+        params.put("ids", artistIds);
+        namedParameterJdbcTemplate.update(sql, params);
+
     }
 }

@@ -109,4 +109,12 @@ public class ArtistRelationRepository {
         return this.search(params);
     }
 
+    public void delByIds(List<Long> toBeRemoveArtistRelationIds) {
+        var sql = """
+                    delete from artist_relation where id in(:ids)
+                """;
+        Map<String, Object> parmas = Maps.newHashMapWithExpectedSize(1);
+        parmas.put("ids", toBeRemoveArtistRelationIds);
+        namedParameterJdbcTemplate.update(sql, parmas);
+    }
 }

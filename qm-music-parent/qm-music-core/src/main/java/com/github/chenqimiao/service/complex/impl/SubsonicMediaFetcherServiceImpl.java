@@ -12,6 +12,7 @@ import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
 import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.service.complex.AlbumComplexService;
+import com.github.chenqimiao.service.complex.ArtistComplexService;
 import com.github.chenqimiao.service.complex.MediaFetcherService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.FileUtils;
@@ -83,6 +84,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
     @Autowired
     private AlbumComplexService albumComplexService;
 
+    @Autowired
+    private ArtistComplexService artistComplexService;
+
 
     @Override
     @SneakyThrows
@@ -100,8 +104,15 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         this.traverseVideoFiles(rootPath, standBySongSet, songCount);
 
         this.organizeAlbums();
+
+        this.organizeArtists();
+
         stopWatch.stop();
         log.info("consumes time: {} ms, scan count of song : {}", stopWatch.getTime(TimeUnit.MILLISECONDS), songCount);
+    }
+
+    private void organizeArtists() {
+         artistComplexService.organizeArtists();
     }
 
     private void organizeAlbums() {

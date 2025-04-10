@@ -1,10 +1,11 @@
 package com.github.chenqimiao.service.complex.impl;
 
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.ComplexArtistDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
-import com.github.chenqimiao.repository.ArtistRelationRepository;
+import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.UserStarService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -36,6 +38,16 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ArtistRepository artistRepository;
+
+    @Autowired
+    private SongRepository songRepository;
+
+    @Autowired
+    private AlbumRepository albumRepository;
+    @Autowired
+    private UserStarRepository userStarRepository;
 
     @Override
     public List<ComplexArtistDTO> queryByArtistIds(List<Long> artistIds, @Nullable Long userId) {
@@ -67,5 +79,72 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
             complexArtistDTO.setAlbumCount(albumRelationMap.get(n.getId()));
             return complexArtistDTO;
         }).toList();
+    }
+
+    @Override
+    public void organizeArtists() {
+        List<Long> artistIds = artistRepository.findAllArtistIds();
+        Map<String, Object> params = new HashMap<>();
+        params.put("artistIds", artistIds);
+        List<ArtistRelationDO> artistRelationList = artistRelationRepository.search(params);
+        Map<Long, List<ArtistRelationDO>> artistRelationMap = artistRelationList.stream().collect(Collectors.groupingBy(ArtistRelationDO::getArtist_id));
+        List<Long> toRemoveArtistIds = new ArrayList<>(); // remove artist user_star
+        List<Long> toBeRemoveArtistRelationIds = new ArrayList<>();
+
+        artistRelationMap.forEach( (artistId,relations) -> {
+            if (CollectionUtils.isEmpty(relations)) {
+                toRemoveArtistIds.add(artistId);
+            }
+            List<Long> songIds = relations.stream().filter( relation ->
+                    EnumArtistRelationType.SONG.getCode().equals(relation.getType())).map(ArtistRelationDO::getRelation_id).toList();
+            List<Long> albumIds = relations.stream().filter( relation ->
+                    EnumArtistRelationType.ALBUM.getCode().equals(relation.getType())).map(ArtistRelationDO::getRelation_id).toList();
+
+            List<Long> songIdsWithDb = new ArrayList<>();
+
+            if (CollectionUtils.isNotEmpty(songIds)) {
+                songIdsWithDb.addAll(songRepository.findSongIdsByIds(songIds));
+                List<Long> diffSongIds = songIds.stream().filter(n -> {
+                    return !songIdsWithDb.contains(n);
+                }).toList();
+                List<Long> artistRelationIds = relations.stream().filter(n -> {
+                    return Objects.equals(n.getType(), EnumArtistRelationType.SONG.getCode())
+                            && diffSongIds.contains(n.getId());
+                }).map(ArtistRelationDO::getId).toList();
+                toBeRemoveArtistRelationIds.addAll(artistRelationIds);
+
+            }
+            List<Long> albumsWithDb = new ArrayList<>();;
+            if (CollectionUtils.isNotEmpty(albumIds)) {
+                albumsWithDb.addAll(albumRepository.findAlbumIdsByAlbumIds(albumIds));
+                List<Long> diffAlbumIds = albumIds.stream().filter( n -> {
+                    return ! albumsWithDb.contains(n);
+                }).toList();
+                List<Long> artistRelationIds = relations.stream().filter(n -> {
+                    return Objects.equals(n.getType(), EnumArtistRelationType.ALBUM.getCode())
+                            && diffAlbumIds.contains(n.getId());
+                }).map(ArtistRelationDO::getId).toList();
+                toBeRemoveArtistRelationIds.addAll(artistRelationIds);
+            }
+
+            if (CollectionUtils.isEmpty(albumsWithDb)
+                    && CollectionUtils.isEmpty(songIdsWithDb)) {
+                toRemoveArtistIds.add(artistId);
+            }
+        });
+
+        this.doOrganizeArtists(toRemoveArtistIds, toBeRemoveArtistRelationIds);
+
+    }
+
+    private void doOrganizeArtists(List<Long> toRemoveArtistIds, List<Long> toBeRemoveArtistRelationIds) {
+        if (CollectionUtils.isNotEmpty(toBeRemoveArtistRelationIds)) {
+            artistRelationRepository.delByIds(toBeRemoveArtistRelationIds);
+        }
+        if (CollectionUtils.isNotEmpty(toRemoveArtistIds)) {
+            userStarRepository.delByRelationIdsAndStartType(toRemoveArtistIds,
+                    EnumUserStarType.ARTIST.getCode());
+            artistRepository.delByIds(toRemoveArtistIds);
+        }
     }
 }

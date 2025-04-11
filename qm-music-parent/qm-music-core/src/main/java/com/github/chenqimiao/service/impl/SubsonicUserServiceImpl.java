@@ -8,6 +8,7 @@ import com.github.chenqimiao.request.UserRequest;
 import com.github.chenqimiao.service.UserAuthService;
 import com.github.chenqimiao.service.UserService;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,8 +76,9 @@ public class SubsonicUserServiceImpl implements UserService {
         String plainTextPassword = userAuthService.resolvePlainTextPassword(request.getPassword());
 
         Map<String, Object> param = new HashMap<>();
-
-        param.put("password", plainTextPassword);
+        if(StringUtils.isNotBlank(plainTextPassword)) {
+            param.put("password", plainTextPassword);
+        }
         param.put("username", request.getUsername());
         param.put("email", request.getEmail());
         param.put("isAdmin", request.getIsAdmin());

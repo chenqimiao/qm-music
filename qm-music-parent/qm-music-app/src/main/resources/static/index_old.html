@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QM-Music 后台管理</title>
+    <script src="/js/vue.global.js"></script>
+    <script src="/js/md5.min.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+        body{background:#f5f7fb;min-height:100vh}
+        .header{background:#fff;padding:1rem 2rem;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+        .user-info{color:#667eea;font-weight:500}
+        .container{max-width:1200px;margin:2rem auto;padding:0 2rem}
+        .section{background:#fff;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:1.5rem;margin-bottom:2rem}
+        .section h2{color:#2d3748;margin-bottom:1.5rem;padding-bottom:0.5rem;border-bottom:2px solid #667eea}
+        table{width:100%;border-collapse:collapse;margin-top:1rem}
+        th,td{padding:12px;text-align:left;border-bottom:1px solid #e2e8f0}
+        th{background:#f8fafc;font-weight:600}
+        .button{padding:8px 16px;border-radius:4px;border:none;cursor:pointer;transition:all 0.2s;margin:0 4px}
+        .button-primary{background:#667eea;color:#fff}
+        .button-danger{background:#e53e3e;color:#fff}
+        .button-secondary{background:#e2e8f0;color:#2d3748}
+        .button:disabled{opacity:0.7;cursor:not-allowed}
+        .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center}
+        .modal-content{background:#fff;padding:2rem;border-radius:8px;min-width:400px}
+        .modal-header{margin-bottom:1.5rem}
+        .form-group{margin-bottom:1.5rem}
+        .form-group label{display:block;margin-bottom:0.5rem;color:#4a5568}
+        input{width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;transition:border-color 0.2s}
+        input:focus{outline:none;border-color:#667eea}
+        /* 新增/修改的样式 */
+        .checkbox-container {
+            width: 100%;
+            margin-top: 8px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            justify-content: flex-start; /* 左对齐 */
+            gap: 8px; /* 调整间距 */
+        }
+        .checkbox-group label {
+            order: 2; /* 文字在右边 */
+            margin: 0;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        input[type="checkbox"] {
+            order: 1; /* 复选框在左边 */
+            margin: 0;
+            width: 16px;
+            height: 16px;
+        }
+        .modal-actions{margin-top:2rem;display:flex;gap:8px;justify-content:flex-end}
+        /* 新增强制修改密码样式 */
+        .force-modal {
+            background: rgba(0,0,0,0.8) !important;
+        }
+        .force-modal .modal-content {
+            max-width: 400px;
+            pointer-events: all;
+        }
+        .force-modal .modal-header {
+            background: #e53e3e;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem;
+        }
+        .force-modal h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .force-modal .warning-icon {
+            width: 24px;
+            height: 24px;
+        }
+        .force-modal .modal-actions {
+            justify-content: center;
+        }
+        .force-modal input {
+            border: 2px solid #e53e3e;
+        }
+        /* 新增样式 */
+        .library-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 480px) {
+            .library-control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="header">
+        <h1>QM-Music 管理后台</h1>
+        <div class="user-info">当前用户：{{ currentUsername }}</div>
+    </div>
+    <div class="force-modal modal" v-if="forcePasswordChange">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <svg class="warning-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L1 21h22L12 2zm0 4l7.53 13H4.47L12 6zm-1 4v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+                    </svg>
+                    為了您的安全，請修改初始密碼
+                </h3>
+            </div>
+            <div class="form-group">
+                <input type="password"
+                       v-model="forcePasswordForm.newPassword"
+                       placeholder="请输入新密码"
+                       @keyup.enter="submitForcePassword">
+            </div>
+            <div class="modal-actions">
+                <button class="button button-danger"
+                        :disabled="!forcePasswordForm.newPassword"
+                        @click="submitForcePassword">
+                    提交修改
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="section">
+            <h2>用户管理</h2>
+            <button class="button button-primary" @click="showCreateModal">新建用户</button>
+            <table>
+                <thead>
+                <tr><th>用户名</th><th>邮箱</th><th>权限</th><th>操作</th></tr>
+                </thead>
+                <tbody>
+                <tr v-for="user in users" :key="user.username">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.adminRole ? '管理员' : '普通用户' }}</td>
+                    <td>
+                        <button class="button button-secondary" @click="showEditModal(user)">编辑</button>
+                        <button class="button button-secondary" @click="showPasswordModal(user)">改密</button>
+                        <button class="button button-danger" @click="deleteUser(user)">删除</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>曲库管理</h2>
+            <div class="library-control">
+                <div class="stats">
+                    <span class="stat-label">当前曲目数量：</span>
+                    <span class="stat-value">{{ libraryCount }}</span>
+                </div>
+                <button class="button button-primary"
+                        :disabled="scanning"
+                        @click="refreshLibrary">
+                    {{ scanning ? `扫描中 (${scanCount})` : '刷新曲库' }}
+                </button>
+            </div>
+        </div>
+
+        <div class="modal" v-if="showPasswordForm">
+            <div class="modal-content">
+                <div class="modal-header"><h3>修改密码 - {{ currentUser.username }}</h3></div>
+                <div class="form-group">
+                    <label>新密码</label>
+                    <input type="password" v-model="passwordForm.newPassword">
+                </div>
+                <div class="modal-actions">
+                    <button class="button button-primary" @click="submitPassword">提交</button>
+                    <button class="button button-secondary" @click="closeModals">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" v-if="showUserForm">
+            <div class="modal-content">
+                <div class="modal-header"><h3>{{ isNewUser ? '新建用户' : '编辑用户' }}</h3></div>
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input v-model="userForm.username">
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input v-model="userForm.email">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" v-model="userForm.password">
+                </div>
+                <div class="form-group checkbox-container">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isAdmin" v-model="userForm.isAdmin">
+                        <label for="isAdmin">管理员权限</label>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="button button-primary" @click="submitUser">{{ isNewUser ? '创建' : '更新' }}</button>
+                    <button class="button button-secondary" @click="closeModals">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+    createApp({
+        data() {
+            return {
+                forcePasswordChange: false,
+                forcePasswordForm: { newPassword: '' },
+                users: [],
+                currentUsername: localStorage.getItem('u'),
+                currentUser: {},
+                userForm: { username: '', email: '', password: '', isAdmin: false },
+                passwordForm: { newPassword: '' },
+                showUserForm: false,
+                showPasswordForm: false,
+                isNewUser: false,
+                intervalId: null,
+                libraryCount: 0,   // 新增曲库数量
+                scanCount: 0,     // 扫描计数
+                scanning: false,  // 扫描状态
+                statusInterval: null, // 状态轮询定时器
+                statsInterval: null   // 统计定时器
+            }
+        },
+        async mounted() {
+            if (!this.verifyLogin()) return;
+            // 第二步：获取用户信息
+            await this.checkPasswordStatus();
+
+            await this.loadUsers();
+
+            await this.loadLibraryStats();
+            this.statsInterval = setInterval(this.loadLibraryStats, 300000);
+
+        },
+        beforeUnmount() {
+            clearInterval(this.statusInterval);
+            clearInterval(this.statsInterval);
+        },
+        methods: {
+            // 获取曲库统计
+            async loadLibraryStats() {
+                try {
+                    const params = this.buildBaseParams();
+                    const res = await axios.get(`/rest/getScanStatus?${params}`);
+                    this.libraryCount = res.data.scanStatus.count;
+                } catch (error) {
+                    console.error('获取曲库统计失败:', error);
+                }
+            },
+            verifyLogin() {
+                const requiredKeys = ['u', 'v', 'c','t','s'];
+                if (requiredKeys.some(key => !localStorage.getItem(key))) {
+                    alert('登录状态已失效，请重新登录');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+                return true;
+            },
+
+            buildBaseParams() {
+                const params = {
+                    u: localStorage.getItem('u'),
+                    v: '1.0.0',
+                    c: navigator.userAgent,
+                    t: localStorage.getItem('t'),
+                    s: localStorage.getItem('s'),
+                    f: 'json'
+                };
+
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value === null) this.handleMissingParam(key);
+                });
+
+                return new URLSearchParams(
+                    Object.fromEntries(
+                        Object.entries(params).map(([k, v]) => [k, encodeURIComponent(v)])
+                    )
+                );
+            },
+            async checkPasswordStatus() {
+                const params = this.buildBaseParams();
+                params.append('username', localStorage.getItem('u'));
+                const res = await axios.get(`/rest/getUser?${params}`);
+                if (res.data.user?.forcePasswordChange) {
+                    this.forcePasswordChange = true; // 触发强制弹窗
+                } else {
+                    await this.loadUsers(); // 正常加载页面
+                }
+            },
+            // 强制修改密码提交
+            async submitForcePassword() {
+                if (!this.forcePasswordForm.newPassword) return;
+
+                try {
+                    const params = this.buildBaseParams();
+                    params.append('username', localStorage.getItem('u'));
+                    params.append('password', this.encryptPassword(this.forcePasswordForm.newPassword));
+
+                    const res = await axios.get(`/rest/changePassword?${params}`);
+
+                    if (res.data.status === 'ok') {
+                        alert('密码修改成功，请重新登录');
+                        this.logout();
+                    }
+                } catch (error) {
+                    console.error('强制修改密码失败:', error);
+                    alert('修改失败: ' + (error.response?.data?.message || '服务器错误'));
+                }
+            },
+            // 退出清理
+            logout() {
+                localStorage.removeItem('u');
+                localStorage.removeItem('v');
+                localStorage.removeItem('c');
+                localStorage.removeItem('t');
+                localStorage.removeItem('s');
+                localStorage.removeItem('f');
+                window.location.href = 'login.html';
+            },
+
+            handleMissingParam(key) {
+                console.error(`缺失参数: ${key}`);
+                alert('系统参数错误，请重新登录');
+                window.location.href = 'login.html';
+            },
+
+            encryptPassword(pwd) {
+                const hex = Array.from(new TextEncoder().encode(pwd))
+                    .map(b => b.toString(16).padStart(2, '0')).join('');
+                return 'enc:' + hex;
+            },
+
+            async loadUsers() {
+                try {
+                    const params = this.buildBaseParams();
+                    const res = await axios.get(`/rest/getUsers?${params}`);
+                    this.users = res.data.user.user;
+                } catch (error) {
+                    console.error('获取用户列表失败:', error);
+                }
+            },
+
+            showCreateModal() {
+                this.isNewUser = true;
+                this.userForm = { username: '', email: '', password: '', isAdmin: false };
+                this.showUserForm = true;
+            },
+
+            showEditModal(user) {
+                this.currentUser = user;
+                this.userForm = {
+                    username: user.username,
+                    email: user.email,
+                    password: '',
+                    isAdmin: user.adminRole
+                };
+                this.showUserForm = true;
+            },
+
+            showPasswordModal(user) {
+                this.currentUser = user;
+                this.showPasswordForm = true;
+            },
+
+            async submitUser() {
+                try {
+                    const params = this.buildBaseParams();
+                    params.append('username', this.userForm.username);
+                    params.append('email', this.userForm.email);
+                    params.append('isAdmin', this.userForm.isAdmin);
+                    params.append('musicFolderId', 1);
+
+                    if(this.userForm.password) {
+                        params.append('password', this.encryptPassword(this.userForm.password));
+                    }
+
+                    const endpoint = this.isNewUser ? 'createUser' : 'updateUser';
+                    await axios.get(`/rest/${endpoint}?${params}`);
+                    await this.loadUsers();
+                    this.closeModals();
+                } catch (error) {
+                    console.error('操作失败:', error);
+                }
+            },
+
+            async submitPassword() {
+                try {
+                    const params = this.buildBaseParams();
+                    params.append('username', this.currentUser.username);
+                    params.append('password', this.encryptPassword(this.passwordForm.newPassword));
+                    await axios.get(`/rest/changePassword?${params}`);
+                    this.closeModals();
+                } catch (error) {
+                    console.error('修改密码失败:', error);
+                }
+            },
+
+            async deleteUser(user) {
+                if(!confirm(`确定删除用户 ${user.username} 吗？`)) return;
+                try {
+                    const params = this.buildBaseParams();
+                    params.append('username', user.username);
+                    await axios.get(`/rest/deleteUser?${params}`);
+                    await this.loadUsers();
+                } catch (error) {
+                    console.error('删除用户失败:', error);
+                }
+            },
+
+            async refreshLibrary() {
+                try {
+                    this.scanning = true;
+                    const params = this.buildBaseParams();
+                    await axios.get(`/rest/refresh?${params}`);
+
+                    // 启动轮询
+                    this.statusInterval = setInterval(async () => {
+                        const params = this.buildBaseParams();
+                        const res = await axios.get(`/rest/getScanStatus?${params}`);
+
+                        this.scanCount = res.data.scanStatus.count;
+                        this.libraryCount = res.data.scanStatus.count; // 实时更新总数
+
+                        if (!res.data.scanStatus.scanning) {
+                            clearInterval(this.statusInterval);
+                            this.scanning = false;
+                        }
+                    }, 5000);
+
+                } catch (error) {
+                    console.error('刷新曲库失败:', error);
+                    this.scanning = false;
+                }
+            },
+            closeModals() {
+                this.showUserForm = false;
+                this.showPasswordForm = false;
+                this.userForm = { username: '', email: '', password: '', isAdmin: false };
+                this.passwordForm = { newPassword: '' };
+            }
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>

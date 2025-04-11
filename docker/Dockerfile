@@ -2,10 +2,12 @@
 # 第一阶段：构建Java应用及准备FFmpeg
 FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS builder
 
+ENV TZ=Asia/Shanghai
+
 # 设置时区并安装构建工具
 RUN apk add --no-cache tzdata maven wget xz \
-    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone
+    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
 
 WORKDIR /app
 COPY qm-music-parent/ .

@@ -58,6 +58,7 @@ public class SubsonicUserServiceImpl implements UserService {
         userDO.setEmail(userRequest.getEmail());
         userDO.setIs_admin(userRequest.getIsAdmin());
         userDO.setForce_password_change(Boolean.FALSE);
+        userDO.setNick_name(userRequest.getNickName());
         userRepository.save(userDO);
     }
 
@@ -80,6 +81,7 @@ public class SubsonicUserServiceImpl implements UserService {
         param.put("email", request.getEmail());
         param.put("isAdmin", request.getIsAdmin());
         param.put("forcePasswordChange", Boolean.FALSE);
+        param.put("nickName", request.getNickName());
 
         userRepository.updateByUsername(param);
     }

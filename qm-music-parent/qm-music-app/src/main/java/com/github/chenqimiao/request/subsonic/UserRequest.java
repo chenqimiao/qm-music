@@ -20,4 +20,7 @@ public class UserRequest {
     private Boolean isAdmin;
 
     private Long musicFolderId;
+
+    private String nickName;
+
 }

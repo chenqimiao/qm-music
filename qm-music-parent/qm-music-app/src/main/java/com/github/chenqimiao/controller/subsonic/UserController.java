@@ -37,6 +37,7 @@ public class UserController {
         SubsonicUser subsonicUser = SubsonicUser
                 .builder().username(userDTO.getUsername()).email(userDTO.getEmail())
                         .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin()))
+                        .nickName(userDTO.getNickName())
                 .forcePasswordChange(userDTO.getForcePasswordChange()).build();
 
         return new UserResponse(subsonicUser);
@@ -52,6 +53,7 @@ public class UserController {
             SubsonicUser subsonicUser = SubsonicUser
                     .builder().username(userDTO.getUsername()).email(userDTO.getEmail())
                     .adminRole(EnumYesOrNo.YES.getCode().equals(userDTO.getIsAdmin()))
+                    .nickName(userDTO.getNickName())
                     .forcePasswordChange(userDTO.getForcePasswordChange()).build();
             return subsonicUser;
         }).toList();
@@ -69,6 +71,7 @@ public class UserController {
         request.setEmail(userRequest.getEmail());
         request.setPassword(userRequest.getPassword());
         request.setIsAdmin(Boolean.TRUE.equals(userRequest.getIsAdmin())? EnumYesOrNo.YES.getCode() : EnumYesOrNo.NO.getCode());
+        request.setNickName(userRequest.getNickName());
         userService.createUser(request);
 
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
@@ -88,6 +91,7 @@ public class UserController {
         request.setEmail(userRequest.getEmail());
         request.setPassword(userRequest.getPassword());
         request.setIsAdmin(Boolean.TRUE.equals(userRequest.getIsAdmin())? EnumYesOrNo.YES.getCode() : EnumYesOrNo.NO.getCode());
+        request.setNickName(userRequest.getNickName());
         userService.updateUser(request);
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }

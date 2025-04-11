@@ -19,4 +19,5 @@ public class UserRequest {
 
     private Integer isAdmin;
 
+    private String nickName;
 }

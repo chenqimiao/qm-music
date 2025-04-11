@@ -1,6 +1,5 @@
 package com.github.chenqimiao.repository;
 
-import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.DO.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -108,8 +107,8 @@ public class UserRepository {
 
 
         var sql = """
-                    insert into user(username, password, is_admin, email, force_password_change)
-                    values(:username,:password,:is_admin,:email,:force_password_change);
+                    insert into user(username, password, is_admin, email, force_password_change, nick_name)
+                    values(:username,:password,:is_admin,:email,:force_password_change, :nick_name);
                 """;
 
          namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(userDO));
@@ -123,6 +122,7 @@ public class UserRepository {
         var isAdmin = params.get("isAdmin");
         var email = params.get("email");
         var forcePasswordChange = params.get("forcePasswordChange");
+        var nickName = params.get("nickName");
         if (password != null) {
             sqlSb.append ("password = :password, ");
         }
@@ -133,9 +133,13 @@ public class UserRepository {
             sqlSb.append ("email = :email ,");
 
         }
+        if (nickName != null) {
+            sqlSb.append ("nick_name = :nickName, ");
+        }
         if (forcePasswordChange != null) {
             sqlSb.append ("force_password_change = :forcePasswordChange, ");
         }
+
         sqlSb.deleteCharAt(sqlSb.lastIndexOf(","));
 
         sqlSb.append(" where username = :username");

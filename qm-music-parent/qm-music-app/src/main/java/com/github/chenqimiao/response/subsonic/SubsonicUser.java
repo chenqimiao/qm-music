@@ -36,6 +36,8 @@ public class SubsonicUser {
     @JacksonXmlProperty(isAttribute = true)
     private Boolean forcePasswordChange;
 
+    @JacksonXmlProperty(isAttribute = true)
+    private String nickName;
 
 
 

@@ -136,6 +136,7 @@ public class AlbumSongController {
         searchRequest.setSimilarGenre(request.getGenre());
         searchRequest.setOffset(0);
         searchRequest.setPageSize(request.getSize());
+        searchRequest.setIsRandom(Boolean.TRUE);
         List<Long> songIds = songService.search(searchRequest);
         if (CollectionUtils.isEmpty(songIds)) {
             return new RandSongsResponse();

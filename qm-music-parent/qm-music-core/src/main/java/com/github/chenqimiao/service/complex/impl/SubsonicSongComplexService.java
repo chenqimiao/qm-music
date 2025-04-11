@@ -168,6 +168,22 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Override
     public List<Long> searchSongs(String query, Integer songCount, Integer songOffset) {
+        List<Long> songIds = this.searchSongs(query, songCount, songOffset, null, null);
+        if(CollectionUtils.isNotEmpty(songIds)) {
+            return songIds;
+        }
+        if (StringUtils.isNotBlank(query)){
+            String reversedQueryText = TransliteratorUtils.reverseSimpleTraditional(query);
+            if (!Objects.equals(reversedQueryText, query)) {
+                return this.searchSongs(reversedQueryText, songCount, songOffset, null, null);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Long> searchSongs(String query, Integer songCount, Integer songOffset, @Nullable List<AlbumDTO> albums,
+                                  @Nullable List<ArtistDTO> artists) {
         List<Long> songIds = songService.searchSongIdsByTitle(query, songCount
                 , songOffset);
         if (StringUtils.isBlank(query)) {
@@ -177,31 +193,42 @@ public class SubsonicSongComplexService implements SongComplexService {
             return songIds;
         }
 
-        List<ArtistDTO> artists = artistService.searchByName(query,1, 0);
-
-        if (CollectionUtils.isNotEmpty(artists)) {
-            List<ArtistRelationDO> relationDOList = artistRelationRepository.findByArtistIdAndType(artists.getFirst().getId(), EnumArtistRelationType.SONG.getCode());
-            List<Long> songIdsSearchByArtistName = relationDOList.stream().map(ArtistRelationDO::getRelation_id).toList();
-            songIds.addAll(songIdsSearchByArtistName);
-        }
+        songIds.addAll(this.searchSongsByArtists(query, artists));
 
         if (CollectionUtils.size(songIds) >= songCount) {
             return songIds;
         }
 
-        List<AlbumDTO> albums = albumService.searchByName(query, 1, 0);
+        songIds.addAll(this.searchSongsByAlbums(query, albums));
 
-        if(CollectionUtils.isNotEmpty(albums)) {
-            Long albumId = albums.getFirst().getId();
-            List<SongDO> songsSearchByAlbumName = songRepository.findByAlbumId(albumId);
-            List<Long> songIdsSearchByAlbumName = songsSearchByAlbumName.stream().map(SongDO::getId).toList();
-            songIds.addAll(songIdsSearchByAlbumName);
-        }
         songIds = songIds.stream().distinct().collect(Collectors.toList());
         if (CollectionUtils.size(songIds) > songCount) {
             songIds = Lists.partition(songIds, songCount).getFirst();
         }
-        return songIds.stream().distinct().toList();
+        return songIds.stream().toList();
+    }
+
+    @Override
+    public List<Long> searchSongsByArtists(@Nullable String query, @Nullable List<ArtistDTO> artists) {
+        if (query == null && artists == null) {return Collections.emptyList();}
+        artists =  (artists == null ? artistService.searchByName(query,1, 0) : artists);
+        if (CollectionUtils.isNotEmpty(artists)) {
+            List<ArtistRelationDO> relationDOList = artistRelationRepository.findByArtistIdAndType(artists.getFirst().getId(), EnumArtistRelationType.SONG.getCode());
+            return relationDOList.stream().map(ArtistRelationDO::getRelation_id).toList();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Long> searchSongsByAlbums(@Nullable String query, @Nullable List<AlbumDTO> albums) {
+        if (query == null && albums == null) {return Collections.emptyList();}
+        albums =  (albums == null ? albumService.searchByName(query,1, 0) : albums);
+        if(CollectionUtils.isNotEmpty(albums)) {
+            Long albumId = albums.getFirst().getId();
+            List<SongDO> songsSearchByAlbumName = songRepository.findByAlbumId(albumId);
+            return songsSearchByAlbumName.stream().map(SongDO::getId).toList();
+        }
+        return Collections.emptyList();
     }
 
 

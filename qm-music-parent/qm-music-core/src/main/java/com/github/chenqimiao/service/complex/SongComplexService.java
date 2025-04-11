@@ -1,5 +1,7 @@
 package com.github.chenqimiao.service.complex;
 
+import com.github.chenqimiao.dto.AlbumDTO;
+import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import org.springframework.lang.Nullable;
 
@@ -20,4 +22,11 @@ public interface SongComplexService {
     void cleanSongs(List<Long> songIds);
 
     List<Long> searchSongs(String query, Integer songCount, Integer songOffset);
+
+    List<Long> searchSongs(String query, Integer songCount, Integer songOffset,
+                           @Nullable List<AlbumDTO> albums, @Nullable List<ArtistDTO> artists);
+
+    List<Long> searchSongsByArtists(String query, @Nullable List<ArtistDTO> artists);
+
+    List<Long> searchSongsByAlbums(String query, @Nullable List<AlbumDTO> albums) ;
 }

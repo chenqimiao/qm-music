@@ -1,4 +1,4 @@
-package com.github.chenqimiao.request.subsonic;
+package com.github.chenqimiao.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import lombok.Setter;
  **/
 @Setter
 @Getter
-public class SearchRequest {
+public class CommonSearchRequest {
 
     private String query;
 
@@ -25,5 +25,6 @@ public class SearchRequest {
 
     private Integer songOffset = 0;
 
+    private Long authedUserId;
 
 }

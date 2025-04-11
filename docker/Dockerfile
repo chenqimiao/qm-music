@@ -8,9 +8,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 安装构建工具
 RUN apt-get update && \
-    apt-get install -y maven wget xz-utils && \
+    apt-get install -y --no-install-recommends maven wget xz-utils ca-certificates && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /app
 COPY qm-music-parent/ .
@@ -24,7 +24,8 @@ RUN chmod +x download-ffmpeg.sh && \
     rm download-ffmpeg.sh
 
 # 第二阶段：最终镜像
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21-jre-alpine
+RUN apk add --no-cache libgcc
 
 # 声明需要用户映射的目录
 VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir"]
@@ -36,8 +37,10 @@ COPY --from=builder /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 WORKDIR /app
 COPY --from=builder /app/qm-music-app/target/*.jar ./app.jar
 
-ENV QM_FFMPEG_ENABLE=false
+ENV QM_FFMPEG_ENABLE=false \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75 -XX:+UseG1GC -XX:NativeMemoryTracking=summary"
+
 EXPOSE 6688
-ENTRYPOINT ["java", "-jar", "app.jar", \
-    "--spring.profiles.active=prod", \
-    "-Dqm.ffmpeg.enable=${QM_FFMPEG_ENABLE}"]
+ENTRYPOINT exec java $JAVA_OPTS -jar app.jar \
+    --spring.profiles.active=prod \
+    -Dqm.ffmpeg.enable=${QM_FFMPEG_ENABLE}

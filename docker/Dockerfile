@@ -1,6 +1,6 @@
 # docker/Dockerfile
 # 第一阶段：构建Java应用及准备FFmpeg
-FROM --platform=$BUILDPLATFORM FROM eclipse-temurin:21-jre-alpine AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS builder
 
 # 设置时区为东八区
 ENV TZ=Asia/Shanghai

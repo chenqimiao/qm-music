@@ -2,26 +2,21 @@
 # 第一阶段：构建Java应用及准备FFmpeg
 FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS builder
 
-# 设置时区为东八区
-ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# 安装构建工具
-RUN apt-get update && \
-    apt-get install -y maven wget xz-utils && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# 设置时区并安装构建工具
+RUN apk add --no-cache tzdata maven wget xz \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone
 
 WORKDIR /app
 COPY qm-music-parent/ .
 RUN mvn clean package -DskipTests
 
-# 下载静态FFmpeg
+# 下载静态FFmpeg（适配Alpine架构）
 ARG TARGETARCH
 COPY docker/download-ffmpeg.sh .
-RUN chmod +x download-ffmpeg.sh && \
-    ./download-ffmpeg.sh ${TARGETARCH} && \
-    rm download-ffmpeg.sh
+RUN chmod +x download-ffmpeg.sh \
+    && ./download-ffmpeg.sh ${TARGETARCH/alpine/} \
+    && rm download-ffmpeg.sh
 
 # 第二阶段：最终镜像
 FROM eclipse-temurin:21-jre-alpine

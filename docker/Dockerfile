@@ -43,11 +43,7 @@ RUN chmod +x /app/entrypoint.sh
 
 # 默认环境变量
 ENV QM_FFMPEG_ENABLE=false \
-    JAVA_OPTS="-XX:+UseContainerSupport \
-               -XX:MaxRAMPercentage=75 \
-               -XX:+UseG1GC \
-               -XX:NativeMemoryTracking=summary \
-               -Xss256k" \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75 -XX:+UseG1GC -XX:NativeMemoryTracking=summary -Xss256k"
     TZ=Asia/Shanghai
 
 

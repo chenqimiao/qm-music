@@ -1,0 +1,26 @@
+# 忽略所有构建目录
+**/target/
+**/build/
+
+# 忽略版本控制
+.git/
+.gitignore
+
+# 忽略IDE文件
+.idea/
+*.iml
+.vscode/
+
+# 忽略日志文件
+*.log
+
+# 忽略本地配置文件
+**/application-local.yml
+
+# 忽略Docker自身文件
+Dockerfile
+.dockerignore
+
+# 忽略无用文件
+**/*.md
+**/*.bak

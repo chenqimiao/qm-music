@@ -1,6 +1,6 @@
 # docker/Dockerfile
 # 第一阶段：构建Java应用及准备FFmpeg
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-jammy AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-alpine AS builder
 
 # 设置时区为东八区
 ENV TZ=Asia/Shanghai
@@ -24,7 +24,7 @@ RUN chmod +x download-ffmpeg.sh && \
     rm download-ffmpeg.sh
 
 # 第二阶段：最终镜像
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21-jre-alpine
 
 # 声明需要用户映射的目录
 VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir"]

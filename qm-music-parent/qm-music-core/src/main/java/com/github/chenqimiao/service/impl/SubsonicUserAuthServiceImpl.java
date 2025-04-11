@@ -36,7 +36,9 @@ public class SubsonicUserAuthServiceImpl implements UserAuthService {
 
     @Override
     public String resolvePlainTextPassword(String password) {
-
+        if(StringUtils.isBlank(password)) {
+            return null;
+        }
         if(password.startsWith("enc:")){
             password = password.substring(4);
             password = HexToDecimalConverter.convert(password);

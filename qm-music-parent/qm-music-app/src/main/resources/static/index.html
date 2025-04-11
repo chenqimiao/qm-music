@@ -396,12 +396,13 @@
                 this.showUserForm = true;
             },
             showEditModal(user) {
+                this.isNewUser = false;  // 明确设置为编辑模式
                 this.currentUser = user;
                 this.userForm = {
                     username: user.username,
                     nickName: user.nickName || '',
                     email: user.email,
-                    password: '',
+                    password: '',  // 保持密码字段为空
                     isAdmin: user.adminRole
                 };
                 this.showUserForm = true;
@@ -494,7 +495,14 @@
             closeModals() {
                 this.showUserForm = false;
                 this.showPasswordForm = false;
-                this.userForm = { username: '', email: '', password: '', isAdmin: false };
+                this.isNewUser = false;  // 新增重置状态
+                this.userForm = {
+                    username: '',
+                    nickName: '',
+                    email: '',
+                    password: '',
+                    isAdmin: false
+                };
                 this.passwordForm = { newPassword: '' };
             }
         }

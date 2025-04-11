@@ -1,9 +1,6 @@
 #!/bin/sh
 # docker/entrypoint.sh
 
-# 设置 TZ 默认值为 Asia/Shanghai
-TZ=${TZ:-Asia/Shanghai}
-
 # 动态设置时区
 if [ -n "$TZ" ]; then
     ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime

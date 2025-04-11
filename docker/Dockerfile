@@ -47,7 +47,9 @@ ENV QM_FFMPEG_ENABLE=false \
                -XX:MaxRAMPercentage=75 \
                -XX:+UseG1GC \
                -XX:NativeMemoryTracking=summary \
-               -Xss256k"
+               -Xss256k" \
+    TZ=Asia/Shanghai
+
 
 
 EXPOSE 6688

@@ -28,4 +28,8 @@ public abstract class DateTimeUtils {
         return formatter.format(zonedDateTime);
 
     }
+
+    public static String getCurTimezone() {
+        return ZoneId.systemDefault().getId();
+    }
 }

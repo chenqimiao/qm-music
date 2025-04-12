@@ -16,6 +16,7 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.AlbumComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.google.common.collect.Lists;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
@@ -41,7 +42,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     @Autowired
     private UserStarRepository userStarRepository;
 
-    @Autowired
+    @Resource
     private ModelMapper ucModelMapper;
 
     @Autowired
@@ -147,6 +148,8 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
             result.addAll(defaultAlbumList2);
 
         }
+
+        // fill artistName.
 
         return result;
     }

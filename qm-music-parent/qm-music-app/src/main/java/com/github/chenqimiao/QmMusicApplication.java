@@ -2,6 +2,7 @@ package com.github.chenqimiao;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since 2025/3/27 16:09
  **/
 @SpringBootApplication(scanBasePackages = "com.github.chenqimiao")
+@EnableScheduling
 @EnableTransactionManagement
 public class QmMusicApplication  {
 

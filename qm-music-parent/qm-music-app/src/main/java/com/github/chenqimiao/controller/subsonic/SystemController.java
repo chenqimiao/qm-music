@@ -10,21 +10,14 @@ import com.github.chenqimiao.response.subsonic.ScanStatusResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.response.subsonic.SubsonicResponse;
-import com.github.chenqimiao.service.complex.MediaFetcherService;
+import com.github.chenqimiao.service.SystemService;
 import com.github.chenqimiao.util.WebUtils;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Qimiao Chen
@@ -41,14 +34,11 @@ public class SystemController {
     private Sequence sequence;
 
     @Autowired
-    private MediaFetcherService mediaFetcherService;
-
-    @Autowired
     private SongRepository songRepository;
 
+    @Autowired
+    private SystemService systemService;
 
-    @Value("${qm.music.dir}")
-    private String musicDir;
 
     @GetMapping(value = {"/ping","/ping.view"})
     public SubsonicPong ping() {
@@ -76,39 +66,18 @@ public class SystemController {
         scanStatusResponse
                 .setScanStatus(ScanStatusResponse.ScanStatus
                             .builder()
-                            .scanning(!lockCache.isEmpty())
+                            .scanning(systemService.scanning())
                             .count(songRepository.count())
                             .build());
         return scanStatusResponse;
     }
-
-    private final Object lock = new Object();
-    private final static Set<Object> lockCache = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
-    private final ExecutorService REFRESH_THREAD_POOL = Executors.newSingleThreadExecutor();
 
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
         if(!WebUtils.currentUserIsAdmin()) {
             throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_50);
         }
-        if (!lockCache.isEmpty()) {
-            return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
-        }
-        REFRESH_THREAD_POOL.execute( () -> {
-            boolean locked = false;
-            try {
-                locked = lockCache.add(lock);
-                if (locked) {
-                    // 并发控制
-                    mediaFetcherService.fetchMusic(musicDir);
-                }
-            }finally {
-                if (locked) {
-                    lockCache.remove(lock);
-                }
-            }
-        });
+        systemService.refreshSongs();
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 

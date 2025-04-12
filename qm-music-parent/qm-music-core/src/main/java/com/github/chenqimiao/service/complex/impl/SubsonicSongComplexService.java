@@ -6,10 +6,7 @@ import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
-import com.github.chenqimiao.repository.ArtistRelationRepository;
-import com.github.chenqimiao.repository.PlaylistItemRepository;
-import com.github.chenqimiao.repository.SongRepository;
-import com.github.chenqimiao.repository.UserStarRepository;
+import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.service.*;
 import com.github.chenqimiao.service.complex.SongComplexService;
@@ -66,6 +63,9 @@ public class SubsonicSongComplexService implements SongComplexService {
     private SongRepository songRepository;
     @Autowired
     private PlaylistService playlistService;
+
+    @Autowired
+    private PlayHistoryRepository playHistoryRepository;
 
 
     @Override
@@ -164,6 +164,8 @@ public class SubsonicSongComplexService implements SongComplexService {
         userStarRepository.delByRelationIdsAndStartType(songIds, EnumUserStarType.SONG.getCode());
         playlistService.deleteItemsBySongIds(songIds);
         songRepository.deleteByIds(songIds);
+        playHistoryRepository.deleteBySongIds(songIds);
+
     }
 
     @Override

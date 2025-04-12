@@ -32,4 +32,7 @@ public abstract class ModelMapperTypeConstants {
 
     public static final Type TYPE_LIST_USER_DTO = new TypeToken<List<UserDTO>>() {}.getType();
 
+    public static final Type TYPE_LIST_PLAY_HISTORY_DTO = new TypeToken<List<PlayHistoryDTO>>() {}.getType();
+
+
 }

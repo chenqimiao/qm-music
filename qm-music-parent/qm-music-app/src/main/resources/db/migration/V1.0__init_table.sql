@@ -136,8 +136,19 @@ CREATE TABLE play_history (
                               gmt_create DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime')),
                               gmt_modify DATETIME DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW','localtime'))
 );
-CREATE INDEX idx_history_user_song ON play_history(user_id, song_id);
+CREATE INDEX idx_song_id ON play_history(song_id);
 CREATE INDEX idx_history_time ON play_history(gmt_create);
+CREATE unique index uni_idx_u_s_c ON play_history(user_id,song_id,client_type);
+
+
+
+CREATE TRIGGER IF NOT EXISTS update_play_history_gmt_modify
+    AFTER UPDATE ON play_history
+BEGIN
+    UPDATE play_history
+    SET gmt_modify = CAST((julianday('now') - 2440587.5) * 86400000 AS INTEGER)
+    WHERE id = NEW.id;
+END;
 
 -- 新增播放列表项表（原playlist_tracks升级）
 CREATE TABLE playlist_item (

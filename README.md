@@ -6,15 +6,15 @@
 
 **QM-Music** 是一个基于 Subsonic 构建的轻量级私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Audinaut），让您随时随地安全访问个人音乐库。
 <div style="display: flex; gap: 5px;">
-  <img src="https://github.com/user-attachments/assets/55019589-116b-4afd-ba90-dc0b7a704520" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/9ddbb5e3-8bb0-4336-b282-9f0d712a12d7" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/68ecdc95-df2c-4424-983d-dc44103af125" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/26769aea-be11-447c-89c1-524827fc6175" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/93d66adb-8659-4351-ad57-731c16668224" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/e91adfc7-2721-4b5e-82df-5a967fc6ae87" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/cc6d37dd-0d06-4dd9-8466-673f5cc2c02c" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/7a207bdd-26c8-48d2-ace3-227130ef0374" style="width:25%" />
-  <img src="https://github.com/user-attachments/assets/de036d64-b1db-45c4-b545-9c75bc2bc2cc" style="width:25%" />
+  <img src="docs/assets/433026310-55019589-116b-4afd-ba90-dc0b7a704520.png" style="width:25%" />
+  <img src="docs/assets/433026335-9ddbb5e3-8bb0-4336-b282-9f0d712a12d7.png" style="width:25%" />
+  <img src="docs/assets/433027765-68ecdc95-df2c-4424-983d-dc44103af125.png" style="width:25%" />
+  <img src="docs/assets/433027782-26769aea-be11-447c-89c1-524827fc6175.png" style="width:25%" />
+  <img src="docs/assets/433026371-93d66adb-8659-4351-ad57-731c16668224.png" style="width:25%" />
+  <img src="docs/assets/433026401-e91adfc7-2721-4b5e-82df-5a967fc6ae87.png" style="width:25%" />
+  <img src="docs/assets/433033515-cc6d37dd-0d06-4dd9-8466-673f5cc2c02c.png" style="width:25%" />
+  <img src="docs/assets/433033525-7a207bdd-26c8-48d2-ace3-227130ef0374.png" style="width:25%" />
+  <img src="docs/assets/433033533-de036d64-b1db-45c4-b545-9c75bc2bc2cc.png" style="width:25%" />
 </div>
 
 

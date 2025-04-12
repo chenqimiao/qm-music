@@ -51,4 +51,26 @@ public class PlayHistoryRepository {
     }
 
 
+    public List<PlayHistoryDO> queryByCondition(Map<String, Object> params) {
+        StringBuilder sqlStringBuilder = new StringBuilder("select * from play_history");
+        sqlStringBuilder.append(" where 1=1 ");
+
+        var userId = params.get("userId");
+        var offset = params.get("offset");
+        var size = params.get("size");
+        var orderBy = params.get("orderBy");
+
+        if (userId != null) {
+            sqlStringBuilder.append(" and user_id = :userId");
+        }
+        if (orderBy != null) {
+            sqlStringBuilder.append(" order by ").append(orderBy);
+        }
+
+        if (offset != null && size != null) {
+            sqlStringBuilder.append(" limit :offset,:size");
+        }
+
+        return namedParameterJdbcTemplate.query(sqlStringBuilder.toString(),params,ROW_MAPPER_PLAY_LIST_ITEM);
+    }
 }

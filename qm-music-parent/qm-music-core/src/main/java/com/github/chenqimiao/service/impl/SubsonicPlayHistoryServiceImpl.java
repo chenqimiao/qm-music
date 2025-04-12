@@ -1,12 +1,19 @@
 package com.github.chenqimiao.service.impl;
 
+import com.github.chenqimiao.constant.ModelMapperTypeConstants;
+import com.github.chenqimiao.dto.PlayHistoryDTO;
 import com.github.chenqimiao.repository.PlayHistoryRepository;
 import com.github.chenqimiao.request.PlayHistoryRequest;
 import com.github.chenqimiao.request.PlayHistorySaveRequest;
 import com.github.chenqimiao.service.PlayHistoryService;
+import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Qimiao Chen
@@ -21,11 +28,36 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Resource
+    private ModelMapper ucModelMapper;
+
     @Override
     public void save(PlayHistoryRequest playHistoryRequest) {
         PlayHistorySaveRequest playHistorySaveRequest
                 = modelMapper.map(playHistoryRequest, PlayHistorySaveRequest.class);
         playHistoryRepository.save(playHistorySaveRequest);
 
+    }
+
+    @Override
+    public List<PlayHistoryDTO> queryRecentPlayHistoryList(Long userId, Integer offset, Integer size) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("offset", offset);
+        params.put("size", size);
+        params.put("orderBy", "gmt_modify desc");
+        return ucModelMapper.map(playHistoryRepository.queryByCondition(params)
+                , ModelMapperTypeConstants.TYPE_LIST_PLAY_HISTORY_DTO);
+    }
+
+    @Override
+    public List<PlayHistoryDTO> queryFrequentPlayHistoryList(Long userId, Integer offset, Integer size) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("offset", offset);
+        params.put("size", size);
+        params.put("orderBy", "play_count desc");
+        return ucModelMapper.map(playHistoryRepository.queryByCondition(params)
+                , ModelMapperTypeConstants.TYPE_LIST_PLAY_HISTORY_DTO);
     }
 }

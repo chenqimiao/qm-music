@@ -32,4 +32,6 @@ public class AlbumSearchRequest {
 
     private String type;
 
+    private Long userId;
+
 }

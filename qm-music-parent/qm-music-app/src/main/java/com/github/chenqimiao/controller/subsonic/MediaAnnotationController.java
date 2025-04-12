@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 /**
  * @author Qimiao Chen
  * @since 2025/4/2 17:33
@@ -127,17 +129,14 @@ public class MediaAnnotationController {
     @RequestMapping("/scrobble")
     public SubsonicPong scrobble(Long id, Long time, Boolean submission
             , @RequestParam("c") String client) {
-        if(Boolean.TRUE.equals(submission)){
+        if(Objects.equals(submission, Boolean.FALSE)) {
             PlayHistoryRequest playHistoryRequest = new PlayHistoryRequest();
             playHistoryRequest.setUserId(WebUtils.currentUserId());
             playHistoryRequest.setSongId(id);
             playHistoryRequest.setClientType(client);
-            playHistoryRequest.setPlayCount(NumberUtils.INTEGER_ZERO);
+            playHistoryRequest.setPlayCount(NumberUtils.INTEGER_ONE);
             playHistoryService.save(playHistoryRequest);
-        }else {
-            // just now playing notification.
         }
-
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 }

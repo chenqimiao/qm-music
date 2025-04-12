@@ -16,6 +16,7 @@ import com.github.chenqimiao.request.subsonic.SongsByGenreRequest;
 import com.github.chenqimiao.response.subsonic.*;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.SongService;
+import com.github.chenqimiao.service.complex.AlbumComplexService;
 import com.github.chenqimiao.service.complex.MediaAnnotationService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
@@ -66,6 +67,9 @@ public class AlbumSongController {
     @Autowired
     private SongComplexService songComplexService;
 
+    @Autowired
+    private AlbumComplexService albumComplexService;
+
     @GetMapping(value = "/getAlbumList2")
     public AlbumList2Response getAlbumList2(AlbumList2Request albumList2Request) {
         String type = albumList2Request.getType();
@@ -85,10 +89,12 @@ public class AlbumSongController {
                 .size(albumList2Request.getSize() == null ? 10 : albumList2Request.getSize())
                 .genre(albumList2Request.getGenre())
                 .fromYear(sortDirection.equals("desc") ? null : fromYear)
+                .type(type)
+                .userId(WebUtils.currentUserId())
                 .toYear(sortDirection.equals("desc") ? null : toYear).build();
 
 
-        List<AlbumDTO> albums = albumService.getAlbumList2(albumSearchRequest);
+        List<AlbumDTO> albums = albumComplexService.getAlbumList2(albumSearchRequest);
         AlbumList2Response albumList2Response = new AlbumList2Response();
 
         List<AlbumList2Response.Album> albumList = modelMapper.map(albums, TYPE_LIST_ALBUM);

@@ -74,3 +74,10 @@ services:
    Account: Your modified admin username
    Password: Your modified admin password
    ```
+## 📜 License
+This project is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). You may:
+- Retain original copyright notices in derivative works
+- Clearly document modifications in distributed derivatives
+- No warranties expressed or implied
+
+Full license text is available in [LICENSE](LICENSE) file. Your use constitutes acceptance of these terms.

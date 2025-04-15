@@ -23,7 +23,7 @@ RUN chmod +x download-ffmpeg.sh && \
 FROM eclipse-temurin:21-jre-jammy
 
 # 声明数据卷
-VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir"]
+VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir", "/data/qm-music/cache"]
 
 # 安装时区支持（用于后续动态配置）
 RUN apt-get update && \
@@ -44,9 +44,12 @@ RUN chmod +x /app/entrypoint.sh
 # 默认环境变量
 ENV QM_FFMPEG_ENABLE=false \
     JAVA_OPTS="-XX:+UseContainerSupport -XX:+UseG1GC  -Xss256k" \
-    TZ=Asia/Shanghai
-
-
+    TZ=Asia/Shanghai \
+    QM_SPOTIFY_ENABLE=false \
+    QM_SPOTIFY_CLIENT_ID="" \
+    QM_SPOTIFY_CLIENT_SECRET="" \
+    QM_LASTFM_ENABLE=false \
+    QM_LASTFM_API_KEY=""
 
 EXPOSE 6688
 ENTRYPOINT ["/app/entrypoint.sh"]

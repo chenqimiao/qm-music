@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.complex.impl;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.constant.RateLimiterConstants;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
@@ -18,6 +19,7 @@ import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
+import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.*;
 import com.google.common.collect.Lists;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,6 +63,12 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Resource
     private MetaDataFetchClientCommander metaDataFetchClientCommander;
+
+    // 注入配置的目录列表
+    @Value("${qm.cache.dir}")
+    private String cacheDirectory;
+    @Autowired
+    private ArtistService artistService;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
@@ -124,6 +133,42 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return artworks;
     }
 
+    private Path getCacheFile(Long bizId, String path) {
+        // 检查路径是否存在
+        Path targetPath = Paths.get(path + "/" + bizId);
+        if (!Files.exists(targetPath)) {
+            return null;
+        }
+
+        try {
+            // 遍历目录及其子目录，寻找第一个普通文件
+            Optional<Path> firstFile = Files.walk(targetPath)
+                    .filter(n -> {
+                        if (!Files.isRegularFile(n)){
+                          return false;
+                        }
+                        String mimeType = null;
+                        try {
+                            mimeType = Files.probeContentType(n);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return mimeType != null && mimeType.startsWith("image/");
+                    })
+                    .findFirst();
+
+            if (firstFile.isPresent()) {
+                return firstFile.get().toAbsolutePath();
+            } else {
+               return null;
+            }
+        } catch (Exception e) {
+           log.error("遍历目录时出错, path: {},  bizId: {}", path, bizId, e);
+           return null;
+        }
+
+    }
+
     @Override
     public CoverStreamDTO getAlbumCoverStreamDTO(Long albumId, Integer size) {
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
@@ -166,6 +211,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     public CoverStreamDTO getArtistCoverStreamDTO(Long artistId, Integer size) {
+
+        CoverStreamDTO artistCoverStreamByCache = this.getArtistCoverStreamByCache(artistId, size);
+
+        if (artistCoverStreamByCache != null) {
+            return artistCoverStreamByCache;
+        }
+
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_REMOTE_LIMIT_KEY,
                 key -> RateLimiter.create(3));
 
@@ -183,10 +235,31 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         if (artistCoverStreamDTO != null) {
             return artistCoverStreamDTO;
         }
+
         return null;
     }
 
 
+    private CoverStreamDTO getArtistCoverStreamByCache(Long artistId, Integer size) {
+        if (size == null) {
+            size = 100;
+        }
+        Path cacheFile = getCacheFile(artistId, cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX + "/" + size);
+        if (cacheFile != null) {
+
+            try {
+                byte[] bytes = Files.readAllBytes(cacheFile);
+                return CoverStreamDTO.builder()
+                        .cover(bytes)
+                        .mimeType(Files.probeContentType(cacheFile))
+                        .build();
+            } catch (IOException e) {
+                log.error("getArtistCoverStreamByCache : {}", cacheFile);
+                return null;
+            }
+        }
+        return null;
+    }
 
 
     private CoverStreamDTO getArtistCoverStreamDTOByRemote(Long artistId, Integer size) {
@@ -222,6 +295,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             String sourceFormat = ImageUtils.resolveType(bytes);
             byte[] target = this.scaleImg(bytes, size, sourceFormat);
 
+            String dir = cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX + "/" + artistId + "/" + size;
+            FileUtils.save(Paths.get(dir, artistId + "." + sourceFormat), target);
             return CoverStreamDTO.builder()
                     .cover(target)
                     .mimeType(StringUtils.isNotBlank(sourceFormat)? "image/" + sourceFormat: null)

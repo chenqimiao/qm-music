@@ -7,6 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Qimiao Chen
@@ -16,6 +19,16 @@ import java.util.Set;
 public abstract class FileUtils {
 
     private static Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a");
+
+
+    private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            5,
+            5,
+            0L, TimeUnit.MILLISECONDS, // 空闲线程存活时间(0表示立即终止)
+            new LinkedBlockingQueue<>(5), // 有界队列
+            new ThreadPoolExecutor.DiscardPolicy() // 丢弃策略
+    );
+
 
     public static String getFileExtension(Path path) {
         String fileName = path.getFileName().toString();
@@ -55,5 +68,25 @@ public abstract class FileUtils {
     public static boolean isVideo(Path path) {
         String fileExtension = getFileExtension(path);
         return audioExtensions.contains(fileExtension);
+    }
+
+    public static void save(Path imagePath, byte[] data) {
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    Files.createDirectories(imagePath.getParent()); // 创建父目录
+
+                    Files.write(imagePath, data);
+                }catch (Exception e) {
+                    log.error("save image error , imagePath: {}", imagePath, e);
+                }
+
+
+
+            }
+        });
     }
 }

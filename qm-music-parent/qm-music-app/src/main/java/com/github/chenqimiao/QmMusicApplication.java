@@ -37,5 +37,4 @@ public class QmMusicApplication  {
         System.setProperty("jdk.httpclient.keepAliveTimeout", "60");
         SpringApplication.run(QmMusicApplication.class, args);
     }
-
 }

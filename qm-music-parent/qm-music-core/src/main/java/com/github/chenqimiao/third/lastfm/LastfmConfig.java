@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class LastfmConfig {
 
 
-    @Value("${qm.lastfm.api_key}")
+    @Value("${qm.lastfm.api.key}")
     private String lastfmApiKey;
 
 
     @Bean
     @ConditionalOnProperty(name = "qm.lastfm.enable", havingValue = "true")
-    @ConditionalOnExpression("'${qm.lastfm.api_key:}'.trim().length() > 0 " )
+    @ConditionalOnExpression("'${qm.lastfm.api.key:}'.trim().length() > 0 " )
     public LastfmClient lastfmClient() {
         return new LastfmClient(lastfmApiKey);
     }

@@ -57,7 +57,7 @@ public interface MetaDataFetchClient {
           return null;
      }
 
-     default List<String> scrapeSimilarTrack(String trackName, String artistName) {
+     default List<String> scrapeSimilarTrack(String trackName, String artistName,Integer limit) {
           return Collections.emptyList();
      }
 

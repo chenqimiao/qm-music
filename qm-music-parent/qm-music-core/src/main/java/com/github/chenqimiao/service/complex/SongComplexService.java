@@ -29,4 +29,7 @@ public interface SongComplexService {
     List<Long> searchSongsByArtists(String query, @Nullable List<ArtistDTO> artists);
 
     List<Long> searchSongsByAlbums(String query, @Nullable List<AlbumDTO> albums) ;
+
+
+    List<ComplexSongDTO> findSimilarSongs(@Nullable Long songId, @Nullable Long artistId, Long count);
 }

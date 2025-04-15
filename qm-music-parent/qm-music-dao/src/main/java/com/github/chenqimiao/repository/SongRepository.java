@@ -216,6 +216,10 @@ public class SongRepository {
         if (params.get("genre") != null) {
             sqlSb.append(" and `genre` = :genre ");
         }
+        if (params.get("titles") != null) {
+            sqlSb.append(" and `title` in (:titles) ");
+        }
+
 
         if (Boolean.TRUE.equals(params.get("isRandom")))  {
             sqlSb.append(" ORDER BY RANDOM() ");
@@ -225,6 +229,7 @@ public class SongRepository {
             sqlSb.append(" limit :offset , :pageSize");
 
         }
+
 
 
         return namedParameterJdbcTemplate.queryForList(sqlSb.toString(), params, Long.class);

@@ -233,5 +233,39 @@ public class SubsonicSongComplexService implements SongComplexService {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<ComplexSongDTO> findSimilarSongs(Long songId, Long artistId, Long count) {
+        if(songId == null && artistId == null ) {
+            return Collections.emptyList();
+        }
+        List<ComplexSongDTO> complexSongs = new ArrayList<>();
+        SongDTO song = songService.queryBySongId(songId);
+        if (song != null) {
+            List<String> songNames = metaDataFetchClientCommander.scrapeSimilarTrack(song.getTitle(), song.getAlbumTitle(), count.intValue() * 2);
+            if (CollectionUtils.isNotEmpty(songNames)) {
+                Map<String, Object> params = new HashMap<>();
+                params.put("titles", songNames);
+                List<Long> songIds = songRepository.search(params);
+                if (CollectionUtils.isNotEmpty(songIds)) {
+                    complexSongs.addAll(this.queryBySongIds(songIds, null)) ;
+                }
+            }
+        }
+
+       if (CollectionUtils.size(complexSongs) > count) {
+           return Lists.partition(complexSongs, count.intValue()).getFirst();
+
+       }else if(CollectionUtils.size(complexSongs) == count) {
+           return complexSongs;
+
+       }else {
+
+           List<ComplexSongDTO> similarSongsByArtistId = this.findSimilarSongsByArtistId(artistId, count - complexSongs.size());
+           complexSongs.addAll(similarSongsByArtistId);
+           return complexSongs;
+       }
+
+    }
+
 
 }

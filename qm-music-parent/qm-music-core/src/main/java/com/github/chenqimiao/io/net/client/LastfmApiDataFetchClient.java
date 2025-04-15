@@ -71,9 +71,9 @@ public class LastfmApiDataFetchClient implements MetaDataFetchClient {
     }
 
     @Override
-    public List<String> scrapeSimilarTrack(String trackName, String artistName) {
+    public List<String> scrapeSimilarTrack(String trackName, String artistName, Integer limit) {
         // 简体
-        List<Track> similarTracks = lastfmClient.getSimilarTracks(trackName, artistName, 10);
+        List<Track> similarTracks = lastfmClient.getSimilarTracks(trackName, artistName, limit);
         if (CollectionUtils.isNotEmpty(similarTracks)) {
             return similarTracks.stream().sorted((n1, n2) -> {
                 return (int)(n2.getMatchScore() -n1.getMatchScore());

@@ -167,12 +167,12 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     }
 
 
-    public List<String> scrapeSimilarTrack(String trackName, String artistName) {
+    public List<String> scrapeSimilarTrack(String trackName, String artistName, Integer limit) {
         this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
                 metaDataFetchClient.rateLimit();
-                List<String> trackNames = metaDataFetchClient.scrapeSimilarTrack(trackName, artistName);
+                List<String> trackNames = metaDataFetchClient.scrapeSimilarTrack(trackName, artistName, limit == null ? 20 : limit);
                 if (CollectionUtils.isNotEmpty(trackNames)) {
                     return trackNames;
                 }

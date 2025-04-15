@@ -133,9 +133,9 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return artworks;
     }
 
-    private Path getCacheFile(Long bizId, String path) {
+    private Path getCacheFile(Long bizId, int size, String path) {
         // 检查路径是否存在
-        Path targetPath = Paths.get(path + "/" + bizId);
+        Path targetPath = Paths.get(FileUtils.buildCoverArtPath(path, bizId, size));
         if (!Files.exists(targetPath)) {
             return null;
         }
@@ -244,7 +244,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         if (size == null) {
             size = 100;
         }
-        Path cacheFile = getCacheFile(artistId, cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX + "/" + size);
+        Path cacheFile = getCacheFile(artistId, size, cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX);
         if (cacheFile != null) {
 
             try {
@@ -295,7 +295,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             String sourceFormat = ImageUtils.resolveType(bytes);
             byte[] target = this.scaleImg(bytes, size, sourceFormat);
 
-            String dir = cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX + "/" + artistId + "/" + size;
+            String dir = FileUtils.buildCoverArtPath(cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX, artistId, size);
             FileUtils.save(Paths.get(dir, artistId + "." + sourceFormat), target);
             return CoverStreamDTO.builder()
                     .cover(target)

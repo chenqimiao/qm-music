@@ -87,6 +87,9 @@ public class SpotifyClient {
      */
     @Deprecated
     public Artist[]  getArtistsRelatedArtists(String id) {
+        if (spotifyApi == null) {
+            return null;
+        }
         try {
             Artist[] artists = spotifyApi.getArtistsRelatedArtists(id)
                     .build()
@@ -104,6 +107,9 @@ public class SpotifyClient {
      */
     @Deprecated
     public Artist[]  getArtistsRelatedArtistsByName(String query) {
+        if (spotifyApi == null) {
+            return null;
+        }
         Artist artist = this.searchArtist(query);
         if (artist == null) {
             return null;

@@ -9,7 +9,6 @@ import com.github.chenqimiao.third.spotify.SpotifyClient;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -28,10 +27,10 @@ import java.util.concurrent.TimeUnit;
  **/
 @Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnBean(SpotifyClient.class)
+//@ConditionalOnBean(SpotifyApi.class)
 public class SpotifyApiDataFetchClient implements MetaDataFetchClient {
 
-    @Autowired
+    @Autowired(required = false)
     private SpotifyClient spotifyClient;
 
     @Override

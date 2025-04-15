@@ -38,8 +38,8 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
         List<MetaDataFetchClient> metaDataFetchClients = MetaDataFetchClientConfig.getMetaDataFetchClients();
         List<MetaDataFetchClient> list = metaDataFetchClients.stream().filter(n -> !Boolean.TRUE.equals(currentRegionIsChina)
                 || n.supportChinaRegion()).collect(Collectors.toList());
-        Random random = new Random(System.currentTimeMillis());
-        Collections.shuffle(list, random);
+       // Random random = new Random(System.currentTimeMillis());
+        // Collections.shuffle(list, random);
         return list;
     }
 

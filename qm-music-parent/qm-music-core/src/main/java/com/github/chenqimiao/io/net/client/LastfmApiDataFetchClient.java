@@ -1,10 +1,13 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.RateLimiterConstants;
+import com.github.chenqimiao.exception.RateLimitException;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.third.lastfm.LastfmClient;
 import com.github.chenqimiao.third.lastfm.model.Artist;
 import com.github.chenqimiao.third.lastfm.model.Track;
 import com.github.chenqimiao.util.TransliteratorUtils;
+import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -78,5 +82,18 @@ public class LastfmApiDataFetchClient implements MetaDataFetchClient {
         return Collections.emptyList();
     }
 
+
+    @Override
+    public void rateLimit() {
+        RateLimiter limiter = RateLimiterConstants
+                .limiters.computeIfAbsent(RateLimiterConstants.LAST_FM_API_LIMIT_KET,
+                        key -> RateLimiter.create(3));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
+            throw new RateLimitException();
+        }
+
+    }
 }
 

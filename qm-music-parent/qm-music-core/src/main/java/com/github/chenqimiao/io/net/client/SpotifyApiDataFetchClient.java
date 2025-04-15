@@ -1,9 +1,12 @@
 package com.github.chenqimiao.io.net.client;
 
+import com.github.chenqimiao.constant.RateLimiterConstants;
+import com.github.chenqimiao.exception.RateLimitException;
 import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.third.spotify.SpotifyClient;
+import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -17,6 +20,7 @@ import se.michaelthelin.spotify.model_objects.specification.Image;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Qimiao Chen
@@ -59,8 +63,15 @@ public class SpotifyApiDataFetchClient implements MetaDataFetchClient {
 
     @Nullable
     public Track searchTrack(String trackName, String artistName) {
-        // TODO
-        return null;
+
+        se.michaelthelin.spotify.model_objects.specification.Track track = spotifyClient.searchTrack(trackName);
+        if (track == null) {return null;}
+        Track result = new Track();
+        result.setTrackName(trackName);
+        result.setAlbumName(track.getAlbum().getName());
+        result.setArtistName(track.getAlbum().getName());
+
+        return result;
     }
 
     @Nullable
@@ -78,5 +89,19 @@ public class SpotifyApiDataFetchClient implements MetaDataFetchClient {
             album.setImageUrl(imageList.get(1).getUrl());
         }
         return album;
+    }
+
+
+    @Override
+    public void rateLimit() {
+        RateLimiter limiter = RateLimiterConstants
+                .limiters.computeIfAbsent(RateLimiterConstants.SPOTIFY_API_LIMIT_KEY,
+                        key -> RateLimiter.create(1));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
+           throw new RateLimitException();
+        }
+
     }
 }

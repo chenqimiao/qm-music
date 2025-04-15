@@ -71,4 +71,8 @@ public interface MetaDataFetchClient {
 
           return null;
      }
+
+     default void rateLimit() {
+
+     }
 }

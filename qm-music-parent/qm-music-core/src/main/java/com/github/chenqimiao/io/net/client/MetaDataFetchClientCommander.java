@@ -46,9 +46,11 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     @Nullable
     @Override
     public ArtistInfo fetchArtistInfo(String artistName) {
+        this.rateLimit();
         List<ArtistInfo> artistInfos = getMetaDataFetchClients().stream().parallel()
                 .map(n -> {
                     try{
+                        n.rateLimit();
                         return n.fetchArtistInfo(artistName);
                     }catch (Exception e){
                         log.error("{} fetchArtistInfo error", n.getClass(), e);
@@ -95,8 +97,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     @Nullable
     @Override
     public String getLyrics(String songName, String artistName) {
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 String lyrics = metaDataFetchClient.getLyrics(songName, artistName);
                 if (StringUtils.isNotBlank(lyrics)) {
                     return lyrics;
@@ -111,8 +115,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
     @Override
     public List<String> scrapeSimilarArtists(String artistName) {
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 List<String> similarArtists = metaDataFetchClient.scrapeSimilarArtists(artistName);
                 if (CollectionUtils.isNotEmpty(similarArtists)){
                     return similarArtists;
@@ -127,8 +133,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
     @Override
     public String getMusicBrainzId(String artistName) {
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 String musicBrainzId = metaDataFetchClient.getMusicBrainzId(artistName);
                 if (StringUtils.isNotBlank(musicBrainzId)) {
                     return musicBrainzId;
@@ -142,8 +150,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
     @Override
     public String getLastFmUrl(String artistName) {
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 String lastFmUrl = metaDataFetchClient.getLastFmUrl(artistName);
                 if (StringUtils.isNotBlank(lastFmUrl)) {
                     return lastFmUrl;
@@ -158,8 +168,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
 
     public List<String> scrapeSimilarTrack(String trackName, String artistName) {
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 List<String> trackNames = metaDataFetchClient.scrapeSimilarTrack(trackName, artistName);
                 if (CollectionUtils.isNotEmpty(trackNames)) {
                     return trackNames;
@@ -174,15 +186,28 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
     @Nullable
     public Track searchTrack(String trackName, String artistName) {
-        // TODO ..
+        this.rateLimit();
+        for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
+            try {
+                metaDataFetchClient.rateLimit();
+                Track track = metaDataFetchClient.searchTrack(trackName, artistName);
+                if (track != null) {
+                    return track;
+                }
+            }catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+
+        }
         return null;
     }
 
     @Nullable
     public Album searchAlbum(String albumTitle, String artistName) {
-
+        this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
             try {
+                metaDataFetchClient.rateLimit();
                 Album album = metaDataFetchClient.searchAlbum(albumTitle, artistName);
                 if (album != null) {
                     return album;

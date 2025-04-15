@@ -2,14 +2,8 @@ package com.github.chenqimiao.third.lastfm;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.config.InsecureHttpClient;
-import com.github.chenqimiao.third.lastfm.model.Artist;
-import com.github.chenqimiao.third.lastfm.model.SimilarArtistsResponse;
-import com.github.chenqimiao.third.lastfm.model.SimilarTracksResponse;
-import com.github.chenqimiao.third.lastfm.model.Track;
+import com.github.chenqimiao.third.lastfm.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -23,7 +17,7 @@ import java.util.List;
  * @author Qimiao Chen
  * @since 2025/4/15 12:26
  **/
-@Component
+
 @Slf4j
 public class LastfmClient {
 
@@ -31,19 +25,38 @@ public class LastfmClient {
 
     private final HttpClient httpClient = InsecureHttpClient.getInstance();
 
-    @Value("${qm.lastfm.enable}")
-    private Boolean lastfmEnabled;
 
-    @Value("${qm.lastfm.api_key}")
-    private String lastfmApiKey;
+    private final String lastfmApiKey;
+
+    public LastfmClient(String lastfmApiKey) {
+        this.lastfmApiKey = lastfmApiKey;
+    }
+
+    public ArtistInfo getArtistInfo(String artistName, String lang) {
+        String encodedArtist = URLEncoder.encode(artistName, StandardCharsets.UTF_8);
+        String query = String.format(
+                "method=artist.getinfo&artist=%s&api_key=%s&format=json&lang=%s",
+                encodedArtist, lastfmApiKey, lang
+        );
+        URI uri = URI.create(API_URL + "?" + query);
+
+        String response = sendRequest(uri);
+        ArtistInfoResponse result = JSONObject.parseObject(response, ArtistInfoResponse.class);
+
+        if(result == null) {
+            return null;
+        }
+        if (result.getError() != null) {
+            log.error("API Error: {}" ,  result.getError());
+            return null;
+        }
+        return result.getArtistInfo();
+    }
 
 
 
     // 获取相似艺术家
     public List<Artist> getSimilarArtists(String artist, int limit) {
-        if (!this.lastfmEnabled()) {
-            return null;
-        }
         String encodedArtist = URLEncoder.encode(artist, StandardCharsets.UTF_8);
         String query = String.format(
                 "method=artist.getsimilar&artist=%s&api_key=%s&format=json&limit=%d",
@@ -66,9 +79,6 @@ public class LastfmClient {
 
     // 获取相似歌曲
     public List<Track> getSimilarTracks(String track, String artist, int limit) {
-        if (!this.lastfmEnabled()) {
-            return null;
-        }
         String encodedTrack = URLEncoder.encode(track, StandardCharsets.UTF_8);
         String encodedArtist = URLEncoder.encode(artist, StandardCharsets.UTF_8);
         String query = String.format(
@@ -115,10 +125,5 @@ public class LastfmClient {
         }
 
     }
-
-    private boolean lastfmEnabled() {
-        return Boolean.TRUE.equals(lastfmEnabled)
-                && StringUtils.isNotBlank(lastfmApiKey);
-    };
 
 }

@@ -1,8 +1,6 @@
 package com.github.chenqimiao.third.spotify;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
@@ -12,17 +10,18 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
  * @author Qimiao Chen
  * @since 2025/4/14 18:11
  **/
-@Component
 @Slf4j
 public class SpotifyClient {
 
-    @Autowired(required = false)
     private SpotifyApi spotifyApi;
 
+    public SpotifyClient(SpotifyApi spotifyApi) {
+        this.spotifyApi = spotifyApi;
+    }
+
+
+
     public Track searchTrack(String query) {
-        if (spotifyApi == null) {
-            return null;
-        }
         try {
             Track[] tracks = spotifyApi.searchTracks(query)
                     .limit(3)
@@ -42,9 +41,7 @@ public class SpotifyClient {
 
 
     public Artist searchArtist(String query) {
-        if (spotifyApi == null) {
-            return null;
-        }
+
         try {
             Artist[] artists = spotifyApi.searchArtists(query)
                     .limit(3)
@@ -62,9 +59,7 @@ public class SpotifyClient {
     }
 
     public AlbumSimplified searchAlbum(String query) {
-        if (spotifyApi == null) {
-            return null;
-        }
+
         try {
             AlbumSimplified[] items = spotifyApi.searchAlbums(query)
                     .limit(3)
@@ -87,9 +82,7 @@ public class SpotifyClient {
      */
     @Deprecated
     public Artist[]  getArtistsRelatedArtists(String id) {
-        if (spotifyApi == null) {
-            return null;
-        }
+
         try {
             Artist[] artists = spotifyApi.getArtistsRelatedArtists(id)
                     .build()
@@ -107,9 +100,7 @@ public class SpotifyClient {
      */
     @Deprecated
     public Artist[]  getArtistsRelatedArtistsByName(String query) {
-        if (spotifyApi == null) {
-            return null;
-        }
+
         Artist artist = this.searchArtist(query);
         if (artist == null) {
             return null;

@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public  class Artist {
-    String name;
-    String url;
+    private String name;
+    private String url;
     @JSONField(name = "match")
-    float matchScore;
+    private float matchScore;
 }

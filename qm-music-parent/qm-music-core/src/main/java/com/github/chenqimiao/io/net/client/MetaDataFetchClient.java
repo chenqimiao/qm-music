@@ -2,7 +2,9 @@ package com.github.chenqimiao.io.net.client;
 
 
 import com.github.chenqimiao.config.InsecureHttpClient;
+import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
+import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.util.UserAgentGenerator;
 import jakarta.annotation.Nullable;
 
@@ -52,6 +54,21 @@ public interface MetaDataFetchClient {
      }
 
      default String getLastFmUrl(String artistName){
+          return null;
+     }
+
+     default List<String> scrapeSimilarTrack(String trackName, String artistName) {
+          return Collections.emptyList();
+     }
+
+     @Nullable
+     default Track searchTrack(String trackName, String artistName) {
+          return null;
+     }
+
+     @Nullable
+     default Album searchAlbum(String albumTitle, String artistName) {
+
           return null;
      }
 }

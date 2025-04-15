@@ -2,7 +2,9 @@ package com.github.chenqimiao.io.net.client;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.io.net.config.MetaDataFetchClientConfig;
+import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
+import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.util.TimeZoneUtils;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
@@ -145,6 +147,45 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                 String lastFmUrl = metaDataFetchClient.getLastFmUrl(artistName);
                 if (StringUtils.isNotBlank(lastFmUrl)) {
                     return lastFmUrl;
+                }
+            }catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+
+        }
+        return null;
+    }
+
+
+    public List<String> scrapeSimilarTrack(String trackName, String artistName) {
+        for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
+            try {
+                List<String> trackNames = metaDataFetchClient.scrapeSimilarTrack(trackName, artistName);
+                if (CollectionUtils.isNotEmpty(trackNames)) {
+                    return trackNames;
+                }
+            }catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+
+        }
+        return Collections.emptyList();
+    }
+
+    @Nullable
+    public Track searchTrack(String trackName, String artistName) {
+        // TODO ..
+        return null;
+    }
+
+    @Nullable
+    public Album searchAlbum(String albumTitle, String artistName) {
+
+        for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
+            try {
+                Album album = metaDataFetchClient.searchAlbum(albumTitle, artistName);
+                if (album != null) {
+                    return album;
                 }
             }catch (Exception e) {
                 log.warn(e.getMessage());

@@ -2,6 +2,7 @@ package com.github.chenqimiao.third.spotify;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -45,5 +46,12 @@ public class SpotifyConfig {
 
         log.info("Spotify client credentials success !");
         return spotifyApi;
+    }
+
+
+    @Bean
+    @ConditionalOnBean(SpotifyApi.class)
+    public SpotifyClient spotifyClient(SpotifyApi spotifyApi) {
+        return new SpotifyClient(spotifyApi);
     }
 }

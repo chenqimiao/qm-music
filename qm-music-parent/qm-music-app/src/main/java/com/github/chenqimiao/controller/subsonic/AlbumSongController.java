@@ -216,10 +216,11 @@ public class AlbumSongController {
 
         similarSongs = complexSongService.findSimilarSongs(songId, artistId, count);
 
+        if (CollectionUtils.size(similarSongs) > count.intValue()) {
+            similarSongs = Lists.partition(similarSongs, count.intValue()).getFirst();
+        }
 
-        List<ComplexSongDTO> limitedSongs = Lists.partition(similarSongs, count.intValue()).getFirst();
-
-        List<GetSimilarSongsResponse.Song> similarSongList = modelMapper.map(limitedSongs, TYPE_LIST_SIMILAR_SONG);
+        List<GetSimilarSongsResponse.Song> similarSongList = modelMapper.map(similarSongs, TYPE_LIST_SIMILAR_SONG);
 
         return new GetSimilarSongsResponse(new GetSimilarSongsResponse.SimilarSongs(similarSongList));
     }

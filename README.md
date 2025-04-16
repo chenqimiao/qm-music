@@ -78,10 +78,10 @@ services:
 - **环境变量**  
   - `QM_FFMPEG_ENABLE=true` 启用智能音频转码（推荐在户外使用的用户开启），支持按网络状况自动切换 libmp3lame/acc 编码，有效节省流量消耗（默认关闭）
   - `TZ=Asia/Shanghai` 请务必根据所在地区设置
-  - `QM_SPOTIFY_ENABLE=false` 开启后，可以获得更多元数据支持 [SPOTIFY KEY 申请地址](https://developer.spotify.com/)
+  - `QM_SPOTIFY_ENABLE=false` 开启后，可以获得更多元数据支持 [![SPOTIFY KEY 申请地址](https://img.shields.io/badge/Spotify-%231ED760.svg?logo=spotify&logoColor=white)](https://developer.spotify.com/)
   - `QM_SPOTIFY_CLIENT_ID` 
   - `QM_SPOTIFY_CLIENT_SECRET` 
-  - `QM_LASTFM_ENABLE=false` 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://www.last.fm/api#getting-started)
+  - `QM_LASTFM_ENABLE=false` 开启后，可以获得更多元数据支持  [![LAST FM KEY 申请地址](https://img.shields.io/badge/Last.fm-%23D51007.svg?logo=last.fm&logoColor=white)](https://www.last.fm/api)
   - `QM_LASTFM_API_KEY` 
 - **卷挂载**  
   - `/data/qm-music/music_dir`：音乐文件存储目录
@@ -136,9 +136,9 @@ services:
 - **智能推荐** - 基于风格的相似歌曲与歌手推荐
 - **流派分类** - 按音乐风格快速筛选曲目
 
-### 生态扩展
-- **LAST FM 支持**
-- **SPOTIFY 支持**
+### 🌐 生态扩展
+[![Spotify](https://img.shields.io/badge/Spotify-%231ED760.svg?logo=spotify&logoColor=white)](https://developer.spotify.com/)
+[![Last.fm](https://img.shields.io/badge/Last.fm-%23D51007.svg?logo=last.fm&logoColor=white)](https://www.last.fm/api)
 
 ### ⏭️ 开发路线图
 #### 基础设施

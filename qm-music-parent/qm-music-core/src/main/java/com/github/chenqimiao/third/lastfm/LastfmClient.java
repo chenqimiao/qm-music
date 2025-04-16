@@ -41,6 +41,9 @@ public class LastfmClient {
         URI uri = URI.create(API_URL + "?" + query);
 
         String response = sendRequest(uri);
+        if (response == null) {
+            return null;
+        }
         ArtistInfoResponse result = JSONObject.parseObject(response, ArtistInfoResponse.class);
 
         if(result == null) {

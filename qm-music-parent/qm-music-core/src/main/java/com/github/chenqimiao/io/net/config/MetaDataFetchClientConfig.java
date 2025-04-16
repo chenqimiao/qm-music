@@ -4,14 +4,19 @@ import com.github.chenqimiao.io.net.client.MetaDataFetchClient;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +30,8 @@ public class MetaDataFetchClientConfig implements ApplicationContextAware, Appli
 
     private ApplicationContext applicationContext;
 
-    private static final List<MetaDataFetchClient> metaDataFetchClients = Lists.newArrayList();
+    private static List<MetaDataFetchClient> unmodifiedMetaDataFetchClients;
+
 
 
     @Override
@@ -36,8 +42,9 @@ public class MetaDataFetchClientConfig implements ApplicationContextAware, Appli
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        Map<String, MetaDataFetchClient> registerJobs = applicationContext.getBeansOfType(MetaDataFetchClient.class);
-        for(Map.Entry<String,MetaDataFetchClient> entry : registerJobs.entrySet()){
+        Map<String, MetaDataFetchClient> clients = applicationContext.getBeansOfType(MetaDataFetchClient.class);
+        List<MetaDataFetchClient> metaDataFetchClients = Lists.newArrayList();
+        for(Map.Entry<String,MetaDataFetchClient> entry : clients.entrySet()){
             try {
                 if (entry.getValue() instanceof MetaDataFetchClientCommander) {
                     continue;
@@ -49,11 +56,26 @@ public class MetaDataFetchClientConfig implements ApplicationContextAware, Appli
             }
         }
 
+        metaDataFetchClients.sort(Comparator.comparingInt(this::getOrderValue));
 
+        unmodifiedMetaDataFetchClients = Collections.unmodifiableList(metaDataFetchClients);
+    }
+
+    // 获取Bean的Order值的方法
+    private int getOrderValue(MetaDataFetchClient client) {
+        // 优先检查是否实现了Ordered接口
+        if (client instanceof Ordered) {
+            return ((Ordered) client).getOrder();
+        }
+        // 获取目标类（处理可能的AOP代理）
+        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(client);
+        // 查找@Order注解
+        Order order = AnnotationUtils.findAnnotation(targetClass, Order.class);
+        return (order != null) ? order.value() : Ordered.LOWEST_PRECEDENCE;
     }
 
     public static List<MetaDataFetchClient> getMetaDataFetchClients() {
-        return Collections.unmodifiableList(metaDataFetchClients);
+        return unmodifiedMetaDataFetchClients;
     }
 
 }

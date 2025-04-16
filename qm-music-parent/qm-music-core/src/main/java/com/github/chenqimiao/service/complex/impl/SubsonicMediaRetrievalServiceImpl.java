@@ -226,15 +226,17 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             return null;
         }
 
+        CoverStreamDTO artistCoverStreamDTO = this.getArtistCoverStreamDTOByRemote(artistId, size);
+        if (artistCoverStreamDTO != null) {
+            return artistCoverStreamDTO;
+        }
+
         CoverStreamDTO artistCoverStreamByLocal = this.getArtistCoverStreamByLocal(artistId, size);
 
         if (artistCoverStreamByLocal != null) {
             return artistCoverStreamByLocal;
         }
-        CoverStreamDTO artistCoverStreamDTO = this.getArtistCoverStreamDTOByRemote(artistId, size);
-        if (artistCoverStreamDTO != null) {
-            return artistCoverStreamDTO;
-        }
+
 
         return null;
     }

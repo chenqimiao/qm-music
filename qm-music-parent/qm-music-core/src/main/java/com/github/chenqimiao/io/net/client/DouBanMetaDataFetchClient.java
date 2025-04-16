@@ -1,16 +1,10 @@
 package com.github.chenqimiao.io.net.client;
 
-import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Qimiao Chen
@@ -24,34 +18,34 @@ public class DouBanMetaDataFetchClient implements MetaDataFetchClient {
     @Override
     @SneakyThrows
     public ArtistInfo fetchArtistInfo(String artistName) {
-
-        // 1. 搜索艺人并获取详情页 URL
-        String searchUrl = BASE_URL
-                + URLEncoder.encode(artistName, StandardCharsets.UTF_8);
-        Document searchDoc = Jsoup.connect(searchUrl)
-                .userAgent(this.getUserAgent())
-                .timeout(JsoupConstants.TIME_OUT)
-                .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
-                .ignoreContentType(true)
-                .get();
-
-        // 2. 提取首个艺人详情页链接
-        Element firstResult = searchDoc.select(".item-root .title a").first();
-        if (firstResult == null) {
-           return null;
-        }
-        String detailUrl = firstResult.attr("href");
-
-        // 3. 解析详情页
-        Document detailDoc = Jsoup.connect(detailUrl).get();
-        ArtistInfo artistInfo = new ArtistInfo();
-        artistInfo.setArtistName(artistName);
-        this.parseArtistDetails(detailDoc, artistInfo);
-
-        if (!StringUtils.isAllBlank(artistInfo.getBiography(), artistInfo.getImageUrl(),
-                artistInfo.getLargeImageUrl(), artistInfo.getMediumImageUrl(), artistInfo.getSmallImageUrl())) {
-            return artistInfo;
-        }
+//
+//        // 1. 搜索艺人并获取详情页 URL
+//        String searchUrl = BASE_URL
+//                + URLEncoder.encode(artistName, StandardCharsets.UTF_8);
+//        Document searchDoc = Jsoup.connect(searchUrl)
+//                .userAgent(this.getUserAgent())
+//                .timeout(JsoupConstants.TIME_OUT)
+//                .ignoreHttpErrors(true)   // 忽略 HTTP 错误（如 404）
+//                .ignoreContentType(true)
+//                .get();
+//
+//        // 2. 提取首个艺人详情页链接
+//        Element firstResult = searchDoc.select(".item-root .title a").first();
+//        if (firstResult == null) {
+//           return null;
+//        }
+//        String detailUrl = firstResult.attr("href");
+//
+//        // 3. 解析详情页
+//        Document detailDoc = Jsoup.connect(detailUrl).get();
+//        ArtistInfo artistInfo = new ArtistInfo();
+//        artistInfo.setArtistName(artistName);
+//        this.parseArtistDetails(detailDoc, artistInfo);
+//
+//        if (!StringUtils.isAllBlank(artistInfo.getBiography(), artistInfo.getImageUrl(),
+//                artistInfo.getLargeImageUrl(), artistInfo.getMediumImageUrl(), artistInfo.getSmallImageUrl())) {
+//            return artistInfo;
+//        }
         return null;
     }
     /**

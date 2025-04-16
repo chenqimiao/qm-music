@@ -6,7 +6,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.constant.JsoupConstants;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.util.RandomStringUtils;
-import com.github.chenqimiao.util.TransliteratorUtils;
 import com.jayway.jsonpath.JsonPath;
 import jakarta.annotation.Nullable;
 import lombok.SneakyThrows;
@@ -52,34 +51,35 @@ public class Music163MetaDataFetchClient implements MetaDataFetchClient {
     @Override
     @SneakyThrows
     public ArtistInfo fetchArtistInfo(String artistName) {
-        ArtistInfo artistInfo = new ArtistInfo();
-        artistInfo.setArtistName(artistName);
-        String artistImageUrl = this.getArtistImageUrl(artistName);
-        if (artistImageUrl != null) {
-
-            artistInfo.setImageUrl(artistImageUrl);
-        }
-
-
-        // 第一步：获取艺术家ID
-        String artistId = getArtistId(artistName);
-
-        if (artistId == null) {
-            //retry
-            String simplifiedArtistName = TransliteratorUtils.toSimplified(artistName);
-            if(!Objects.equals(artistName, simplifiedArtistName)) {
-
-                artistId = getArtistId(artistName);
-            }
-
-        }
-
-
-        if (artistId != null) {
-            String biography = getArtistBiography(artistId);
-            artistInfo.setBiography(biography);
-        }
-        return artistInfo;
+//        ArtistInfo artistInfo = new ArtistInfo();
+//        artistInfo.setArtistName(artistName);
+//        String artistImageUrl = this.getArtistImageUrl(artistName);
+//        if (artistImageUrl != null) {
+//
+//            artistInfo.setImageUrl(artistImageUrl);
+//        }
+//
+//
+//        // 第一步：获取艺术家ID
+//        String artistId = getArtistId(artistName);
+//
+//        if (artistId == null) {
+//            //retry
+//            String simplifiedArtistName = TransliteratorUtils.toSimplified(artistName);
+//            if(!Objects.equals(artistName, simplifiedArtistName)) {
+//
+//                artistId = getArtistId(artistName);
+//            }
+//
+//        }
+//
+//
+//        if (artistId != null) {
+//            String biography = getArtistBiography(artistId);
+//            artistInfo.setBiography(biography);
+//        }
+//        return artistInfo;
+        return null;
     }
 
     private String getArtistId(String artistName) throws Exception {

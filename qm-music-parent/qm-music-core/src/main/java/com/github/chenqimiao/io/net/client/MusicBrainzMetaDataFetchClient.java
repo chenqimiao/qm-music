@@ -1,13 +1,8 @@
 package com.github.chenqimiao.io.net.client;
 
-import com.github.chenqimiao.io.net.MusicBrainzClient;
-import com.github.chenqimiao.io.net.model.Artist;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import lombok.SneakyThrows;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Qimiao Chen
@@ -30,8 +25,9 @@ public class MusicBrainzMetaDataFetchClient implements MetaDataFetchClient {
     @Override
     @SneakyThrows
     public String getMusicBrainzId(String artistName) {
-        List<Artist> artists = MusicBrainzClient.searchArtist(artistName);
-
-        return CollectionUtils.isNotEmpty(artists) ? artists.getFirst().id() : null;
+//        List<Artist> artists = MusicBrainzClient.searchArtist(artistName);
+//
+//        return CollectionUtils.isNotEmpty(artists) ? artists.getFirst().id() : null;
+        return null;
     }
 }

@@ -137,8 +137,8 @@ services:
 - **流派分类** - 按音乐风格快速筛选曲目
 
 ### 🌐 生态扩展
-[![Spotify](https://img.shields.io/badge/Spotify-%231ED760.svg?logo=spotify&logoColor=white)](https://developer.spotify.com/)
-[![Last.fm](https://img.shields.io/badge/Last.fm-%23D51007.svg?logo=last.fm&logoColor=white)](https://www.last.fm/api)
+* [![Spotify](https://img.shields.io/badge/Spotify-%231ED760.svg?logo=spotify&logoColor=white)](https://developer.spotify.com/)
+* [![Last.fm](https://img.shields.io/badge/Last.fm-%23D51007.svg?logo=last.fm&logoColor=white)](https://www.last.fm/api)
 
 ### ⏭️ 开发路线图
 #### 基础设施

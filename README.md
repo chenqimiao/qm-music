@@ -42,10 +42,10 @@ docker run -d \
   -e QM_FFMPEG_ENABLE=true \
   -e TZ=Asia/Shanghai \
   -e QM_SPOTIFY_ENABLE=false \
-  -e QM_SPOTIFY_CLIENT_ID="" \
-  -e QM_SPOTIFY_CLIENT_SECRET="" \
+  -e QM_SPOTIFY_CLIENT_ID=[QM_SPOTIFY_CLIENT_SECRET] \
+  -e QM_SPOTIFY_CLIENT_SECRET=[QM_SPOTIFY_CLIENT_SECRET] \
   -e QM_LASTFM_ENABLE=false \
-  -e QM_LASTFM_API_KEY="" \
+  -e QM_LASTFM_API_KEY=[QM_LASTFM_API_KEY] \
   --restart unless-stopped \
   qmmusic/qm-music:latest
 ```
@@ -67,10 +67,10 @@ services:
       - QM_FFMPEG_ENABLE=true
       - TZ=Asia/Shanghai
       - QM_SPOTIFY_ENABLE=false
-      - QM_SPOTIFY_CLIENT_ID=""
-      - QM_SPOTIFY_CLIENT_SECRET=""
+      - QM_SPOTIFY_CLIENT_ID=[QM_SPOTIFY_CLIENT_ID]
+      - QM_SPOTIFY_CLIENT_SECRET=[QM_SPOTIFY_CLIENT_SECRET]
       - QM_LASTFM_ENABLE=false
-      - QM_LASTFM_API_KEY="" 
+      - QM_LASTFM_API_KEY=[QM_LASTFM_API_KEY]
     restart: unless-stopped
 ```
 

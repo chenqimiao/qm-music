@@ -81,12 +81,12 @@ services:
   - `QM_SPOTIFY_ENABLE=false` 开启后，可以获得更多元数据支持 [SPOTIFY KEY 申请地址](https://developer.spotify.com/)
   - `QM_SPOTIFY_CLIENT_ID` 
   - `QM_SPOTIFY_CLIENT_SECRET` 
-  - `QM_LASTFM_ENABLE=false` 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://developer.spotify.com/)
+  - `QM_LASTFM_ENABLE=false` 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://www.last.fm/api#getting-started)
   - `QM_LASTFM_API_KEY` 
 - **卷挂载**  
-  1. `/data/qm-music/music_dir`：音乐文件存储目录
-  2. `/data/qm-music/db`：数据库及元数据存储目录（请勿存放其他文件）
-  3. `/data/qm-music/cache`: 缓存文件
+  - `/data/qm-music/music_dir`：音乐文件存储目录
+  - `/data/qm-music/db`：数据库及元数据存储目录（请勿存放其他文件）
+  - `/data/qm-music/cache`: 缓存文件
 ### 🖥️ 初始化使用
 1. 访问 `http://[Server IP]:[Port]` 进入管理界面
 2. 使用默认凭证登录：  

@@ -200,6 +200,7 @@ public class AlbumSongController {
         List<ComplexSongDTO> similarSongs = new ArrayList<>();
 
         Long artistId = bizId;
+        Long songId = null;
         if (vagueId.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){
             AlbumDTO albumDTO = albumService.queryAlbumByAlbumId(bizId);
 
@@ -210,9 +211,10 @@ public class AlbumSongController {
         }else {
             SongDTO songDTO = songService.queryBySongId(bizId);
             artistId = songDTO.getArtistId();
+            songId = bizId;
         }
 
-        similarSongs = complexSongService.findSimilarSongsByArtistId(artistId, count);
+        similarSongs = complexSongService.findSimilarSongs(songId, artistId, count);
 
 
         List<ComplexSongDTO> limitedSongs = Lists.partition(similarSongs, count.intValue()).getFirst();

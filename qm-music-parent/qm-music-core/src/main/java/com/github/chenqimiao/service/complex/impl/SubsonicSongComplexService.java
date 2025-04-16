@@ -241,8 +241,10 @@ public class SubsonicSongComplexService implements SongComplexService {
         List<ComplexSongDTO> complexSongs = new ArrayList<>();
         SongDTO song = songService.queryBySongId(songId);
         if (song != null) {
-            List<String> songNames = metaDataFetchClientCommander.scrapeSimilarTrack(song.getTitle(), song.getAlbumTitle(), count.intValue() * 2);
+            List<String> songNames = metaDataFetchClientCommander.scrapeSimilarTrack(song.getTitle(), song.getArtistName(), count.intValue() * 2);
             if (CollectionUtils.isNotEmpty(songNames)) {
+                List<String> reverseSongNames = songNames.stream().map(TransliteratorUtils::reverseSimpleTraditional).toList();
+                songNames.addAll(reverseSongNames);
                 Map<String, Object> params = new HashMap<>();
                 params.put("titles", songNames);
                 List<Long> songIds = songRepository.search(params);
@@ -262,7 +264,8 @@ public class SubsonicSongComplexService implements SongComplexService {
 
            List<ComplexSongDTO> similarSongsByArtistId = this.findSimilarSongsByArtistId(artistId, count - complexSongs.size());
            complexSongs.addAll(similarSongsByArtistId);
-           return complexSongs;
+           Set<Long> seen = new HashSet<>();
+           return complexSongs.stream().filter(n -> seen.add(n.getId())).collect(Collectors.toList());
        }
 
     }

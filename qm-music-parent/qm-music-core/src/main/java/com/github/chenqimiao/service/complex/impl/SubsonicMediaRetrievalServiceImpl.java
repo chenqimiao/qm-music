@@ -306,7 +306,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private CoverStreamDTO getArtistCoverStreamByLocal(Long artistId, Integer size) {
 
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_LOCAL_LIMIT_KEY,
-                key -> RateLimiter.create(3));
+                key -> RateLimiter.create(2));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {

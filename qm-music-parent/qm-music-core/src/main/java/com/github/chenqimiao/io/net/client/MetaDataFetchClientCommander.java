@@ -72,7 +72,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
         if(Boolean.TRUE.equals(retry)) {
 
             RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.HTML_RESOLVER_LIMIT_KEY,
-                    key -> RateLimiter.create(3));
+                    key -> RateLimiter.create(2));
 
             // 尝试获取令牌
             if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {

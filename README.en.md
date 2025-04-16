@@ -26,9 +26,15 @@ docker run -d \
   --name qm-music \
   -p 6688:6688 \
   -v [host_music_file_path]:/data/qm-music/music_dir \
-  -v [host_path]:/data/qm-music/db \
+  -v [host_path_db_path]:/data/qm-music/db \
+  -v [host_path_cache_path]:/data/qm-music/cache \
   -e QM_FFMPEG_ENABLE=true \
   -e TZ=Asia/Shanghai \
+  -e QM_SPOTIFY_ENABLE=false \
+  -e QM_SPOTIFY_CLIENT_ID="" \
+  -e QM_SPOTIFY_CLIENT_SECRET="" \
+  -e QM_LASTFM_ENABLE=false \
+  -e QM_LASTFM_API_KEY="" \
   --restart unless-stopped \
   qmmusic/qm-music:latest
 ```
@@ -44,10 +50,16 @@ services:
       - "6688:6688"
     volumes:
       - [host_music_file_path]:/data/qm-music/music_dir
-      - [host_path]:/data/qm-music/db
+      - [host_path_db_path]:/data/qm-music/db
+      - [host_path_cache_path]:/data/qm-music/cache 
     environment:
       - QM_FFMPEG_ENABLE=true
       - TZ=Asia/Shanghai
+      - QM_SPOTIFY_ENABLE=false
+      - QM_SPOTIFY_CLIENT_ID=""
+      - QM_SPOTIFY_CLIENT_SECRET=""
+      - QM_LASTFM_ENABLE=false
+      - QM_LASTFM_API_KEY="" 
     restart: unless-stopped
 ```
 

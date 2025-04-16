@@ -63,29 +63,34 @@ services:
     restart: unless-stopped
 ```
 
-### ⚙️ Configuration Guide
-- **Environment Variables**  
-  `QM_FFMPEG_ENABLE=true` Enable intelligent audio transcoding (recommended for mobile users). Automatically switches between libmp3lame/acc encoding based on network conditions to optimize bandwidth usage (disabled by default).
-  `TZ=Asia/Shanghai` Mandatory timezone configuration.
+### ⚙️ Configuration Instructions
+- **Environment Variables**
+    - `QM_FFMPEG_ENABLE=true` Enable smart audio transcoding (recommended for outdoor use). Automatically switches between libmp3lame/acc encodings based on network conditions to reduce data usage (disabled by default).
+    - `TZ=Asia/Shanghai` Configure according to your timezone.
+    - `QM_SPOTIFY_ENABLE=false` Enable for enhanced metadata support [SPOTIFY KEY Application](https://developer.spotify.com/)
+    - `QM_SPOTIFY_CLIENT_ID`
+    - `QM_SPOTIFY_CLIENT_SECRET`
+    - `QM_LASTFM_ENABLE=false` Enable for enhanced metadata support [LAST FM KEY Application](https://www.last.fm/api#getting-started)
+    - `QM_LASTFM_API_KEY`
+- **Volume Mounts**
+    - `/data/qm-music/music_dir`: Music file storage directory.
+    - `/data/qm-music/db`: Database and metadata storage directory (do not store other files here).
+    - `/data/qm-music/cache`: Cache files directory.
 
-- **Volume Mounts**  
-  `/data/qm-music/music_dir`：Music files storage directory
-  `/data/qm-music/db`：Database and metadata storage directory (avoid storing other files)
-
-### 🖥️ Initial Setup
-1. Access admin interface at http://[Server IP]:[Port]
-2. Use default credentials:
-   **Username**：`admin`  
-   **Password**：`admin`
-3. Change default password immediately after first login
-4. Navigate to "Library Management" and click 【Refresh Library】
-5. Wait for metadata parsing completion (check progress via logs)
-6. Configure client apps（StreamMusic/Substreamer等）with:
+### 🖥️ Initial Setup & Usage
+1. Access the admin interface at `http://[Server IP]:[Port]`.
+2. Log in with default credentials:  
+   **Username**: `admin`  
+   **Password**: `admin`
+3. Immediately change the default password on the homepage.
+4. Navigate to **Library Management** and click the **[Refresh Library]** button.
+5. Wait for metadata parsing to complete (check progress via logs).
+6. Use the following connection parameters in client apps (Yinliu/Substreamer, etc.):
    ```properties
-   Server: http://[Server IP]:6688
-   Account: Your modified admin username
-   Password: Your modified admin password
-   ```
+   Server URL: http://[Server IP]:6688
+   Username: Updated admin username
+   Password: Updated admin password
+   
 ## 📜 License
 This project is released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). You may:
 - Retain original copyright notices in derivative works

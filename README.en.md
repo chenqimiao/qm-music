@@ -68,10 +68,10 @@ services:
     - `QM_FFMPEG_ENABLE=true` Enable smart audio transcoding (recommended for outdoor use). Automatically switches between libmp3lame/acc encodings based on network conditions to reduce data usage (disabled by default).
     - `TZ=Asia/Shanghai` Configure according to your timezone.
     - `QM_SPOTIFY_ENABLE=false` Enable for enhanced metadata support [SPOTIFY KEY Application](https://developer.spotify.com/)
-    - `QM_SPOTIFY_CLIENT_ID`
-    - `QM_SPOTIFY_CLIENT_SECRET`
+    - `QM_SPOTIFY_CLIENT_ID` Not required
+    - `QM_SPOTIFY_CLIENT_SECRET` Not required
     - `QM_LASTFM_ENABLE=false` Enable for enhanced metadata support [LAST FM KEY Application](https://www.last.fm/api#getting-started)
-    - `QM_LASTFM_API_KEY`
+    - `QM_LASTFM_API_KEY` Not required
 - **Volume Mounts**
     - `/data/qm-music/music_dir`: Music file storage directory.
     - `/data/qm-music/db`: Database and metadata storage directory (do not store other files here).

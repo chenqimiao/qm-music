@@ -5,6 +5,7 @@ import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.constant.RateLimiterConstants;
+import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
@@ -15,10 +16,12 @@ import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
+import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.*;
@@ -69,9 +72,12 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private String cacheDirectory;
     @Autowired
     private ArtistService artistService;
+    @Autowired
+    private AlbumService albumService;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
+
         List<Artwork> artworks = this.getSongArtworks(songId);
 
         if (CollectionUtils.isEmpty(artworks)) {
@@ -157,11 +163,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                     })
                     .findFirst();
 
-            if (firstFile.isPresent()) {
-                return firstFile.get().toAbsolutePath();
-            } else {
-               return null;
-            }
+            return firstFile.map(Path::toAbsolutePath).orElse(null);
         } catch (Exception e) {
            log.error("遍历目录时出错, path: {},  bizId: {}", path, bizId, e);
            return null;
@@ -171,6 +173,14 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     @Override
     public CoverStreamDTO getAlbumCoverStreamDTO(Long albumId, Integer size) {
+
+        CoverStreamDTO albumCoverStreamByCache = this.getAlbumCoverStreamByCache(albumId, size);
+
+        if (albumCoverStreamByCache != null) {
+            return albumCoverStreamByCache;
+        }
+
+
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
         // fallback
         Artwork fallback = null;
@@ -206,7 +216,78 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                     .mimeType(fallback.getMimeType())
                     .build();
         }
+
+        CoverStreamDTO artistCoverStreamDTO = this.getAlbumCoverStreamDTOByRemote(albumId, size);
+        if (artistCoverStreamDTO != null) {
+            return artistCoverStreamDTO;
+        }
+
         return CoverStreamDTO.builder().build();
+    }
+
+    private CoverStreamDTO getAlbumCoverStreamDTOByRemote(Long albumId, Integer size) {
+        AlbumDTO albumDTO = albumService.queryAlbumByAlbumId(albumId);
+
+        if (albumDTO == null) {
+            return null;
+        }
+
+        Album album = metaDataFetchClientCommander.searchAlbum(albumDTO.getTitle(), albumDTO.getArtistName());
+
+        if (album == null) {
+            return null;
+        }
+        String imageUrl = album.getImageUrl();
+
+        String smallImageUrl = album.getSmallImageUrl();
+        String mediumImageUrl = album.getMediumImageUrl();
+        String largeImageUrl = album.getLargeImageUrl();
+
+        List<String> images = Lists.newArrayList(imageUrl, smallImageUrl, mediumImageUrl, largeImageUrl);
+
+        images =  images.stream().filter(StringUtils::isNotBlank).toList();
+        if (images.isEmpty()) {
+            return null;
+
+        }
+
+        String properImg = images.getLast();
+        try {
+            byte[] bytes = ImageToByteConverter.convertWithHttpClient(properImg);
+            String sourceFormat = ImageUtils.resolveType(bytes);
+            byte[] target = this.scaleImg(bytes, size, sourceFormat);
+
+            String dir = FileUtils.buildCoverArtPath(cacheDirectory + "/" + CommonConstants.ALBUM_DIR_SUFFIX, albumId, size);
+            FileUtils.save(Paths.get(dir, albumId + "." + sourceFormat), target);
+            return CoverStreamDTO.builder()
+                    .cover(target)
+                    .mimeType(StringUtils.isNotBlank(sourceFormat)? "image/" + sourceFormat: null)
+                    .build();
+        }catch (Exception e) {
+            log.warn("getAlbumCoverStreamDTOByRemote error artistId {}, size {} , properImg {}", albumId, size, properImg, e);
+            return null;
+        }
+    }
+
+    private CoverStreamDTO getAlbumCoverStreamByCache(Long albumId, Integer size) {
+        if (size == null) {
+            size = 100;
+        }
+        Path cacheFile = getCacheFile(albumId, size, cacheDirectory + "/" + CommonConstants.ALBUM_DIR_SUFFIX);
+        if (cacheFile != null) {
+
+            try {
+                byte[] bytes = Files.readAllBytes(cacheFile);
+                return CoverStreamDTO.builder()
+                        .cover(bytes)
+                        .mimeType(Files.probeContentType(cacheFile))
+                        .build();
+            } catch (IOException e) {
+                log.error("getAlbumCoverStreamByCache : {}", cacheFile);
+                return null;
+            }
+        }
+        return null;
     }
 
     @Override

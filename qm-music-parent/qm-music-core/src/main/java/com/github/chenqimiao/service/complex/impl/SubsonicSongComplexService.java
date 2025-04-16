@@ -101,7 +101,7 @@ public class SubsonicSongComplexService implements SongComplexService {
 
         return songs.stream().map(n -> {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);
-            complexSongDTO.setStarred(starredTimeMap.get(n.getAlbumId()));
+            complexSongDTO.setStarred(starredTimeMap.get(n.getId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
             List<ArtistRelationDO> artistsWithSong = artistRelationMap.get(n.getId());
             if (CollectionUtils.size(artistsWithSong) <= 1) {

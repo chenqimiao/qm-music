@@ -21,6 +21,12 @@ public abstract class RateLimiterConstants {
 
     public static final String LAST_FM_API_LIMIT_KET = "LAST_FM_API_LIMIT_KET";
 
+    public static final String HTML_RESOLVER_LIMIT_KEY = "HTML_RESOLVER_LIMIT_KEY";
+
+    public static final String COVER_ART_BY_LOCAL_LIMIT_KEY = "COVER_ART_BY_LOCAL_LIMIT_KEY";
+
+
+
 
 
 }

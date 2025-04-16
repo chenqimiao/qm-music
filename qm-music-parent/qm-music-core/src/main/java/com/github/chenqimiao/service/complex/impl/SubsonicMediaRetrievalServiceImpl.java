@@ -218,13 +218,6 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             return artistCoverStreamByCache;
         }
 
-        RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_REMOTE_LIMIT_KEY,
-                key -> RateLimiter.create(3));
-
-        // 尝试获取令牌
-        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
-            return null;
-        }
 
         CoverStreamDTO artistCoverStreamDTO = this.getArtistCoverStreamDTOByRemote(artistId, size);
         if (artistCoverStreamDTO != null) {
@@ -311,6 +304,15 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     }
 
     private CoverStreamDTO getArtistCoverStreamByLocal(Long artistId, Integer size) {
+
+        RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.COVER_ART_BY_LOCAL_LIMIT_KEY,
+                key -> RateLimiter.create(3));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
+            return null;
+        }
+
 
         List<ArtistRelationDO> songRelations
                 = artistRelationRepository.findByArtistIdAndType(artistId, EnumArtistRelationType.SONG.getCode());

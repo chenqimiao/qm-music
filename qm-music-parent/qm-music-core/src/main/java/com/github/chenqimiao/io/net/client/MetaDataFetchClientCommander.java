@@ -1,12 +1,15 @@
 package com.github.chenqimiao.io.net.client;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.github.chenqimiao.constant.RateLimiterConstants;
+import com.github.chenqimiao.exception.RateLimitException;
 import com.github.chenqimiao.io.net.config.MetaDataFetchClientConfig;
 import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.util.TimeZoneUtils;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,6 +70,15 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
         Boolean retry = this.needRetry(artistInfo);
 
         if(Boolean.TRUE.equals(retry)) {
+
+            RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.HTML_RESOLVER_LIMIT_KEY,
+                    key -> RateLimiter.create(3));
+
+            // 尝试获取令牌
+            if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
+                return null;
+            }
+
             ArtistInfo artistInfoExt = this.doFetchArtistInfo(artistName, this.notApi());
 
             return this.merge(Lists.newArrayList(artistInfo, artistInfoExt));
@@ -130,6 +143,9 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                     try{
                         n.rateLimit();
                         return n.fetchArtistInfo(artistName);
+                    }catch (RateLimitException e){
+                        log.info("{} fetchArtistInfo rate limit", n.getClass());
+                        return null;
                     }catch (Exception e){
                         log.error("{} fetchArtistInfo error", n.getClass(), e);
                         return null;

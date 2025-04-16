@@ -91,7 +91,7 @@ public class SpotifyApiDataFetchClient implements MetaDataFetchApiClient {
     public void rateLimit() {
         RateLimiter limiter = RateLimiterConstants
                 .limiters.computeIfAbsent(RateLimiterConstants.SPOTIFY_API_LIMIT_KEY,
-                        key -> RateLimiter.create(1));
+                        key -> RateLimiter.create(3));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {

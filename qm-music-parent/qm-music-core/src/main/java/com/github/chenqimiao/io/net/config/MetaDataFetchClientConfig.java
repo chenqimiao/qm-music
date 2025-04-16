@@ -1,7 +1,11 @@
 package com.github.chenqimiao.io.net.config;
 
+import com.github.chenqimiao.io.net.client.LastfmApiDataFetchClient;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClient;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.client.SpotifyApiDataFetchClient;
+import com.github.chenqimiao.third.lastfm.LastfmClient;
+import com.github.chenqimiao.third.spotify.SpotifyClient;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -9,6 +13,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
@@ -76,6 +81,37 @@ public class MetaDataFetchClientConfig implements ApplicationContextAware, Appli
 
     public static List<MetaDataFetchClient> getMetaDataFetchClients() {
         return unmodifiedMetaDataFetchClients;
+    }
+
+    @Bean
+    public LastfmApiDataFetchClient lastfmApiDataFetchClient() {
+
+        try {
+            Map<String, LastfmClient> beanMap = applicationContext.getBeansOfType(LastfmClient.class);
+            if (beanMap.isEmpty()) {
+                return null;
+            }
+            return new LastfmApiDataFetchClient(beanMap.values().iterator().next());
+
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+
+
+    @Bean
+    public SpotifyApiDataFetchClient spotifyApiDataFetchClient(){
+        try {
+            Map<String, SpotifyClient> beanMap = applicationContext.getBeansOfType(SpotifyClient.class);
+            if (beanMap.isEmpty()) {
+                return null;
+            }
+            return new SpotifyApiDataFetchClient(beanMap.values().iterator().next());
+
+        }catch (Exception e){
+            return null;
+        }
     }
 
 }

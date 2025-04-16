@@ -9,12 +9,11 @@ import com.github.chenqimiao.third.lastfm.model.Track;
 import com.github.chenqimiao.util.TransliteratorUtils;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
+import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,10 +24,9 @@ import java.util.stream.Collectors;
  * @author Qimiao Chen
  * @since 2025/4/15 16:19
  **/
-@Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnBean(LastfmClient.class)
-public class LastfmApiDataFetchClient implements MetaDataFetchClient {
+@AllArgsConstructor
+public class LastfmApiDataFetchClient implements MetaDataFetchApiClient {
 
     @Autowired
     private LastfmClient lastfmClient;

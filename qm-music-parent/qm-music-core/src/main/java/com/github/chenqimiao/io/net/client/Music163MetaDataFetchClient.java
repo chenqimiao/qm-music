@@ -31,7 +31,7 @@ import java.util.Optional;
  * @since 2025/4/4 15:58
  **/
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class Music163MetaDataFetchClient implements MetaDataFetchClient {
 
     private static final String SEARCH_API = "https://music.163.com/api/search/get";

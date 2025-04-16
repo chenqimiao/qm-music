@@ -8,10 +8,9 @@ import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.third.spotify.SpotifyClient;
 import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Image;
@@ -25,12 +24,10 @@ import java.util.concurrent.TimeUnit;
  * @author Qimiao Chen
  * @since 2025/4/15 17:39
  **/
-@Component
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
-//@ConditionalOnBean(SpotifyApi.class)
-public class SpotifyApiDataFetchClient implements MetaDataFetchClient {
+@AllArgsConstructor
+public class SpotifyApiDataFetchClient implements MetaDataFetchApiClient {
 
-    @Autowired(required = false)
     private SpotifyClient spotifyClient;
 
     @Override
@@ -62,7 +59,6 @@ public class SpotifyApiDataFetchClient implements MetaDataFetchClient {
 
     @Nullable
     public Track searchTrack(String trackName, String artistName) {
-
         se.michaelthelin.spotify.model_objects.specification.Track track = spotifyClient.searchTrack(trackName);
         if (track == null) {return null;}
         Track result = new Track();

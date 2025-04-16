@@ -6,6 +6,7 @@ import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.io.net.model.Track;
 import com.github.chenqimiao.util.TimeZoneUtils;
+import com.google.common.collect.Lists;
 import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +35,19 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
         return Boolean.TRUE;
     }
 
+
+    private Function<MetaDataFetchClient, Boolean> isApi() {
+       return n -> {
+            return n instanceof MetaDataFetchApiClient;
+        };
+    }
+
+    private Function<MetaDataFetchClient, Boolean> notApi() {
+        return n -> {
+            return ! (n instanceof MetaDataFetchApiClient);
+        };
+    }
+
     private static List<MetaDataFetchClient> getMetaDataFetchClients() {
         Boolean currentRegionIsChina = TimeZoneUtils.currentRegionIsChina();
         List<MetaDataFetchClient> metaDataFetchClients = MetaDataFetchClientConfig.getMetaDataFetchClients();
@@ -47,7 +62,70 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     @Override
     public ArtistInfo fetchArtistInfo(String artistName) {
         this.rateLimit();
-        List<ArtistInfo> artistInfos = getMetaDataFetchClients().stream().parallel()
+        ArtistInfo artistInfo = this.doFetchArtistInfo(artistName, this.isApi());
+        Boolean retry = this.needRetry(artistInfo);
+
+        if(Boolean.TRUE.equals(retry)) {
+            ArtistInfo artistInfoExt = this.doFetchArtistInfo(artistName, this.notApi());
+
+            return this.merge(Lists.newArrayList(artistInfo, artistInfoExt));
+
+        }
+
+        return artistInfo;
+
+    }
+
+    private ArtistInfo merge(List<ArtistInfo> artistInfos) {
+        ArtistInfo newArtistInfo = new ArtistInfo();
+
+        Field[] fields = ArtistInfo.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object o = field.get(newArtistInfo);
+                if (Objects.isNull(o)) {
+                    for (ArtistInfo artistInfo : artistInfos) {
+                        Object newVal = field.get(artistInfo);
+                        if (newVal != null) {
+                            field.set(newArtistInfo, newVal);
+                            break;
+                        }
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                log.error("merge artistInfos error : {} ", JSONObject.toJSONString(artistInfos), e);
+            }
+        }
+
+        return newArtistInfo;
+    }
+
+    private Boolean needRetry(ArtistInfo artistInfo) {
+        Boolean[] retry = {Boolean.FALSE};
+
+        Field[] fields = ArtistInfo.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Object o = field.get(artistInfo);
+                if (Objects.isNull(o)) {
+                    retry[0] = Boolean.TRUE;
+                    break;
+                }
+            } catch (IllegalAccessException e) {
+                log.error("map artist properties[{}] error", JSONObject.toJSONString(artistInfo), e);
+
+            }
+        }
+        return retry[0];
+    }
+
+    private ArtistInfo doFetchArtistInfo(String artistName, Function<MetaDataFetchClient, Boolean> filterFunction) {
+        List<ArtistInfo> artistInfos = getMetaDataFetchClients().stream().filter(filterFunction::apply)
+                .parallel()
                 .map(n -> {
                     try{
                         n.rateLimit();
@@ -64,7 +142,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
                     if (StringUtils.isBlank(n2.getBiography())) {
                         return -NumberUtils.INTEGER_ONE;
                     }
-                   return StringUtils.length(n2.getBiography()) - StringUtils.length(n1.getBiography()) ;
+                    return StringUtils.length(n2.getBiography()) - StringUtils.length(n1.getBiography()) ;
                 }).toList();
 
         ArtistInfo properArtist = new ArtistInfo();
@@ -91,10 +169,10 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
 
         });
         return properArtist;
-
     }
 
-    @Nullable
+
+        @Nullable
     @Override
     public String getLyrics(String songName, String artistName) {
         this.rateLimit();

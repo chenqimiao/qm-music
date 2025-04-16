@@ -270,24 +270,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     }
 
     private CoverStreamDTO getAlbumCoverStreamByCache(Long albumId, Integer size) {
-        if (size == null) {
-            size = 100;
-        }
-        Path cacheFile = getCacheFile(albumId, size, cacheDirectory + "/" + CommonConstants.ALBUM_DIR_SUFFIX);
-        if (cacheFile != null) {
 
-            try {
-                byte[] bytes = Files.readAllBytes(cacheFile);
-                return CoverStreamDTO.builder()
-                        .cover(bytes)
-                        .mimeType(Files.probeContentType(cacheFile))
-                        .build();
-            } catch (IOException e) {
-                log.error("getAlbumCoverStreamByCache : {}", cacheFile);
-                return null;
-            }
-        }
-        return null;
+        return this.getCoverStreamByCache(albumId,  size, CommonConstants.ALBUM_DIR_SUFFIX);
     }
 
     @Override
@@ -317,10 +301,15 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
 
     private CoverStreamDTO getArtistCoverStreamByCache(Long artistId, Integer size) {
+
+        return this.getCoverStreamByCache(artistId,  size, CommonConstants.ARTIST_DIR_SUFFIX);
+    }
+
+    private CoverStreamDTO getCoverStreamByCache(Long bizId, Integer size, String suffixDir) {
         if (size == null) {
             size = 100;
         }
-        Path cacheFile = getCacheFile(artistId, size, cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX);
+        Path cacheFile = getCacheFile(bizId, size, cacheDirectory + "/" + suffixDir);
         if (cacheFile != null) {
 
             try {
@@ -330,7 +319,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                         .mimeType(Files.probeContentType(cacheFile))
                         .build();
             } catch (IOException e) {
-                log.error("getArtistCoverStreamByCache : {}", cacheFile);
+                log.error("getCoverStreamByCache error : {}", cacheFile);
                 return null;
             }
         }

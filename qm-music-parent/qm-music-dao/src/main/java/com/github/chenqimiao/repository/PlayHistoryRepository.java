@@ -1,6 +1,7 @@
 package com.github.chenqimiao.repository;
 
 import com.github.chenqimiao.DO.PlayHistoryDO;
+import com.github.chenqimiao.constant.DateTimeFormatterConstants;
 import com.github.chenqimiao.request.PlayHistorySaveRequest;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -77,13 +78,23 @@ public class PlayHistoryRepository {
 
     public void delGmtModifyLessThan(long sixMonthsTimestamp) {
         var sql = """
-                    delete from play_history where gmt_modify < :maxGmtModify
+                    DELETE FROM play_history WHERE gmt_modify < :maxGmtModify
                 """;
-        Map<String, Object> params = Maps.newHashMapWithExpectedSize(NumberUtils.INTEGER_ZERO);
-        java.sql.Timestamp sixMonthsSqlTimestamp = new Timestamp(sixMonthsTimestamp);
-        params.put("maxGmtModify", sixMonthsSqlTimestamp);
-
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(NumberUtils.INTEGER_ONE);
+        String targetTime = DateTimeFormatterConstants.SQLITE_FORMATTER.format(Instant.ofEpochMilli(sixMonthsTimestamp));
+        params.put("maxGmtModify", targetTime);
         namedParameterJdbcTemplate.update(sql, params);
 
+    }
+
+
+    public List<PlayHistoryDO> selectGmtModifyLessThan(long sixMonthsTimestamp) {
+        var sql = """
+                    select * FROM play_history WHERE gmt_modify < :maxGmtModify
+                """;
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(NumberUtils.INTEGER_ONE);
+        String targetTime = DateTimeFormatterConstants.SQLITE_FORMATTER.format(Instant.ofEpochMilli(sixMonthsTimestamp));
+        params.put("maxGmtModify", targetTime);
+        return namedParameterJdbcTemplate.query(sql, params,ROW_MAPPER_PLAY_LIST_ITEM);
     }
 }

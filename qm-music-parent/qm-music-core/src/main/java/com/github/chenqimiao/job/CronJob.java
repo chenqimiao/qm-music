@@ -2,7 +2,6 @@ package com.github.chenqimiao.job;
 
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.service.PlayHistoryService;
-import com.github.chenqimiao.service.PlaylistService;
 import com.github.chenqimiao.service.SystemService;
 import com.github.chenqimiao.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,10 @@ public class CronJob {
 
     @Scheduled(cron = "0 0 6 * * WED")
     public void cleanPlayHistory() {
+
         playHistoryService.cleanPlayHistory();
+
+        log.info("clean play history ...");
     }
 
 }

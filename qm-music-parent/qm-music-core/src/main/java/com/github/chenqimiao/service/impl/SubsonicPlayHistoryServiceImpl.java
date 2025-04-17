@@ -7,6 +7,7 @@ import com.github.chenqimiao.request.PlayHistoryRequest;
 import com.github.chenqimiao.request.PlayHistorySaveRequest;
 import com.github.chenqimiao.service.PlayHistoryService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @author Qimiao Chen
  * @since 2025/4/12 10:33
  **/
+@Slf4j
 @Service("subsonicPlayHistoryService")
 public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
 
@@ -69,6 +71,6 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
         long sixMonthsTimestamp = sixMonthsAgo.atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli();
-        playHistoryRepository.delGmtModifyLessThan(sixMonthsTimestamp);
+         playHistoryRepository.delGmtModifyLessThan(sixMonthsTimestamp);
     }
 }

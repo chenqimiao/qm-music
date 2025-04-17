@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -72,5 +73,17 @@ public class PlayHistoryRepository {
         }
 
         return namedParameterJdbcTemplate.query(sqlStringBuilder.toString(),params,ROW_MAPPER_PLAY_LIST_ITEM);
+    }
+
+    public void delGmtModifyLessThan(long sixMonthsTimestamp) {
+        var sql = """
+                    delete from play_history where gmt_modify < :maxGmtModify
+                """;
+        Map<String, Object> params = Maps.newHashMapWithExpectedSize(NumberUtils.INTEGER_ZERO);
+        java.sql.Timestamp sixMonthsSqlTimestamp = new Timestamp(sixMonthsTimestamp);
+        params.put("maxGmtModify", sixMonthsSqlTimestamp);
+
+        namedParameterJdbcTemplate.update(sql, params);
+
     }
 }

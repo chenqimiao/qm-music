@@ -7,6 +7,7 @@ import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.constant.RateLimiterConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.CoverStreamDTO;
+import com.github.chenqimiao.dto.SongDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumAudioFormat;
@@ -23,6 +24,7 @@ import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
+import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
 import com.github.chenqimiao.util.*;
 import com.google.common.collect.Lists;
@@ -74,14 +76,25 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private ArtistService artistService;
     @Autowired
     private AlbumService albumService;
+    @Autowired
+    private SongService songService;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
 
-        List<Artwork> artworks = this.getSongArtworks(songId);
+        SongDTO songDTO = songService.queryBySongId(songId);
+
+        if(songDTO == null){
+            return CoverStreamDTO.builder().build();
+        }
+
+        List<Artwork> artworks = this.getSongArtworks(songDTO);
 
         if (CollectionUtils.isEmpty(artworks)) {
-            return null;
+            if (songDTO.getAlbumId() != null){
+                return this.getAlbumCoverStreamDTO(songDTO.getAlbumId(), size);
+            }
+            return CoverStreamDTO.builder().build();
         }
 
         Optional<Artwork> first = artworks.stream().filter(n -> {
@@ -128,8 +141,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
 
     private List<Artwork> getSongArtworks(Long songId) {
-        SongDO songDO = songRepository.findBySongId(songId);
-        String filePath = songDO.getFile_path();
+        SongDTO songDTO = songService.queryBySongId(songId);
+        return this.getSongArtworks(songDTO);
+    }
+
+
+    private List<Artwork> getSongArtworks(SongDTO songDTO) {
+        String filePath = songDTO.getFilePath();
         MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
         List<Artwork> artworks = musicAlbumMeta.getArtworks();

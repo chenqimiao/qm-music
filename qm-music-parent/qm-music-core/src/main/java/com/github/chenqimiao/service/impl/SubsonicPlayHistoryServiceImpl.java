@@ -11,6 +11,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,5 +61,14 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
         params.put("orderBy", "play_count desc");
         return ucModelMapper.map(playHistoryRepository.queryByCondition(params)
                 , ModelMapperTypeConstants.TYPE_LIST_PLAY_HISTORY_DTO);
+    }
+
+    @Override
+    public void cleanPlayHistory() {
+        LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+        long sixMonthsTimestamp = sixMonthsAgo.atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+        playHistoryRepository.delGmtModifyLessThan(sixMonthsTimestamp);
     }
 }

@@ -16,4 +16,6 @@ public interface PlayHistoryService {
     List<PlayHistoryDTO> queryRecentPlayHistoryList(Long userId, Integer offset, Integer size);
 
     List<PlayHistoryDTO> queryFrequentPlayHistoryList(Long userId, Integer offset, Integer size);
+
+    void cleanPlayHistory();
 }

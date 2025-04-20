@@ -25,6 +25,9 @@ public abstract class RateLimiterConstants {
 
     public static final String COVER_ART_BY_LOCAL_LIMIT_KEY = "COVER_ART_BY_LOCAL_LIMIT_KEY";
 
+    public static final String KU_GOU_API_LIMIT_KEY = "KU_GOU_API_LIMIT_KEY";
+
+
 
 
 

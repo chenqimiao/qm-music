@@ -202,6 +202,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
         // fallback
         Artwork fallback = null;
+        songs = new ArrayList<>();
         for (SongDO song : songs) {
             List<Artwork> artworks = this.getSongArtworks(song.getId());
             if (CollectionUtils.isEmpty(artworks)) {

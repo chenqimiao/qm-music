@@ -87,16 +87,20 @@ public class KuGouDataFetchApiClient implements MetaDataFetchApiClient{
                 return null;
             }
 
-            List<SongData> data = songResponse.data();
-
-            if (CollectionUtils.isNotEmpty(data)) {
-                String unionCover = data.getFirst().unionCover;
-                if(StringUtils.isNotBlank(unionCover)) {
-                    Album album = new Album();
-                    album.setAlbumTitle(albumTitle);
-                    album.setImageUrl(unionCover.replace("{size}", ""));
-                    return album;
+            if (songResponse.data != null) {
+                List<SongInfo> info = songResponse.data.info;
+                if (CollectionUtils.isEmpty(info)) {
+                    return null;
                 }
+                String unionCover = info.getFirst().transParam.unionCover;
+                if (StringUtils.isBlank(unionCover)) {
+                    return null;
+                }
+
+                Album album = new Album();
+                album.setAlbumTitle(albumTitle);
+                album.setImageUrl(unionCover.replace("{size}", "100"));
+                return album;
 
             }
 
@@ -110,7 +114,7 @@ public class KuGouDataFetchApiClient implements MetaDataFetchApiClient{
     public void rateLimit() {
         RateLimiter limiter = RateLimiterConstants
                 .limiters.computeIfAbsent(RateLimiterConstants.KU_GOU_API_LIMIT_KEY,
-                        key -> RateLimiter.create(20));
+                        key -> RateLimiter.create(25));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
@@ -123,16 +127,20 @@ public class KuGouDataFetchApiClient implements MetaDataFetchApiClient{
     private record SongResponse(
             int status,
             String error,
-            List<SongData> data
+            SongData data // 注意 data 是对象，不是列表
     ) {}
 
     private record SongData(
-            String hash,
-            String songname,
-            String singername,
-            int duration,
-            // 使用 JSONPath 表达式定位嵌套字段
-            @JSONField(name = "$.info.album.union_cover")
+            List<SongInfo> info
+    ) {}
+
+    private record SongInfo(
+            @JSONField(name = "trans_param")
+            TransParam transParam
+    ) {}
+
+    private record TransParam(
+            @JSONField(name = "union_cover")
             String unionCover
     ) {}
 }

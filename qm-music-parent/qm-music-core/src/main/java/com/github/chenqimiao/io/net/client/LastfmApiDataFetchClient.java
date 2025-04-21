@@ -85,7 +85,7 @@ public class LastfmApiDataFetchClient implements MetaDataFetchApiClient {
     public void rateLimit() {
         RateLimiter limiter = RateLimiterConstants
                 .limiters.computeIfAbsent(RateLimiterConstants.LAST_FM_API_LIMIT_KET,
-                        key -> RateLimiter.create(3));
+                        key -> RateLimiter.create(5));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {

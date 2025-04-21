@@ -231,8 +231,7 @@ public class BrowsingController {
         // this is too slow
        // String musicBrainzId = metaDataFetchClientCommander.getMusicBrainzId(artistDTO.getName());
         String lastFmUrl = metaDataFetchClientCommander.getLastFmUrl(artistDTO.getName());
-        List<String> similarArtistsName = null;
-        // List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
+        List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
         ArtistInfoResponse.ArtistInfo2 artistInfo2 = ArtistInfoResponse.ArtistInfo2.builder()
                 .biography(Optional.ofNullable(artistInfo).map(ArtistInfo::getBiography).orElse(null))
                 .musicBrainzId(musicBrainzId)

@@ -118,5 +118,8 @@ public class AlbumResponse extends SubsonicResponse {
         @Builder.Default
         private String type = "music";
 
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 }

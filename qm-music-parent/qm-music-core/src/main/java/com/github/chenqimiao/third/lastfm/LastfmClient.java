@@ -104,6 +104,29 @@ public class LastfmClient {
         return result.getSimilarTracks().getTracks();
     }
 
+    // 获取相似歌曲
+    public List<Track> getTopTracks(String artist, int page, int limit) {
+        String encodedArtist = URLEncoder.encode(artist, StandardCharsets.UTF_8);
+        String query = String.format(
+                "method=artist.gettoptracks&artist=%s&api_key=%s&format=json&page=%d&limit=%d",
+                 encodedArtist, lastfmApiKey, page, limit
+        );
+        URI uri = URI.create(API_URL + "?" + query);
+
+        String response = sendRequest(uri);
+        TopTracksResponse result = JSONObject.parseObject(response, TopTracksResponse.class);
+
+        if(result == null) {
+            return null;
+        }
+
+        if (result.getError() != null) {
+            log.error("API Error: {}" ,  result.getError());
+            return null;
+        }
+        return result.getTopTracks().getTracks();
+    }
+
     private String sendRequest(URI uri)  {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
@@ -128,5 +151,10 @@ public class LastfmClient {
         }
 
     }
+
+
+
+
+
 
 }

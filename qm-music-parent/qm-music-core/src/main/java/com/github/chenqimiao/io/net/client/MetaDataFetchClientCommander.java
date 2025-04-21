@@ -279,6 +279,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     }
 
     @Nullable
+    @Override
     public Track searchTrack(String trackName, String artistName) {
         this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
@@ -297,6 +298,7 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
     }
 
     @Nullable
+    @Override
     public Album searchAlbum(String albumTitle, String artistName) {
         this.rateLimit();
         for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
@@ -313,6 +315,26 @@ public class MetaDataFetchClientCommander implements MetaDataFetchClient{
         }
         return null;
     }
+
+    @Nullable
+    @Override
+    public List<String> topTrack(String artistName, Integer limit)  {
+        this.rateLimit();
+        for (MetaDataFetchClient metaDataFetchClient : getMetaDataFetchClients()) {
+            try {
+                metaDataFetchClient.rateLimit();
+                List<String> tracks = metaDataFetchClient.topTrack(artistName, limit);
+                if (CollectionUtils.isNotEmpty(tracks)) {
+                    return tracks;
+                }
+            }catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+
+        }
+        return null;
+    }
+
 
     public static void main(String[] args) {
 

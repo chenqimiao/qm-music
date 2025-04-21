@@ -113,7 +113,8 @@ public class SubsonicSongComplexService implements SongComplexService {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);
             complexSongDTO.setStarred(starredTimeMap.get(n.getId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
-            complexSongDTO.setPlayCount(playCountMap.getOrDefault(n.getId(), NumberUtils.INTEGER_ZERO));
+            complexSongDTO.setPlayCount(userId != null ?
+                    playCountMap.getOrDefault(n.getId(), NumberUtils.INTEGER_ZERO) : playCountMap.get(n.getId()));
             List<ArtistRelationDO> artistsWithSong = artistRelationMap.get(n.getId());
             if (CollectionUtils.size(artistsWithSong) <= 1) {
                 complexSongDTO.setArtistsName(n.getArtistName());
@@ -157,6 +158,12 @@ public class SubsonicSongComplexService implements SongComplexService {
     @Override
     public List<ComplexSongDTO> findSongsByArtistId(List<Long> artistIds) {
 
+        return this.queryBySongIds(this.findSongIdsByArtistId(artistIds), null);
+    }
+
+    @Override
+    public List<Long> findSongIdsByArtistId(List<Long> artistIds) {
+
         Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
         params.put("artistIds", artistIds);
         params.put("type", EnumArtistRelationType.SONG.getCode());
@@ -166,9 +173,9 @@ public class SubsonicSongComplexService implements SongComplexService {
             return Collections.emptyList();
         }
 
-        List<Long> songIds = artistRelationList.stream().map(ArtistRelationDO::getRelation_id).toList();
-        return this.queryBySongIds(songIds, null);
+        return artistRelationList.stream().map(ArtistRelationDO::getRelation_id).toList();
     }
+
 
     @Override
     public void cleanSongs(List<Long> songIds) {
@@ -278,6 +285,56 @@ public class SubsonicSongComplexService implements SongComplexService {
            Set<Long> seen = new HashSet<>();
            return complexSongs.stream().filter(n -> seen.add(n.getId())).collect(Collectors.toList());
        }
+
+    }
+
+    @Override
+    public List<ComplexSongDTO> getTopSongsIds(String artistName, Integer count, @Nullable Long userId) {
+        List<ArtistDTO> artists = artistService.searchByName(artistName, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO);
+        if (CollectionUtils.isEmpty(artists)) {
+            return Collections.emptyList();
+        }
+        ArtistDTO artistDTO = artists.getFirst();
+        List<Long> songIds = this.findSongIdsByArtistId(Lists.newArrayList(artistDTO.getId()));
+        if (CollectionUtils.isEmpty(songIds)) {
+            return Collections.emptyList();
+        }
+
+        if (CollectionUtils.size(songIds) <= 1) {
+            return this.queryBySongIds(songIds, userId);
+        }
+        Integer properRemoteCount = Math.min((int)(songIds.size() * 1.5), count);
+        List<String> songTitles = metaDataFetchClientCommander.topTrack(artistName, properRemoteCount);
+
+        List<ComplexSongDTO> complexSongs = this.queryBySongIds(songIds, userId);
+        if (CollectionUtils.isNotEmpty(songTitles)) {
+            Map<String, Integer> sortValue = Maps.newHashMapWithExpectedSize(songTitles.size() * 2);
+            for (int i = 0; i < songTitles.size(); i++) {
+                sortValue.put(songTitles.get(i), i);
+            }
+            List<String> reverseSongTitles = songTitles.stream().map(TransliteratorUtils::reverseSimpleTraditional).toList();
+            for (int i = 0; i < reverseSongTitles.size(); i++) {
+                sortValue.put(reverseSongTitles.get(i), i);
+            }
+            return complexSongs.stream().sorted((n1,n2) -> {
+                int val1 = sortValue.getOrDefault(n1.getTitle(), Integer.MAX_VALUE);
+                int val2 = sortValue.getOrDefault(n2.getTitle(), Integer.MAX_VALUE);
+                if (val1 != val2) {
+                    return val1 - val2;
+                }
+                if (Objects.nonNull(n1.getPlayCount()) && Objects.nonNull(n2.getPlayCount())) {
+                    return n2.getPlayCount() - n1.getPlayCount();
+                }
+                return n2.getGmtCreate().compareTo(n1.getGmtCreate());
+            }).toList();
+        }
+
+        return complexSongs.stream().sorted((n1,n2) -> {
+            if (Objects.nonNull(n1.getPlayCount()) && Objects.nonNull(n2.getPlayCount())) {
+                return n2.getPlayCount() - n1.getPlayCount();
+            }
+            return n2.getGmtCreate().compareTo(n1.getGmtCreate());
+        }).toList();
 
     }
 

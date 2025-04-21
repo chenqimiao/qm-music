@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -80,12 +81,22 @@ public class LastfmApiDataFetchClient implements MetaDataFetchApiClient {
         return Collections.emptyList();
     }
 
+    @Override
+    public List<String> topTrack(String artistName, Integer limit) {
+        List<Track> topTracks = lastfmClient.getTopTracks(artistName, NumberUtils.INTEGER_ONE, limit);
+        if (CollectionUtils.isEmpty(topTracks)) {
+            return Collections.emptyList();
+        }
+
+        return topTracks.stream().map(Track::getName).collect(Collectors.toList());
+    }
+
 
     @Override
     public void rateLimit() {
         RateLimiter limiter = RateLimiterConstants
                 .limiters.computeIfAbsent(RateLimiterConstants.LAST_FM_API_LIMIT_KET,
-                        key -> RateLimiter.create(5));
+                        key -> RateLimiter.create(6));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {

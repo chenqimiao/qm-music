@@ -269,5 +269,20 @@ public class BrowsingController {
         return new ArtistInfoResponse(artistInfo2);
     }
 
+    private static final Type TYPE_LIST_TOP_SONG = new TypeToken<List<TopSongsResponse.Song>>() {}.getType();
 
+    @GetMapping("/getTopSongs")
+    public TopSongsResponse getTopSongs(@RequestParam(name = "artist", required = true) String artistName,
+                            @RequestParam(defaultValue = "50", required = false) Integer count) {
+
+        List<ComplexSongDTO> complexSongs = songComplexService.getTopSongsIds(artistName, count, WebUtils.currentUserId());
+
+        if (CollectionUtils.isEmpty(complexSongs)) {
+            return new TopSongsResponse();
+        }
+
+        List<TopSongsResponse.Song> songs = modelMapper.map(complexSongs, TYPE_LIST_TOP_SONG);
+
+        return new TopSongsResponse(new TopSongsResponse.TopSongs(songs));
+    }
 }

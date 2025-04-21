@@ -72,6 +72,10 @@ public interface MetaDataFetchClient {
           return null;
      }
 
+     default List<String> topTrack(String artistName, Integer limit) {
+          return null;
+     }
+
      default void rateLimit() {
 
      }

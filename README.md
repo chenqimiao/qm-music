@@ -146,6 +146,7 @@ services:
 ### 🌐 生态扩展
 * [![Spotify](https://img.shields.io/badge/Spotify-%231ED760.svg?logo=spotify&logoColor=white)](https://developer.spotify.com/)
 * [![Last.fm](https://img.shields.io/badge/Last.fm-%23D51007.svg?logo=last.fm&logoColor=white)](https://www.last.fm/api)
+*  [![Kugou](https://img.shields.io/badge/Kugou-%2300AFF0.svg?logo=kugou&logoColor=white)](https://www.kugou.com/)
 
 ### ⏭️ 开发路线图
 #### 基础设施

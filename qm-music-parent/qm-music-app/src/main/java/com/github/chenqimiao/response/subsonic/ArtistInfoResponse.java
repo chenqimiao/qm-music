@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArtistInfoResponse {
+public class ArtistInfoResponse extends SubsonicResponse {
 
     private ArtistInfo2 artistInfo2;
 

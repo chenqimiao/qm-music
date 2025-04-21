@@ -18,4 +18,6 @@ public class ComplexSongDTO extends SongDTO {
 
     private String artistsName;
 
+    private Integer playCount;
+
 }

@@ -73,4 +73,13 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
                 .toEpochMilli();
          playHistoryRepository.delGmtModifyLessThan(sixMonthsTimestamp);
     }
+
+    @Override
+    public List<PlayHistoryDTO> queryUserSpecifiedSongPlayHistoryList(Long userId, List<Long> songIds) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("songIds", songIds);
+        return ucModelMapper.map(playHistoryRepository.queryByCondition(params)
+                , ModelMapperTypeConstants.TYPE_LIST_PLAY_HISTORY_DTO);
+    }
 }

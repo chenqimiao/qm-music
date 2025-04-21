@@ -17,6 +17,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -66,6 +67,8 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Autowired
     private PlayHistoryRepository playHistoryRepository;
+    @Autowired
+    private PlayHistoryService playHistoryService;
 
 
     @Override
@@ -76,10 +79,17 @@ public class SubsonicSongComplexService implements SongComplexService {
         List<SongDTO> songs = songService.batchQuerySongBySongIds(songIds);
 
         final Map<Long, Long> starredTimeMap = new HashMap<>();
+        final Map<Long, Integer> playCountMap = new HashMap<>();
         if (userId != null) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(userId)
                     .relationIds(songIds).startType(EnumUserStarType.SONG).build();
             starredTimeMap.putAll(userStarService.batchQueryStarredTime(batchStarInfoRequest));
+            List<PlayHistoryDTO> playHistories = playHistoryService.queryUserSpecifiedSongPlayHistoryList(userId, songIds);
+            if (CollectionUtils.isNotEmpty(playHistories)) {
+                Map<Long, Integer> userPlayCountMap = playHistories.stream().collect(Collectors.toMap(PlayHistoryDTO::getSongId
+                        , PlayHistoryDTO::getPlayCount));
+                playCountMap.putAll(userPlayCountMap);
+            }
         }
         Map<String, Object> params = Maps.newHashMapWithExpectedSize(2);
         params.put("relationIds", songIds);
@@ -103,6 +113,7 @@ public class SubsonicSongComplexService implements SongComplexService {
             ComplexSongDTO complexSongDTO = modelMapper.map(n, ComplexSongDTO.class);
             complexSongDTO.setStarred(starredTimeMap.get(n.getId()));
             complexSongDTO.setIsStar(complexSongDTO.getStarred() != null);
+            complexSongDTO.setPlayCount(playCountMap.getOrDefault(n.getId(), NumberUtils.INTEGER_ZERO));
             List<ArtistRelationDO> artistsWithSong = artistRelationMap.get(n.getId());
             if (CollectionUtils.size(artistsWithSong) <= 1) {
                 complexSongDTO.setArtistsName(n.getArtistName());

@@ -60,10 +60,14 @@ public class PlayHistoryRepository {
         var userId = params.get("userId");
         var offset = params.get("offset");
         var size = params.get("size");
+        var songIds = params.get("songIds");
         var orderBy = params.get("orderBy");
 
         if (userId != null) {
             sqlStringBuilder.append(" and user_id = :userId");
+        }
+        if (songIds != null) {
+            sqlStringBuilder.append(" and song_id in (:songIds)");
         }
         if (orderBy != null) {
             sqlStringBuilder.append(" order by ").append(orderBy);

@@ -78,6 +78,12 @@ public class SongResponse extends SubsonicResponse {
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;
 
+        @JacksonXmlProperty(isAttribute = true)
+        private String year;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer playCount;
+
     }
 }
 

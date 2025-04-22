@@ -247,7 +247,7 @@ public class BrowsingController {
             if (CollectionUtils.isNotEmpty(similarArtists)) {
                 similarArtists = Lists.partition(similarArtists, artistInfoRequest.getCount()).getFirst();
                 List<Long> artistIds = similarArtists.stream().map(ArtistDTO::getId).toList();
-                List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, null);
+                List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, WebUtils.currentUserId());
                 localArtistNames.addAll(complexArtists.stream().map(ComplexArtistDTO::getName).toList());
                 artistInfo2.setSimilarArtists(modelMapper.map(complexArtists, TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST));
             }

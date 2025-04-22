@@ -289,7 +289,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     }
 
     @Override
-    public List<ComplexSongDTO> getTopSongsIds(String artistName, Integer count, @Nullable Long userId) {
+    public List<ComplexSongDTO> getTopSongs(String artistName, Integer count, @Nullable Long userId) {
         List<ArtistDTO> artists = artistService.searchByName(artistName, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO);
         if (CollectionUtils.isEmpty(artists)) {
             return Collections.emptyList();
@@ -300,40 +300,43 @@ public class SubsonicSongComplexService implements SongComplexService {
             return Collections.emptyList();
         }
 
-        if (CollectionUtils.size(songIds) <= 1) {
-            return this.queryBySongIds(songIds, userId);
-        }
-        Integer properRemoteCount = Math.min((int)(songIds.size() * 1.5), count);
-        List<String> songTitles = metaDataFetchClientCommander.topTrack(artistName, properRemoteCount);
-
         List<ComplexSongDTO> complexSongs = this.queryBySongIds(songIds, userId);
-        if (CollectionUtils.isNotEmpty(songTitles)) {
-            Map<String, Integer> sortValue = Maps.newHashMapWithExpectedSize(songTitles.size() * 2);
-            for (int i = 0; i < songTitles.size(); i++) {
-                sortValue.put(songTitles.get(i), i);
-            }
-            List<String> reverseSongTitles = songTitles.stream().map(TransliteratorUtils::reverseSimpleTraditional).toList();
-            for (int i = 0; i < reverseSongTitles.size(); i++) {
-                sortValue.put(reverseSongTitles.get(i), i);
-            }
-            return complexSongs.stream().sorted((n1,n2) -> {
-                int val1 = sortValue.getOrDefault(n1.getTitle(), Integer.MAX_VALUE);
-                int val2 = sortValue.getOrDefault(n2.getTitle(), Integer.MAX_VALUE);
-                if (val1 != val2) {
-                    return val1 - val2;
-                }
-                if (Objects.nonNull(n1.getPlayCount()) && Objects.nonNull(n2.getPlayCount())) {
-                    return n2.getPlayCount() - n1.getPlayCount();
-                }
-                return n2.getGmtCreate().compareTo(n1.getGmtCreate());
-            }).toList();
-        }
 
+        if (CollectionUtils.size(songIds) > 5) {
+            Integer properRemoteCount = Math.min((int)(songIds.size() * 1.5), count);
+            List<String> songTitles = metaDataFetchClientCommander.topTrack(artistName, properRemoteCount);
+
+            if (CollectionUtils.isNotEmpty(songTitles)) {
+                Map<String, Integer> sortValue = Maps.newHashMapWithExpectedSize(songTitles.size() * 2);
+                for (int i = 0; i < songTitles.size(); i++) {
+                    sortValue.put(songTitles.get(i), i);
+                }
+                List<String> reverseSongTitles = songTitles.stream().map(TransliteratorUtils::reverseSimpleTraditional).toList();
+                for (int i = 0; i < reverseSongTitles.size(); i++) {
+                    sortValue.put(reverseSongTitles.get(i), i);
+                }
+                return complexSongs.stream().sorted((n1,n2) -> {
+                    int val1 = sortValue.getOrDefault(n1.getTitle(), Integer.MAX_VALUE);
+                    int val2 = sortValue.getOrDefault(n2.getTitle(), Integer.MAX_VALUE);
+                    if (val1 != val2) {
+                        return val1 - val2;
+                    }
+                    if (Objects.nonNull(n1.getPlayCount())
+                            && Objects.nonNull(n2.getPlayCount())
+                            && !Objects.equals(n1.getPlayCount(), n2.getPlayCount())) {
+                        return n2.getPlayCount() - n1.getPlayCount();
+                    }
+                    return n2.getGmtModify().compareTo(n1.getGmtModify());
+                }).toList();
+            }
+        }
         return complexSongs.stream().sorted((n1,n2) -> {
-            if (Objects.nonNull(n1.getPlayCount()) && Objects.nonNull(n2.getPlayCount())) {
+            if (Objects.nonNull(n1.getPlayCount())
+                    && Objects.nonNull(n2.getPlayCount())
+                    && !Objects.equals(n1.getPlayCount(), n2.getPlayCount())) {
                 return n2.getPlayCount() - n1.getPlayCount();
             }
-            return n2.getGmtCreate().compareTo(n1.getGmtCreate());
+            return n2.getGmtModify().compareTo(n1.getGmtModify());
         }).toList();
 
     }

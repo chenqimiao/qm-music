@@ -275,7 +275,7 @@ public class BrowsingController {
     public TopSongsResponse getTopSongs(@RequestParam(name = "artist", required = true) String artistName,
                             @RequestParam(defaultValue = "50", required = false) Integer count) {
 
-        List<ComplexSongDTO> complexSongs = songComplexService.getTopSongsIds(artistName, count, WebUtils.currentUserId());
+        List<ComplexSongDTO> complexSongs = songComplexService.getTopSongs(artistName, count, WebUtils.currentUserId());
 
         if (CollectionUtils.isEmpty(complexSongs)) {
             return new TopSongsResponse();

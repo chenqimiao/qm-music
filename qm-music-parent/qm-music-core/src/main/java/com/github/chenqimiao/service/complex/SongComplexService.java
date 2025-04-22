@@ -33,7 +33,7 @@ public interface SongComplexService {
 
     List<ComplexSongDTO> findSimilarSongs(@Nullable Long songId, @Nullable Long artistId, Long count);
 
-    List<ComplexSongDTO> getTopSongsIds(String artistName, Integer count, @Nullable Long userId);
+    List<ComplexSongDTO> getTopSongs(String artistName, Integer count, @Nullable Long userId);
 
     List<Long> findSongIdsByArtistId(List<Long> artistIds);
 }

@@ -12,6 +12,7 @@ import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.ArtistComplexService;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,8 +76,8 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
             ComplexArtistDTO complexArtistDTO = modelMapper.map(n, ComplexArtistDTO.class);
             complexArtistDTO.setStarred(starredMap.get(n.getId()));
             complexArtistDTO.setIsStar(Objects.nonNull(complexArtistDTO.getStarred()));
-            complexArtistDTO.setSongCount(songRelationMap.get(n.getId()));
-            complexArtistDTO.setAlbumCount(albumRelationMap.get(n.getId()));
+            complexArtistDTO.setSongCount(songRelationMap.getOrDefault(n.getId(), NumberUtils.INTEGER_ZERO));
+            complexArtistDTO.setAlbumCount(albumRelationMap.getOrDefault(n.getId(), NumberUtils.INTEGER_ZERO));
             return complexArtistDTO;
         }).toList();
     }

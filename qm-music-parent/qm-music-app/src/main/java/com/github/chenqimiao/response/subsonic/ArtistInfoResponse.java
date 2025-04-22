@@ -61,6 +61,10 @@ public class ArtistInfoResponse extends SubsonicResponse {
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true)
         private Integer albumCount;
+        // mock: 私人乐库喜欢才收藏
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
     }
 
 }

@@ -139,6 +139,127 @@
             }
         }
     </style>
+    <style>
+        /* ================= 新增支持信息区块 ================= */
+        .support-section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .support-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 1rem;
+        }
+
+        .support-title {
+            color: #2d3748;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .stats-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .badge-link {
+            transition: transform 0.2s;
+        }
+
+        .badge-link:hover {
+            transform: translateY(-3px);
+        }
+
+        .support-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .qrcode-group {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .qrcode-img {
+            width: 100%;
+            max-width: 280px;
+            border-radius: 8px;
+            margin: 1rem auto;
+        }
+
+        .action-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: nowrap; /* 禁止换行 */
+        }
+
+        .action-btn {
+            text-decoration: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            white-space: nowrap; /* 强制不换行 */
+            min-width: 120px; /* 最小宽度 */
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .feedback-btn {
+            color: #667eea;
+            border: 2px solid #667eea;
+            background: white;
+        }
+
+        .docs-btn {
+            color: #2d3748;
+            background: #e2e8f0;
+        }
+
+        .star-btn {
+            color: white;
+            background: #667eea;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .action-links {
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+
+            .action-btn {
+                flex: 1; /* 等宽分布 */
+                min-width: auto;
+                padding: 0.7rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .action-btn span {
+                display: inline-block;
+                min-width: 4em; /* 保证至少显示4个字符宽度 */
+            }
+        }
+
+
+
+
+    </style>
 </head>
 <body>
 <div id="app">
@@ -260,7 +381,82 @@
                 </div>
             </div>
         </div>
+        <!-- 新增支持信息区块 -->
+        <div class="support-section">
+            <div class="support-header">
+                <h2 class="support-title">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#667eea">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h4v2h-4zm5.3-6.3l-1.4 1.4-3.2-3.2V7h2v3.8l2.6 2.6z"/>
+                    </svg>
+                    支持与帮助
+                </h2>
+            </div>
+
+            <!-- 统计徽章 -->
+            <div class="stats-badges">
+                <a href="https://github.com/chenqimiao/qm-music" target="_blank" rel="noopener" class="badge-link">
+                    <img src="https://img.shields.io/github/stars/chenqimiao/qm-music?style=for-the-badge&logo=github&color=667eea&labelColor=f8fafc&label=Stars"
+                         alt="GitHub Stars">
+                </a>
+                <a href="https://hub.docker.com/r/qmmusic/qm-music" target="_blank" rel="noopener" class="badge-link">
+                    <img src="https://img.shields.io/docker/pulls/qmmusic/qm-music?style=for-the-badge&logo=docker&color=3182ce&labelColor=f8fafc&label=Pulls"
+                         alt="Docker Pulls">
+                </a>
+            </div>
+
+            <!-- 二维码与支持信息 -->
+            <div class="support-content">
+                <div class="qrcode-group">
+                    <h3 style="color: #2d3748; margin-bottom: 1rem;">💖 请开发者喝杯快乐水</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <img src="https://raw.githubusercontent.com/chenqimiao/qm-music/refs/heads/main/qm-music-parent/qm-music-app/src/main/resources/static/img/wechat_qr.webp"
+                                 onerror="this.src='/img/wechat_qr.webp';"
+                                 class="qrcode-img"
+                                 alt="微信赞赏码">
+                            <p style="color: #667eea; margin-top: 0.5rem;">微信支持</p>
+                        </div>
+                        <div>
+                            <img src="https://raw.githubusercontent.com/chenqimiao/qm-music/refs/heads/main/qm-music-parent/qm-music-app/src/main/resources/static/img/alipay_qr.webp"
+                                 onerror="this.src='/img/alipay_qr.webp';"
+                                 class="qrcode-img"
+                                 alt="支付宝赞赏码">
+                            <p style="color: #667eea; margin-top: 0.5rem;">支付宝支持</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-group">
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: #2d3748; margin-bottom: 1rem;">🚀 项目维护需要你</h3>
+                        <p style="color: #4a5568; line-height: 1.6;">
+                            开源不易，如果这个项目帮到了你！
+                            可以给项目一个star⭐️或者请开发者喝一杯快乐水❤️嘛！
+                            你的支持是QM-Music持续进步最大的动力！
+                        </p>
+                    </div>
+
+                    <div class="action-links">
+                        <a href="https://github.com/chenqimiao/qm-music/issues"
+                           class="action-btn feedback-btn" target="_blank">
+                            🐛 问题反馈
+                        </a>
+
+                        <a href="https://github.com/chenqimiao/qm-music/blob/main/README.md"
+                           class="action-btn docs-btn" target="_blank">
+                            📘 使用文档
+                        </a>
+
+                        <a href="https://github.com/chenqimiao/qm-music"
+                           class="action-btn star-btn" target="_blank">
+                            ⭐ GitHub点赞
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <!-- 新增支持信息区块 -->
 </div>
 <script>
     const { createApp } = Vue;
@@ -282,7 +478,8 @@
                 scanCount: 0,
                 scanning: false,
                 statusInterval: null,
-                statsInterval: null
+                statsInterval: null,
+                githubStars: '1.2k' // 实际应从API获取
             }
         },
         async mounted() {

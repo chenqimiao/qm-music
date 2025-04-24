@@ -19,6 +19,7 @@ import com.github.chenqimiao.io.local.model.MusicMeta;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
+import com.github.chenqimiao.pool.DirectBufferPool;
 import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.repository.SongRepository;
@@ -490,6 +491,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     @Value("${qm.ffmpeg.enable}")
     private Boolean ffmpegEnable;
 
+    private static final DirectBufferPool SONG_STREAM_BUFFER_PO0L = new DirectBufferPool(38, 1024 * 1024); // 池大小 10，缓冲区 8KB
+
     @Override
     @SneakyThrows
     public SongStreamDTO getSongStream(Long songId,
@@ -517,27 +520,42 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             Path path = Paths.get(filePath);
             FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ);
             InputStream inputStream = new InputStream() {
-                private final ByteBuffer buffer = ByteBuffer.allocateDirect(8192); // 8KB 直接内存缓冲
+                private ByteBuffer buffer;
 
                 @Override
                 public int read() throws IOException {
-                    if (!buffer.hasRemaining()) {
-                        buffer.clear();
-                        int read = fileChannel.read(buffer);
-                        if (read == -1) return -1;
-                        buffer.flip();
-                    }
-                    return buffer.get() & 0xFF;
+                    throw new UnsupportedOperationException();
                 }
 
                 @Override
                 public int read(byte[] b, int off, int len) throws IOException {
-                    ByteBuffer byteBuffer = ByteBuffer.wrap(b, off, len);
-                    return fileChannel.read(byteBuffer);
+                    if (buffer == null) {
+                        try {
+                            buffer = SONG_STREAM_BUFFER_PO0L.borrowBuffer(); // 从池中借缓冲区
+                        } catch (InterruptedException e) {
+                            throw new IOException("Buffer borrow failed", e);
+                        }
+                    }
+
+                    buffer.clear(); // 重置缓冲区
+                    buffer.limit(Math.min(len, buffer.capacity()));
+                    int bytesRead = fileChannel.read(buffer);
+                    if (bytesRead == -1) {
+                        SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 归还缓冲区
+                        buffer = null;
+                        return -1;
+                    }
+                    buffer.flip();
+                    buffer.get(b, off, bytesRead);
+                    return bytesRead;
                 }
 
                 @Override
                 public void close() throws IOException {
+                    if (buffer != null) {
+                        SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 确保归还
+                        buffer = null;
+                    }
                     fileChannel.close();
                 }
             };

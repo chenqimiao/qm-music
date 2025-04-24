@@ -39,12 +39,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -512,16 +514,42 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                     .build();
 
         } else {
-            InputStream inputStream = new FileInputStream(filePath);
+            Path path = Paths.get(filePath);
+            FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ);
+            InputStream inputStream = new InputStream() {
+                private final ByteBuffer buffer = ByteBuffer.allocateDirect(8192); // 8KB 直接内存缓冲
+
+                @Override
+                public int read() throws IOException {
+                    if (!buffer.hasRemaining()) {
+                        buffer.clear();
+                        int read = fileChannel.read(buffer);
+                        if (read == -1) return -1;
+                        buffer.flip();
+                    }
+                    return buffer.get() & 0xFF;
+                }
+
+                @Override
+                public int read(byte[] b, int off, int len) throws IOException {
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(b, off, len);
+                    return fileChannel.read(byteBuffer);
+                }
+
+                @Override
+                public void close() throws IOException {
+                    fileChannel.close();
+                }
+            };
+
             return SongStreamDTO.builder()
                     .songStream(inputStream)
                     .filePath(filePath)
                     .mimeType(contentType)
-                    .size(Files.size(Paths.get(filePath))).build();
+                    .size(Files.size(path)).build();
+
+
         }
-
-
-
 
     }
 }

@@ -12,13 +12,15 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.Executors;
 
 /**
  * @author Qimiao Chen
@@ -93,13 +95,27 @@ public class MediaRetrievalController {
                                                       Integer estimateContentLength) {
 
         SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
-        if (songStream.getSize() != null) {
-            headers.setContentLength(songStream.getSize());
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()){
+            return executor.submit(() -> {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
+                headers.setContentLength(songStream.getSize());
+                headers.setContentDisposition(
+                        ContentDisposition.attachment()
+                                .filename(songStream.getFilePath())
+                                .build());
+
+                // 返回流式响应，确保资源释放
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(new InputStreamResource(songStream.getSongStream()));
+
+            }).get();
+        }catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
-        return new ResponseEntity<>(new InputStreamResource(songStream.getSongStream()),
-                headers, HttpStatus.OK);
+
     }
 
 

@@ -518,49 +518,47 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
         } else {
             Path path = Paths.get(filePath);
-            InputStream inputStream;
-            try (FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ)) {
-                inputStream = new InputStream() {
-                    private ByteBuffer buffer;
+            FileChannel fileChannel = FileChannel.open(path, StandardOpenOption.READ);
+            InputStream inputStream = new InputStream() {
+                private ByteBuffer buffer;
 
-                    @Override
-                    public int read() throws IOException {
-                        throw new UnsupportedOperationException();
+                @Override
+                public int read() throws IOException {
+                    throw new UnsupportedOperationException();
+                }
+
+                @Override
+                public int read(byte[] b, int off, int len) throws IOException {
+                    if (buffer == null) {
+                        try {
+                            buffer = SONG_STREAM_BUFFER_PO0L.borrowBuffer(); // 从池中借缓冲区
+                        } catch (InterruptedException e) {
+                            throw new IOException("Buffer borrow failed", e);
+                        }
                     }
 
-                    @Override
-                    public int read(byte[] b, int off, int len) throws IOException {
-                        if (buffer == null) {
-                            try {
-                                buffer = SONG_STREAM_BUFFER_PO0L.borrowBuffer(); // 从池中借缓冲区
-                            } catch (InterruptedException e) {
-                                throw new IOException("Buffer borrow failed", e);
-                            }
-                        }
-
-                        buffer.clear(); // 重置缓冲区
-                        buffer.limit(Math.min(len, buffer.capacity()));
-                        int bytesRead = fileChannel.read(buffer);
-                        if (bytesRead == -1) {
-                            SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 归还缓冲区
-                            buffer = null;
-                            return -1;
-                        }
-                        buffer.flip();
-                        buffer.get(b, off, bytesRead);
-                        return bytesRead;
+                    buffer.clear(); // 重置缓冲区
+                    buffer.limit(Math.min(len, buffer.capacity()));
+                    int bytesRead = fileChannel.read(buffer);
+                    if (bytesRead == -1) {
+                        SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 归还缓冲区
+                        buffer = null;
+                        return -1;
                     }
+                    buffer.flip();
+                    buffer.get(b, off, bytesRead);
+                    return bytesRead;
+                }
 
-                    @Override
-                    public void close() throws IOException {
-                        if (buffer != null) {
-                            SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 确保归还
-                            buffer = null;
-                        }
-                        fileChannel.close();
+                @Override
+                public void close() throws IOException {
+                    if (buffer != null) {
+                        SONG_STREAM_BUFFER_PO0L.returnBuffer(buffer); // 确保归还
+                        buffer = null;
                     }
-                };
-            }
+                    fileChannel.close();
+                }
+            };
 
             return SongStreamDTO.builder()
                     .songStream(inputStream)

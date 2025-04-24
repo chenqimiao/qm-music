@@ -96,7 +96,9 @@ public class MediaRetrievalController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
-        headers.setContentLength(songStream.getSize());
+        if (songStream.getSize() != null) {
+            headers.setContentLength(songStream.getSize());
+        }
         headers.setContentDisposition(
                 ContentDisposition.attachment()
                         .filename(songStream.getFilePath())

@@ -491,7 +491,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     @Value("${qm.ffmpeg.enable}")
     private Boolean ffmpegEnable;
 
-    private static final DirectBufferPool SONG_STREAM_BUFFER_PO0L = new DirectBufferPool(38, 1024 * 1024); // 池大小 38，缓冲区 1M
+    private static final DirectBufferPool SONG_STREAM_BUFFER_PO0L = new DirectBufferPool(18, 1024 * 1024); // 池大小 18，缓冲区 1M
 
     @Override
     @SneakyThrows

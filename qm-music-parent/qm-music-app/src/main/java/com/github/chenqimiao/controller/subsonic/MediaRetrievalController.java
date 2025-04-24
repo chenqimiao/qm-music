@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.Executors;
-
 /**
  * @author Qimiao Chen
  * @since 2025/3/30 22:51
@@ -96,25 +94,17 @@ public class MediaRetrievalController {
 
         SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
 
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor()){
-            return executor.submit(() -> {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
-                headers.setContentLength(songStream.getSize());
-                headers.setContentDisposition(
-                        ContentDisposition.attachment()
-                                .filename(songStream.getFilePath())
-                                .build());
-
-                // 返回流式响应，确保资源释放
-                return ResponseEntity.ok()
-                        .headers(headers)
-                        .body(new InputStreamResource(songStream.getSongStream()));
-
-            }).get();
-        }catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
+        headers.setContentLength(songStream.getSize());
+        headers.setContentDisposition(
+                ContentDisposition.attachment()
+                        .filename(songStream.getFilePath())
+                        .build());
+        // 返回流式响应，确保资源释放
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(songStream.getSongStream()));
 
     }
 

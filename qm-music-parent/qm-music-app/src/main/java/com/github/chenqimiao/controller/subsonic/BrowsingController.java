@@ -177,7 +177,7 @@ public class BrowsingController {
         return genresResponse;
     }
 
-    @GetMapping("getSong")
+    @GetMapping("/getSong")
     public SongResponse getSong(@RequestParam("id") Long songId) {
         Long authedUserId = WebUtils.currentUserId();
         List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(Lists.newArrayList(songId), authedUserId);

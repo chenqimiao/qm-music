@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.github.chenqimiao.constant.ServerConstants;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +11,7 @@ import lombok.Setter;
  * @author Qimiao Chen
  * @since 2025/3/28 23:58
  **/
-@JacksonXmlRootElement(localName = "subsonic-response")
+@JacksonXmlRootElement(localName = ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP)
 public abstract class SubsonicResponse {
 
     @JacksonXmlProperty(isAttribute = true, localName = "xmlns")

@@ -25,4 +25,7 @@ public abstract class ServerConstants {
 
     public static final SubsonicPong SUBSONIC_EMPTY_RESPONSE = new SubsonicPong();
 
+    public static final String SUBSONIC_RESPONSE_ROOT_WRAP = "subsonic-response";
+
+
 }

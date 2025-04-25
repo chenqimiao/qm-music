@@ -1,4 +1,4 @@
-package com.github.chenqimiao.controller.subsonic;
+package com.github.chenqimiao.advice;
 
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.exception.SubsonicUnauthorizedException;

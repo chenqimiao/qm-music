@@ -291,7 +291,8 @@ public class SubsonicSongComplexService implements SongComplexService {
 
     @Override
     public List<ComplexSongDTO> getTopSongs(String artistName, Integer count, @Nullable Long userId) {
-        List<ArtistDTO> artists = artistService.searchByName(artistName, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO);
+        String[] artistNames = artistName.split(CommonConstants.MULTI_ARTIST_SHOW_DELIMITER);
+        List<ArtistDTO> artists = artistService.searchByName(artistNames[0].trim(), NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO);
         if (CollectionUtils.isEmpty(artists)) {
             return Collections.emptyList();
         }

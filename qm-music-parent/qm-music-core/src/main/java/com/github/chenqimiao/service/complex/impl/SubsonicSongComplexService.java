@@ -2,6 +2,7 @@ package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
@@ -121,7 +122,7 @@ public class SubsonicSongComplexService implements SongComplexService {
             }else {
                 List<String> artistNameList = artistsWithSong.stream()
                         .map(a -> artistMap.get(a.getArtist_id())).collect(Collectors.toList());
-                complexSongDTO.setArtistsName(String.join("&", artistNameList));
+                complexSongDTO.setArtistsName(String.join(CommonConstants.MULTI_ARTIST_SHOW_DELIMITER, artistNameList));
                 if (StringUtils.isBlank(complexSongDTO.getArtistsName())) {
                     complexSongDTO.setArtistsName(n.getArtistName());
                 }

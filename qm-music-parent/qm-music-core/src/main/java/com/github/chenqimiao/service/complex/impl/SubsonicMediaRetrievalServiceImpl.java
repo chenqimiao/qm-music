@@ -456,6 +456,18 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         SongDO song = null;
         if (StringUtils.isNotBlank(artistName)) {
             song = songRepository.findByTitleAndArtistName(songTitle, artistName);
+            if (song == null) {
+                String[] artistNames = artistName.split(CommonConstants.MULTI_ARTIST_SHOW_DELIMITER);
+                if (artistNames.length > 1) {
+                    for (String name : artistNames) {
+                        song = songRepository.findByTitleAndArtistName(songTitle, name);
+                        if (song != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+
         }else {
             song = songRepository.findByTitle(songTitle);
 

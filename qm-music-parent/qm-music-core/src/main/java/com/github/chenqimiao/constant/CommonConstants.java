@@ -12,4 +12,6 @@ public abstract class CommonConstants {
     public static final String SONG_DIR_SUFFIX = "song";
 
     public static final String ARTIST_DIR_SUFFIX = "artist";
+
+    public static final String MULTI_ARTIST_SHOW_DELIMITER = "&";
 }

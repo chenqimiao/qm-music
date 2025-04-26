@@ -36,7 +36,7 @@ public class MediaRetrievalController {
     @RequestMapping(value = "/getCoverArt")
     @SneakyThrows
     public ResponseEntity<byte[]> getCoverArt(@RequestParam("id") String id,
-                                              @RequestParam(value = "size", required = false) Integer size) {
+                                              @RequestParam(value = "size", required = false, defaultValue = "100") Integer size) {
         String[] split = id.split("-");
         CoverStreamDTO songCoverStreamDTO = null;
 

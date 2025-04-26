@@ -13,7 +13,10 @@ import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.complex.SearchService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.TransliteratorUtils;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,19 +80,12 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 !Objects.equals(reversedQuery, query);
         SearchResultDTO searchResultDTO = new SearchResultDTO();
         if (artistCount != null && artistCount > 0) {
-            artists = artistService.searchByName(query, artistCount, artistOffset);
-            if (artists.size() <= 0 && retryReverse) {
-                artists = artistService.searchByName(reversedQuery, artistCount, artistOffset);
-            }
+            artists = searchArtists(query, artistCount, artistOffset, retryReverse, reversedQuery);
             searchResultDTO.setArtists(artists);
 
         }
         if (albumCount != null && albumCount > 0) {
-            albums = albumService.searchByName(query, albumCount, albumOffset);
-            if (albums.size() <= 0 && retryReverse) {
-                albums = albumService.searchByName(reversedQuery, albumCount, albumOffset);
-
-            }
+            albums = searchAlbums(query, albumCount, albumOffset, retryReverse, reversedQuery);
             searchResultDTO.setAlbums(albums);
         }
         if (songCount != null && songCount > 0) {
@@ -99,18 +95,50 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 songIds.addAll(songService.searchSongIdsByTitle(reversedQuery, songCount - songIds.size(), songOffset));
             }
             if (songIds.size() < songCount) {
-                songIds.addAll(songComplexService.searchSongsByArtists(null, artists)) ;
+                if (artistCount == null
+                        || artistCount.equals(NumberUtils.INTEGER_ZERO)) {
+                    artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                }
+                if (CollectionUtils.isNotEmpty(artists)) {
+                    songIds.addAll(songComplexService.searchSongsByArtists(null, artists));
+                }
             }
             if (songIds.size() < songCount) {
-                songIds.addAll(songComplexService.searchSongsByAlbums(null, albums));
+                if (albumCount == null
+                        || albumCount.equals(NumberUtils.INTEGER_ZERO)) {
+                    albums = searchAlbums(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                }
+                if (CollectionUtils.isNotEmpty(albums)) {
+                    songIds.addAll(songComplexService.searchSongsByAlbums(null, albums));
+                }
             }
             if (!songIds.isEmpty()) {
-                List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(new ArrayList<>(songIds), authedUserId);
+                List<Long> songIdList = Lists.partition(new ArrayList<>(songIds), songCount).getFirst();
+                List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIdList, authedUserId);
                 searchResultDTO.setComplexSongs(complexSongs);
             }
         }
 
         return searchResultDTO;
+    }
+
+    private List<AlbumDTO> searchAlbums(String query, Integer albumCount, Integer albumOffset, boolean retryReverse, String reversedQuery) {
+        List<AlbumDTO> albums;
+        albums = albumService.searchByName(query, albumCount, albumOffset);
+        if (albums.size() <= 0 && retryReverse) {
+            albums = albumService.searchByName(reversedQuery, albumCount, albumOffset);
+
+        }
+        return albums;
+    }
+
+    private List<ArtistDTO> searchArtists(String query, Integer artistCount, Integer artistOffset, boolean retryReverse, String reversedQuery) {
+        List<ArtistDTO> artists;
+        artists = artistService.searchByName(query, artistCount, artistOffset);
+        if (artists.size() <= 0 && retryReverse) {
+            artists = artistService.searchByName(reversedQuery, artistCount, artistOffset);
+        }
+        return artists;
     }
 
 }

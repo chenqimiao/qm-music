@@ -181,8 +181,8 @@
                 }
             });
 
-            const data = await response.json();
-
+            const fullData = await response.json();
+            const data = fullData['subsonic-response']
             if (data.status === 'ok' && data.user?.username) {
                 // 保存登录信息
                 localStorage.setItem('u', username);

@@ -496,7 +496,7 @@
                 try {
                     const params = this.buildBaseParams();
                     const res = await axios.get(`/rest/getScanStatus?${params}`);
-                    this.libraryCount = res.data.scanStatus.count;
+                    this.libraryCount = res.data['subsonic-response'].scanStatus.count;
                 } catch (error) {
                     console.error('获取曲库统计失败:', error);
                 }
@@ -532,7 +532,7 @@
                 const params = this.buildBaseParams();
                 params.append('username', localStorage.getItem('u'));
                 const res = await axios.get(`/rest/getUser?${params}`);
-                if (res.data.user?.forcePasswordChange) {
+                if (res.data['subsonic-response'].user?.forcePasswordChange) {
                     this.forcePasswordChange = true;
                 } else {
                     await this.loadUsers();
@@ -545,7 +545,7 @@
                     params.append('username', localStorage.getItem('u'));
                     params.append('password', this.encryptPassword(this.forcePasswordForm.newPassword));
                     const res = await axios.get(`/rest/changePassword?${params}`);
-                    if (res.data.status === 'ok') {
+                    if (res.data['subsonic-response'].status === 'ok') {
                         alert('密码修改成功，请重新登录');
                         this.logout();
                     }
@@ -577,7 +577,7 @@
                 try {
                     const params = this.buildBaseParams();
                     const res = await axios.get(`/rest/getUsers?${params}`);
-                    this.users = res.data.user.user.map(user => ({
+                    this.users = res.data['subsonic-response'].user.user.map(user => ({
                         ...user,
                         // 确保处理可能的空值
                         nickName: user.nickName || ''
@@ -635,7 +635,7 @@
                     const endpoint = this.isNewUser ? 'createUser' : 'updateUser';
                     const res = await axios.get(`/rest/${endpoint}?${params}`);
 
-                    if (res.data.status === 'ok') {
+                    if (res.data['subsonic-response'].status === 'ok') {
                         await this.loadUsers();
                         this.closeModals();
                     } else {
@@ -667,7 +667,7 @@
                     alert('删除成功');
                 } catch (error) {
                     console.error('删除用户失败:', error);
-                    alert('删除失败: ' + (error.response?.data?.message || '服务器错误'));
+                    alert('删除失败: ' + (error.response?.data['subsonic-response']?.message || '服务器错误'));
                 }
             },
             async refreshLibrary() {
@@ -681,10 +681,10 @@
                         const params = this.buildBaseParams();
                         const res = await axios.get(`/rest/getScanStatus?${params}`);
 
-                        this.scanCount = res.data.scanStatus.count;
-                        this.libraryCount = res.data.scanStatus.count; // 实时更新总数
+                        this.scanCount = res.data['subsonic-response'].scanStatus.count;
+                        this.libraryCount = res.data['subsonic-response'].scanStatus.count; // 实时更新总数
 
-                        if (!res.data.scanStatus.scanning) {
+                        if (!res.data['subsonic-response'].scanStatus.scanning) {
                             clearInterval(this.statusInterval);
                             this.scanning = false;
                         }

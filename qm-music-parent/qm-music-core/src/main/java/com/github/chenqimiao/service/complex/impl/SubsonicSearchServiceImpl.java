@@ -71,8 +71,12 @@ public class SubsonicSearchServiceImpl implements SearchService {
 
         List<ArtistDTO> artists = new ArrayList<>();
 
+        boolean searchedArtist = false;
 
         List<AlbumDTO> albums = new ArrayList<>();
+
+        boolean searchedAlbum = false;
+
 
         Set<Long> songIds = new HashSet<>();
 
@@ -81,17 +85,19 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 !Objects.equals(reversedQuery, query);
         SearchResultDTO searchResultDTO = new SearchResultDTO();
         if (artistCount != null && artistCount > 0) {
-            artists = searchArtists(query, artistCount, artistOffset, retryReverse, reversedQuery);
+            artists = this.searchArtists(query, artistCount, artistOffset, retryReverse, reversedQuery);
+            searchedArtist = true;
             searchResultDTO.setArtists(artists);
 
         }
         if (albumCount != null && albumCount > 0) {
-            albums = searchAlbums(query, albumCount, albumOffset, retryReverse, reversedQuery);
+            searchedAlbum = true;
+            albums = this.searchAlbums(query, albumCount, albumOffset, retryReverse, reversedQuery);
             if (CollectionUtils.size(albums) < albumCount) {
                 // retry
-                if (artistCount == null
-                        || artistCount.equals(NumberUtils.INTEGER_ZERO)) {
+                if (!searchedArtist) {
                     artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                    searchedArtist = true;
                 }
                 if (CollectionUtils.isNotEmpty(artists)) {
                     List<AlbumDTO> albumList = albumComplexService.searchAlbumByArtist(artists.getFirst().getId());
@@ -118,20 +124,17 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 songIds.addAll(songService.searchSongIdsByTitle(reversedQuery, songCount - songIds.size(), songOffset));
             }
             if (songIds.size() < songCount) {
-                if (CollectionUtils.size(artists) == NumberUtils.INTEGER_ZERO
-                        && (artistCount == null
-                            || artistCount.equals(NumberUtils.INTEGER_ZERO))) {
+                if (!searchedArtist) {
                     artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                    searchedArtist = true;
                 }
                 if (CollectionUtils.isNotEmpty(artists)) {
                     songIds.addAll(songComplexService.searchSongsByArtists(null, artists));
                 }
             }
             if (songIds.size() < songCount) {
-                if (CollectionUtils.size(albums) == NumberUtils.INTEGER_ZERO &&
-                        (albumCount == null
-                            || albumCount.equals(NumberUtils.INTEGER_ZERO))) {
-                    albums = searchAlbums(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                if (!searchedAlbum) {
+                    albums = this.searchAlbums(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
                 }
                 if (CollectionUtils.isNotEmpty(albums)) {
                     songIds.addAll(songComplexService.searchSongsByAlbums(null, albums));

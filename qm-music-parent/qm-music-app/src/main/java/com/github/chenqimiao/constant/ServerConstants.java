@@ -27,5 +27,9 @@ public abstract class ServerConstants {
 
     public static final String SUBSONIC_RESPONSE_ROOT_WRAP = "subsonic-response";
 
+    public static String OPEN_SUBSONIC_TYPE = "Qm-Music";
+
+    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.6";
+
 
 }

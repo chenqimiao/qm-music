@@ -98,9 +98,6 @@ public class AlbumSongController {
         AlbumList2Response albumList2Response = new AlbumList2Response();
 
         List<AlbumList2Response.Album> albumList = modelMapper.map(albums, TYPE_LIST_ALBUM);
-        albumList.forEach(n -> {
-            n.setSongCount(10);
-        });
         if (CollectionUtils.isNotEmpty(albumList)) {
             albumList2Response.setAlbumList2(AlbumList2Response.AlbumList.builder()
                     .albums(albumList).build());

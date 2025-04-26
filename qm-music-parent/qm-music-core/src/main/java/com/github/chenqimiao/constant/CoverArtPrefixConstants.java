@@ -12,6 +12,6 @@ public abstract class CoverArtPrefixConstants {
     public static final String ARTIST_ID_PREFIX = "ar-";
 
 
-    public static final String SONG_COVER_ART_PREFIX = "";
+    public static final String SONG_COVER_ART_PREFIX = "mf-";
 
 }

@@ -1,5 +1,6 @@
 package com.github.chenqimiao.dto;
 
+import com.github.chenqimiao.constant.CoverArtPrefixConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +16,6 @@ public class ArtistDTO {
 
     private String name;
 
-    private String coverArt;
-
     private String artistImgUrl;
 
     private String firstLetter;
@@ -25,5 +24,11 @@ public class ArtistDTO {
 
     private Long gmtCreate;
 
+    public String getCoverArt() {
+        if (id == null) {
+            return null;
+        }
+        return CoverArtPrefixConstants.ARTIST_ID_PREFIX + id;
+    }
 
 }

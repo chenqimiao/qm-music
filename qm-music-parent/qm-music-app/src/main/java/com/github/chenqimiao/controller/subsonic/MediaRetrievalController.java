@@ -53,14 +53,16 @@ public class MediaRetrievalController {
         if (id.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){
             songCoverStreamDTO = mediaRetrievalService.getAlbumCoverStreamDTO(bizId, size);
         }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_ID_PREFIX)){
-            // do not support artist cover art
-           // throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+
             songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
             if(songCoverStreamDTO == null){
                  throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
             }
 
-            //return ResponseEntity.ok().body(null);
+        }else if (id.startsWith(CoverArtPrefixConstants.SONG_COVER_ART_PREFIX)) {
+
+            songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(bizId, size);
+
         }else {
             songCoverStreamDTO = mediaRetrievalService.getSongCoverStreamDTO(Long.valueOf(id), size);
         }

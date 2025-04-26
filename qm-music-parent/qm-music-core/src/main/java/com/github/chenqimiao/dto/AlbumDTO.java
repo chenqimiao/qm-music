@@ -1,5 +1,6 @@
 package com.github.chenqimiao.dto;
 
+import com.github.chenqimiao.constant.CoverArtPrefixConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,12 @@ public class AlbumDTO {
     private Integer songCount;
     private Long gmtCreate;
     private Integer duration;
-    private String coverArt;
     private String artistName;
+
+    public String getCoverArt() {
+        if (id == null) {
+            return null;
+        }
+        return CoverArtPrefixConstants.ALBUM_ID_PREFIX + id;
+    }
 }

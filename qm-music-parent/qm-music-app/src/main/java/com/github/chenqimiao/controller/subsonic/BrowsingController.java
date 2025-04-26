@@ -205,6 +205,7 @@ public class BrowsingController {
             return s;
         }).collect(Collectors.toList());
         album.setSongs(songList);
+        album.setSongCount(CollectionUtils.size(songList));
         albumResponse.setAlbum(album);
         return albumResponse;
     }

@@ -19,16 +19,16 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StarredResponse extends SubsonicResponse {
+public class Starred2Response extends SubsonicResponse {
 
-    private Starred starred;
+    private Starred2 starred2;
 
     @Getter
     @Setter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Starred {
+    public static class Starred2 {
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName ="artist")
@@ -95,6 +95,7 @@ public class StarredResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true, localName = "year")
         @JSONField(name = "year")
         private String releaseYear;
+
         @JacksonXmlProperty(isAttribute = true )
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

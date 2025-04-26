@@ -98,6 +98,9 @@ public class AlbumSongController {
         AlbumList2Response albumList2Response = new AlbumList2Response();
 
         List<AlbumList2Response.Album> albumList = modelMapper.map(albums, TYPE_LIST_ALBUM);
+        albumList.forEach(n -> {
+            n.setSongCount(10);
+        });
         if (CollectionUtils.isNotEmpty(albumList)) {
             albumList2Response.setAlbumList2(AlbumList2Response.AlbumList.builder()
                     .albums(albumList).build());
@@ -121,6 +124,26 @@ public class AlbumSongController {
                 .albums(modelMapper.map(resource.getAlbums(), TYPE_STAR_LIST_ALBUM))
                 .songs(modelMapper.map(resource.getSongs(), TYPE_STAR_LIST_SONG))
                 .artists( modelMapper.map(resource.getArtists(), TYPE_STAR_LIST_ARTIST))
+                .build());
+
+
+    }
+
+    private static final Type TYPE_STAR2_LIST_ALBUM = new TypeToken<List<StarredResponse.Album>>() {}.getType();
+    private static final Type TYPE_STAR2_LIST_SONG = new TypeToken<List<StarredResponse.Song>>() {}.getType();
+    private static final Type TYPE_STAR2_LIST_ARTIST = new TypeToken<List<StarredResponse.Artist>>() {}.getType();
+
+    @GetMapping("/getStarred2")
+    public Starred2Response getStarred2(@RequestParam(required = false) Long musicFolderId) {
+
+        Long authedUserId = WebUtils.currentUserId();
+        UserStarResourceDTO resource = mediaRetrievalService.getUserStarResourceDTO(authedUserId);
+
+        return new Starred2Response(Starred2Response.Starred2
+                .builder()
+                .albums(modelMapper.map(resource.getAlbums(), TYPE_STAR2_LIST_ALBUM))
+                .songs(modelMapper.map(resource.getSongs(), TYPE_STAR2_LIST_SONG))
+                .artists( modelMapper.map(resource.getArtists(), TYPE_STAR2_LIST_ARTIST))
                 .build());
 
 

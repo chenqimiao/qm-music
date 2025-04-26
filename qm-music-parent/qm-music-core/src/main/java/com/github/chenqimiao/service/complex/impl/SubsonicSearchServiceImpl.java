@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Qimiao Chen
@@ -89,9 +92,20 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 if (artistCount == null
                         || artistCount.equals(NumberUtils.INTEGER_ZERO)) {
                     artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
-                    if (CollectionUtils.isNotEmpty(artists)) {
-                        List<AlbumDTO> albumList = albumComplexService.searchAlbumByArtist(artists.getFirst().getId());
-                        albums.addAll(albumList);
+                }
+                if (CollectionUtils.isNotEmpty(artists)) {
+                    List<AlbumDTO> albumList = albumComplexService.searchAlbumByArtist(artists.getFirst().getId());
+                    if (CollectionUtils.isNotEmpty(albumList)) {
+                        albums = Stream.concat(albums.stream(), albumList.stream())
+                                .collect(Collectors.toMap(
+                                        AlbumDTO::getId, // 以id作为去重依据
+                                        Function.identity(),
+                                        (existing, replacement) -> existing, // 遇到重复id时保留已存在的元素
+                                        LinkedHashMap::new // 使用LinkedHashMap保持插入顺序
+                                ))
+                                .values()
+                                .stream()
+                                .toList();
                     }
                 }
             }

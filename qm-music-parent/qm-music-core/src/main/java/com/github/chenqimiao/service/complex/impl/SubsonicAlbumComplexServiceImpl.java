@@ -1,12 +1,15 @@
 package com.github.chenqimiao.service.complex.impl;
 
 import com.github.chenqimiao.DO.AlbumDO;
+import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.PlayHistoryDTO;
 import com.github.chenqimiao.dto.SongDTO;
+import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.repository.AlbumRepository;
+import com.github.chenqimiao.repository.ArtistRelationRepository;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.AlbumSearchRequest;
@@ -56,6 +59,9 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     @Autowired
     private AlbumService albumService;
 
+    @Autowired
+    private ArtistRelationRepository artistRelationRepository;
+
 
     @Override
     public void organizeAlbums() {
@@ -100,6 +106,14 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
             return this.getDefaultAlbumList2(albumSearchRequest);
         }
         return this.getDefaultAlbumList2(albumSearchRequest);
+    }
+
+    @Override
+    public List<AlbumDTO> searchAlbumByArtist(Long artistId) {
+        List<ArtistRelationDO> artistRelationList =
+                artistRelationRepository.findByArtistIdAndType(artistId, EnumArtistRelationType.ALBUM.getCode());
+        List<Long> albumIds = artistRelationList.stream().map(ArtistRelationDO::getRelation_id).toList();
+        return albumService.batchQueryAlbumByAlbumIds(albumIds);
     }
 
     private List<AlbumDTO> getFrequentAlbumList2(AlbumSearchRequest albumSearchRequest) {

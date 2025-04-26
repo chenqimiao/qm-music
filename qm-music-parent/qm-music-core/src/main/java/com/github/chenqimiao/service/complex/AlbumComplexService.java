@@ -17,5 +17,5 @@ public interface AlbumComplexService {
 
     List<AlbumDTO> getAlbumList2(AlbumSearchRequest albumSearchRequest);
 
-
+    List<AlbumDTO> searchAlbumByArtist(Long artistId);
 }

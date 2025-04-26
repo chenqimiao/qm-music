@@ -12,7 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,7 +38,7 @@ public class SubsonicAlbumServiceImpl implements AlbumService {
     @Override
     public List<AlbumDTO> batchQueryAlbumByAlbumIds(List<Long> albumIds) {
         if (CollectionUtils.isEmpty(albumIds)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         List<AlbumDO> albums = albumRepository.queryByIds(albumIds);
         return ucModelMapper.map(albums, ModelMapperTypeConstants.TYPE_LIST_ALBUM_DTO);

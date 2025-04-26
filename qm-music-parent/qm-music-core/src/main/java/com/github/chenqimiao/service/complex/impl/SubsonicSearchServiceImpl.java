@@ -4,12 +4,11 @@ import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.dto.SearchResultDTO;
-import com.github.chenqimiao.repository.ArtistRelationRepository;
-import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.request.CommonSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.SongService;
+import com.github.chenqimiao.service.complex.AlbumComplexService;
 import com.github.chenqimiao.service.complex.SearchService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.TransliteratorUtils;
@@ -38,14 +37,13 @@ public class SubsonicSearchServiceImpl implements SearchService {
     @Autowired
     private SongComplexService songComplexService;
 
-    @Autowired
-    private ArtistRelationRepository artistRelationRepository;
 
     @Autowired
     private SongService songService;
 
+
     @Autowired
-    private SongRepository songRepository;
+    private AlbumComplexService albumComplexService;
 
 
     @Override
@@ -86,6 +84,17 @@ public class SubsonicSearchServiceImpl implements SearchService {
         }
         if (albumCount != null && albumCount > 0) {
             albums = searchAlbums(query, albumCount, albumOffset, retryReverse, reversedQuery);
+            if (CollectionUtils.size(albums) < albumCount) {
+                // retry
+                if (artistCount == null
+                        || artistCount.equals(NumberUtils.INTEGER_ZERO)) {
+                    artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
+                    if (CollectionUtils.isNotEmpty(artists)) {
+                        List<AlbumDTO> albumList = albumComplexService.searchAlbumByArtist(artists.getFirst().getId());
+                        albums.addAll(albumList);
+                    }
+                }
+            }
             searchResultDTO.setAlbums(albums);
         }
         if (songCount != null && songCount > 0) {
@@ -95,8 +104,9 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 songIds.addAll(songService.searchSongIdsByTitle(reversedQuery, songCount - songIds.size(), songOffset));
             }
             if (songIds.size() < songCount) {
-                if (artistCount == null
-                        || artistCount.equals(NumberUtils.INTEGER_ZERO)) {
+                if (CollectionUtils.size(artists) == NumberUtils.INTEGER_ZERO
+                        && (artistCount == null
+                            || artistCount.equals(NumberUtils.INTEGER_ZERO))) {
                     artists = this.searchArtists(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
                 }
                 if (CollectionUtils.isNotEmpty(artists)) {
@@ -104,8 +114,9 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 }
             }
             if (songIds.size() < songCount) {
-                if (albumCount == null
-                        || albumCount.equals(NumberUtils.INTEGER_ZERO)) {
+                if (CollectionUtils.size(albums) == NumberUtils.INTEGER_ZERO &&
+                        (albumCount == null
+                            || albumCount.equals(NumberUtils.INTEGER_ZERO))) {
                     albums = searchAlbums(query, NumberUtils.INTEGER_ONE, NumberUtils.INTEGER_ZERO, retryReverse, reversedQuery);
                 }
                 if (CollectionUtils.isNotEmpty(albums)) {
@@ -113,7 +124,10 @@ public class SubsonicSearchServiceImpl implements SearchService {
                 }
             }
             if (!songIds.isEmpty()) {
-                List<Long> songIdList = Lists.partition(new ArrayList<>(songIds), songCount).getFirst();
+                List<Long> songIdList = new ArrayList<>(songIds);
+                if (CollectionUtils.size(songIdList) > songCount) {
+                    songIdList = Lists.partition(songIdList, songCount).getFirst();
+                }
                 List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(songIdList, authedUserId);
                 searchResultDTO.setComplexSongs(complexSongs);
             }

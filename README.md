@@ -127,7 +127,7 @@ services:
 
 ### 🚀 核心功能
 - **Docker 容器化部署** - 一键启动，轻量无依赖
-- **Subsonic 协议全兼容** - 完美适配音流/Substreamer 等客户端
+- **Subsonic 协议全兼容** - 完美适配音流/Amperfy 等客户端
 - **智能音频转码** - 动态切换 libmp3lame/acc 编码（按需启用）,节省带宽流量
 - **多格式支持** - MP3/FLAC/AAC/WAV 等主流格式全覆盖
 - **低资源占用** - 运行内存仅需约 150MB

@@ -51,12 +51,12 @@ public class SongDTO {
     private String track;
 
     // 采样率 (samplingRate)
-    private String samplingRate;
+    private Integer samplingRate;
 
     // 声道数 (channelCount) - 注意：某些格式可能不支持
-    private String channels;
+    private Integer channels;
 
-    private String bitDepth;
+    private Integer bitDepth;
 
     public String getCoverArt() {
         if (id == null) {

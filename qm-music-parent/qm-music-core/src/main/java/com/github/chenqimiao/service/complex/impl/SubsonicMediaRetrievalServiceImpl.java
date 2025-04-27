@@ -83,7 +83,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private AlbumService albumService;
     @Autowired
     private SongService songService;
-    @Autowired
+    @Resource
     private ModelMapper ucModelMapper;
 
     @Override

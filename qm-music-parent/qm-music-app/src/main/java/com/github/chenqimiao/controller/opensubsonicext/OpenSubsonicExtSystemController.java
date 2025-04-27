@@ -1,6 +1,7 @@
 package com.github.chenqimiao.controller.opensubsonicext;
 
 import com.github.chenqimiao.response.opensubsonic.OpenSubsonicExtensionsResponse;
+import com.google.common.collect.Lists;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,16 +20,17 @@ public class OpenSubsonicExtSystemController {
 
     static {
         List<OpenSubsonicExtensionsResponse.OpenSubsonicExtension> openSubsonicExtensions = new ArrayList<>();
-        // var openSubsonicExtension = new OpenSubsonicExtensionsResponse.OpenSubsonicExtension();
-        // openSubsonicExtension.setName("songLyrics");
-        // openSubsonicExtension.setVersions(Lists.newArrayList(1,2));
-        //openSubsonicExtensions.add(openSubsonicExtension);
+         var openSubsonicExtension = new OpenSubsonicExtensionsResponse.OpenSubsonicExtension();
+         openSubsonicExtension.setName("songLyrics");
+         openSubsonicExtension.setVersions(Lists.newArrayList(1,2));
+        openSubsonicExtensions.add(openSubsonicExtension);
         OPEN_SUBSONIC_EXTENSIONS_RESPONSE = new OpenSubsonicExtensionsResponse();
-        // OPEN_SUBSONIC_EXTENSIONS_RESPONSE.setOpenSubsonicExtensions(openSubsonicExtensions);
+         OPEN_SUBSONIC_EXTENSIONS_RESPONSE.setOpenSubsonicExtensions(openSubsonicExtensions);
     }
 
     @RequestMapping("/getOpenSubsonicExtensions")
     public OpenSubsonicExtensionsResponse getOpenSubsonicExtensions() {
+
         return OPEN_SUBSONIC_EXTENSIONS_RESPONSE;
     }
 }

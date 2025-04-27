@@ -1,5 +1,6 @@
 package com.github.chenqimiao.constant;
 
+import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 
 /**
@@ -29,7 +30,8 @@ public abstract class ServerConstants {
 
     public static String OPEN_SUBSONIC_TYPE = "Qm-Music";
 
-    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.6";
+    public static String OPEN_SUBSONIC_SERVER_VERSION = "0.1.3 (tag)";
 
+    public static final OpenSubsonicResponse OPEN_SUBSONIC_EMPTY_RESPONSE = new OpenSubsonicResponse();
 
 }

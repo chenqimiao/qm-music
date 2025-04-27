@@ -2,6 +2,7 @@ package com.github.chenqimiao.service.complex;
 
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
+import com.github.chenqimiao.io.local.LrcParser;
 
 
 /**
@@ -20,4 +21,6 @@ public interface MediaRetrievalService {
     String getLyrics(String artistName, String songTitle);
 
     SongStreamDTO getSongStream(Long songId, Integer maxBitRate, String format, Integer estimateContentLength);
+
+    LrcParser.StructuredLyrics getLyricsBySongId(Long songId);
 }

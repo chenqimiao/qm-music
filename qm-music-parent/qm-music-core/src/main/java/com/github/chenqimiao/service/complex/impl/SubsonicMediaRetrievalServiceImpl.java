@@ -13,6 +13,7 @@ import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumAudioFormat;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
+import com.github.chenqimiao.io.local.LrcParser;
 import com.github.chenqimiao.io.local.MusicFileReader;
 import com.github.chenqimiao.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.io.local.model.MusicMeta;
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.tag.images.Artwork;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -81,6 +83,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     private AlbumService albumService;
     @Autowired
     private SongService songService;
+    @Autowired
+    private ModelMapper ucModelMapper;
 
     @Override
     public CoverStreamDTO getSongCoverStreamDTO(Long songId, Integer size) {
@@ -474,29 +478,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         if (song == null) {
             return null;
         }
-        String filePath = song.getFile_path();
-        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
-        String lyrics = musicMeta.getLyrics();
-        if (StringUtils.isNotBlank(lyrics)) {
-            return lyrics;
-        }
-
-        String lrcFile = FileUtils.replaceFileExtension(filePath, ".lrc");
-        Path path = Paths.get(lrcFile);
-        if (Files.exists(path)) {
-            lyrics = Files.readString(path);
-            if (StringUtils.isNotBlank(lyrics)) {
-                return lyrics;
-            }
-        }
-
-        lyrics = metaDataFetchClientCommander.getLyrics(songTitle, artistName);
-
-        if (StringUtils.isNotBlank(lyrics)) {
-            return lyrics;
-        }
-
-        return "";
+        SongDTO songDTO = ucModelMapper.map(song, SongDTO.class);
+        return this.getLyricsStrBySong(songDTO);
     }
 
     @Value("${qm.ffmpeg.enable}")
@@ -581,4 +564,45 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         }
 
     }
+
+    @Override
+    @SneakyThrows
+    public LrcParser.StructuredLyrics getLyricsBySongId(Long songId) {
+        SongDTO songDTO = songService.queryBySongId(songId);
+        if (songDTO == null) {
+            return null;
+        }
+        String lyricsStrBySong = this.getLyricsStrBySong(songDTO);
+        List<String> lines = lyricsStrBySong.lines().toList();
+        LrcParser.StructuredLyrics lyrics = LrcParser.parseLrc(lines, songDTO.getArtistName(), songDTO.getTitle());
+        return lyrics;
+    }
+
+    @SneakyThrows
+    private String getLyricsStrBySong(SongDTO song) {
+        String filePath = song.getFilePath();
+        MusicMeta musicMeta = MusicFileReader.readMusicMeta(filePath);
+        String lyrics = musicMeta.getLyrics();
+        if (StringUtils.isNotBlank(lyrics)) {
+            return lyrics;
+        }
+
+        String lrcFile = FileUtils.replaceFileExtension(filePath, ".lrc");
+        Path path = Paths.get(lrcFile);
+        if (Files.exists(path)) {
+            lyrics = Files.readString(path);
+            if (StringUtils.isNotBlank(lyrics)) {
+                return lyrics;
+            }
+        }
+
+        lyrics = metaDataFetchClientCommander.getLyrics(song.getTitle(), song.getArtistName());
+
+        if (StringUtils.isNotBlank(lyrics)) {
+            return lyrics;
+        }
+
+        return "";
+    }
+
 }

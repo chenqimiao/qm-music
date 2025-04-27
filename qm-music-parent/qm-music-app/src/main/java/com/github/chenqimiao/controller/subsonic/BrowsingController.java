@@ -207,7 +207,36 @@ public class BrowsingController {
         album.setSongs(songList);
         album.setSongCount(CollectionUtils.size(songList));
         albumResponse.setAlbum(album);
+        this.wrapOpenSubsonic(albumResponse);
         return albumResponse;
+    }
+
+    private void wrapOpenSubsonic(AlbumResponse albumResponse) {
+        AlbumResponse.Album album = albumResponse.getAlbum();
+
+        if (album != null) {
+            var artist = new AlbumResponse.Artist();
+            artist.setId(album.getArtistId());
+            artist.setName(album.getArtistName());
+            var albumArtists = Lists.newArrayList(artist);
+
+            album.setSortName(album.getTitle());
+            album.setDisplayArtist(album.getArtistName());
+            album.setArtists(albumArtists);
+        }
+        if (album != null && album.getSongs() != null) {
+            album.getSongs().forEach(n -> {
+                n.setDisplayArtist(n.getArtistName());
+                n.setDisplayAlbumArtist(n.getArtistName());
+                n.setAlbumArtists(album.getArtists());
+
+                var artist = new AlbumResponse.Artist();
+                artist.setId(n.getArtistId());
+                artist.setName(n.getArtistName());
+                n.setDisplayArtist(album.getArtistName());
+                n.setArtists( Lists.newArrayList(artist));
+            });
+        }
     }
 
     private static final Type TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST = new TypeToken<List<ArtistInfoResponse.Artist>>() {}.getType();

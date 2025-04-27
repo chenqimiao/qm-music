@@ -87,8 +87,9 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         @Builder.Default
         private Integer userRating = 5;
 
+        // open subsonic ext
         @JacksonXmlElementWrapper(useWrapping = false)
-        @JacksonXmlProperty(isAttribute = true, localName = "artists")
+        @JacksonXmlProperty(localName = "artists")
         @JSONField(name = "artists")
         private List<AlbumArtist> albumArtists;
 

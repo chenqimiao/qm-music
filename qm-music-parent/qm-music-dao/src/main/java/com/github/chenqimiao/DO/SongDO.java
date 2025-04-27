@@ -34,4 +34,10 @@ public class SongDO {
     private String genre;
     private String track;
 
+    private Integer sampling_rate;
+    private Integer channels;
+    private Integer bit_depth;
+
+
+
 }

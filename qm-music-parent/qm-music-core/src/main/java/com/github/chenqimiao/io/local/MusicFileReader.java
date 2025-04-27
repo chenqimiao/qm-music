@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
@@ -32,6 +33,17 @@ public abstract class MusicFileReader {
             return null;
         }
         Tag tag = f.getTag();
+        AudioHeader audioHeader = f.getAudioHeader();
+        String trackGrain = tag.getFirst("TXXX:REPLAYGAIN_TRACK_GAIN");
+        if (StringUtils.isBlank(trackGrain)) {
+            trackGrain = tag.getFirst("REPLAYGAIN_TRACK_GAIN");
+        }
+        String trackPeak = tag.getFirst("TXXX:REPLAYGAIN_TRACK_PEAK");
+        if (StringUtils.isBlank(trackPeak)) {
+            trackPeak = tag.getFirst("REPLAYGAIN_TRACK_PEAK");
+
+        }
+
         return MusicMeta.builder().title(tag.getFirst(FieldKey.TITLE))
                 .musicAlbumMeta(MusicAlbumMeta.builder()
                         .album(tag.getFirst(FieldKey.ALBUM))
@@ -43,16 +55,23 @@ public abstract class MusicFileReader {
                         .year(tag.getFirst(FieldKey.YEAR))
                         .musicbrainzReleaseType(tag.getFirst(FieldKey.MUSICBRAINZ_RELEASE_TYPE))
                         .genre(tag.getFirst("ALBUMGENRE"))
+                        .albumPeak(tag.getFirst("TXXX:REPLAYGAIN_ALBUM_PEAK"))
+                        .albumGain(tag.getFirst("TXXX:REPLAYGAIN_ALBUM_GAIN"))
                         .build()
                 )
                 .artist(tag.getFirst(FieldKey.ARTIST))
                 .genre(tag.getFirst(FieldKey.GENRE))
                 .lyrics(tag.getFirst(FieldKey.LYRICS))
                 .comment(tag.getFirst(FieldKey.COMMENT))
-                .format(f.getAudioHeader().getFormat())
-                .bitRate(f.getAudioHeader().getBitRate())
-                .trackLength(f.getAudioHeader().getTrackLength())
+                .format(audioHeader.getFormat())
+                .bitRate(audioHeader.getBitRate())
+                .trackLength(audioHeader.getTrackLength())
                 .track(tag.getFirst(FieldKey.TRACK))
+                .samplingRate(audioHeader.getSampleRate())
+                .channels(audioHeader.getChannels())
+                .bitDepth(audioHeader.getBitRate())
+                .trackPeak(trackGrain)
+                .trackGain(trackGrain)
                 .build();
     }
 

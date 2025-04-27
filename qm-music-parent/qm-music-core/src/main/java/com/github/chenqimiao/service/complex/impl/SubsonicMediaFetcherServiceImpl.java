@@ -254,6 +254,12 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
         songDO.setTrack(StringUtils.isBlank(musicMeta.getTrack()) ? "1" : musicMeta.getTrack() );
+        int samplingRate = NumberUtils.toInt(musicMeta.getSamplingRate(), NumberUtils.INTEGER_ZERO);
+        songDO.setSampling_rate(samplingRate);
+        int channels = NumberUtils.toInt(musicMeta.getChannels(), NumberUtils.INTEGER_ZERO);
+        songDO.setChannels(channels);
+        int bitDepth = NumberUtils.toInt(musicMeta.getBitDepth(), NumberUtils.INTEGER_ZERO);
+        songDO.setBit_depth(bitDepth);
         songRepository.save(songDO);
 
         // save relation

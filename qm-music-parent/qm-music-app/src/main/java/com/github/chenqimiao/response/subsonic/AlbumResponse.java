@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
 import com.github.chenqimiao.util.DateTimeUtils;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AlbumResponse extends SubsonicResponse {
+public class AlbumResponse extends OpenSubsonicResponse {
 
 
     private Album album;
@@ -65,6 +66,19 @@ public class AlbumResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private Integer userRating = 5;
+
+        // open subsonic
+        @JacksonXmlProperty(isAttribute = true)
+        private String sortName;
+
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayArtist;
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        private List<Artist> artists;
+
+
     }
 
     @Setter
@@ -86,7 +100,8 @@ public class AlbumResponse extends SubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Boolean isDir;
+        @Builder.Default
+        private Boolean isDir = false;
         @JacksonXmlProperty(isAttribute = true)
         private String coverArt;
         @JacksonXmlProperty(isAttribute = true, localName = "created")
@@ -121,5 +136,64 @@ public class AlbumResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private Integer userRating = 5;
+
+        // subsonic support
+        @JacksonXmlProperty(isAttribute = true)
+        private String year;
+        @JacksonXmlProperty(isAttribute = true)
+        private String track;
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayArtist;
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayAlbumArtist;
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        private List<Artist> artists;
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        private List<Artist> albumArtists;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String comment;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String sortName;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private String mediaType = "song";
+
+        @JacksonXmlProperty(isAttribute = true, localName = "channelCount")
+        @JSONField(name= "channelCount")
+        private Integer channels ;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer samplingRate ;
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer bitDepth;
+
+        // private ReplayGain replayGain ;
     }
+
+//    @Setter
+//    @Getter
+//    public static class ReplayGain {
+//        @JacksonXmlProperty(isAttribute = true)
+//        private Integer trackPeak = 1;
+//        @JacksonXmlProperty(isAttribute = true)
+//        private Integer albumPeak = 1;
+//    }
+
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Artist {
+        @JacksonXmlProperty(isAttribute = true)
+        private Long id;
+        @JacksonXmlProperty(isAttribute = true)
+        private String name;
+    }
+
 }

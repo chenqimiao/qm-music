@@ -42,4 +42,15 @@ public class MusicMeta {
     private Integer trackLength;
 
     private String track;
+
+    // 采样率 (samplingRate)
+    private String samplingRate;
+
+    // 声道数 (channelCount) - 注意：某些格式可能不支持
+    private String channels;
+
+    private String bitDepth;
+
+    private String trackGain;
+    private String trackPeak;
 }

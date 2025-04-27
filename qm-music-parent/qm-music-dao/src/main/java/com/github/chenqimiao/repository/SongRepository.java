@@ -126,11 +126,13 @@ public class SongRepository {
                         insert into song(id, parent, title, album_id, album_title, artist_id,
                                          artist_name, size, suffix, content_type,
                                          year, duration, bit_rate,file_path,
-                                         file_hash, file_last_modified, genre, track)
+                                         file_hash, file_last_modified, genre, track,
+                                         sampling_rate, channels, bit_depth)
                           values(:id, :parent, :title, :album_id, :album_title, :artist_id,
                                  :artist_name, :size, :suffix, :content_type, :year,
                                  :duration, :bit_rate, :file_path, :file_hash,
-                                 :file_last_modified,:genre, :track)
+                                 :file_last_modified,:genre, :track, 
+                                 sampling_rate, :channels, :bit_depth)
                      """;
         namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
     }

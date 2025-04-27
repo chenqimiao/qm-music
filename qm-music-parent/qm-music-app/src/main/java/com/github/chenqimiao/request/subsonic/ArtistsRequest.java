@@ -5,7 +5,7 @@ import lombok.Setter;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/2 14:09
+ * @since 2025/4/2
  **/
 @Getter
 @Setter

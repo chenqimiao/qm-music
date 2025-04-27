@@ -1,12 +1,11 @@
 package com.github.chenqimiao.response.subsonic;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.*;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/1 17:15
+ * @since 2025/4/1
  **/
 @Setter
 @Getter

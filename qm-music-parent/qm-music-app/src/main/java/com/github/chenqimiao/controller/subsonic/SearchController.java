@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/3 09:51
+ * @since 2025/4/3
  **/
 @RestController
 @RequestMapping(value = "/rest")

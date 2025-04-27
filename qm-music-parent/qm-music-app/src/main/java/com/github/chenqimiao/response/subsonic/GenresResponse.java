@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/2 15:48
+ * @since 2025/4/2
  **/
 @Setter
 @Getter

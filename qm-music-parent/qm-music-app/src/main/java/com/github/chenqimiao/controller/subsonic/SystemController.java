@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Qimiao Chen
- * @since 2025/3/28 15:54
+ * @since 2025/3/28
  **/
 @RestController
 @RequestMapping(value = "/rest")

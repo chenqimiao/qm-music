@@ -17,7 +17,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * @author Qimiao Chen
- * @since 2025/3/28 16:55
+ * @since 2025/3/28
  **/
 @Component
 @Slf4j

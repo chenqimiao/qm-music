@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * @author Qimiao Chen
- * @since 2025/4/5 13:41
+ * @since 2025/4/5
  **/
 @RestController
 @RequestMapping(value = "/rest")

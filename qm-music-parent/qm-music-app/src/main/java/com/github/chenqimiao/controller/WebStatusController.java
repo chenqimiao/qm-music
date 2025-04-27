@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author Qimiao Chen
- * @since 2025/3/28 13:38
+ * @since 2025/3/28
  **/
 @Controller
 @RequestMapping("/api/system")

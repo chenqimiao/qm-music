@@ -35,6 +35,7 @@ docker run -d \
   -e QM_SPOTIFY_CLIENT_SECRET=[QM_SPOTIFY_CLIENT_SECRET] \
   -e QM_LASTFM_ENABLE=false \
   -e QM_LASTFM_API_KEY=[QM_LASTFM_API_KEY] \
+  -e QM_REFRESH_AUTO=true \
   --restart unless-stopped \
   qmmusic/qm-music:latest
 ```
@@ -60,6 +61,7 @@ services:
       - QM_SPOTIFY_CLIENT_SECRET=[QM_SPOTIFY_CLIENT_SECRET]
       - QM_LASTFM_ENABLE=false
       - QM_LASTFM_API_KEY=[QM_LASTFM_API_KEY]
+      - QM_REFRESH_AUTO=true
     restart: unless-stopped
 ```
 
@@ -72,6 +74,7 @@ services:
     - `QM_SPOTIFY_CLIENT_SECRET` Not required
     - `QM_LASTFM_ENABLE=false` Enable for enhanced metadata support [LAST FM KEY Application](https://www.last.fm/api#getting-started)
     - `QM_LASTFM_API_KEY` Not required
+    - `QM_REFRESH_AUTO` Scheduled refresh music library switch is enabled by default
 - **Volume Mounts**
     - `/data/qm-music/music_dir`: Music file storage directory.
     - `/data/qm-music/db`: Database and metadata storage directory (do not store other files here).

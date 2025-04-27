@@ -49,7 +49,8 @@ ENV QM_FFMPEG_ENABLE=false \
     QM_SPOTIFY_CLIENT_ID="" \
     QM_SPOTIFY_CLIENT_SECRET="" \
     QM_LASTFM_ENABLE=false \
-    QM_LASTFM_API_KEY=""
+    QM_LASTFM_API_KEY="" \
+    QM_REFRESH_AUTO=true
 
 EXPOSE 6688
 ENTRYPOINT ["/app/entrypoint.sh"]

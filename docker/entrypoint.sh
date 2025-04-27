@@ -15,4 +15,5 @@ exec java $JAVA_OPTS -jar app.jar \
     "-Dqm.spotify.client.id=${QM_SPOTIFY_CLIENT_ID}" \
     "-Dqm.spotify.client.secret=${QM_SPOTIFY_CLIENT_SECRET}" \
     "-Dqm.lastfm.enable=${QM_LASTFM_ENABLE}" \
-    "-Dqm.lastfm.api.key=${QM_LASTFM_API_KEY}"
+    "-Dqm.lastfm.api.key=${QM_LASTFM_API_KEY}" \
+    "-Dqm.refresh.auto=${QM_REFRESH_AUTO}"

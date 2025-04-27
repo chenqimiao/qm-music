@@ -30,11 +30,18 @@ public class CronJob {
     @Autowired
     private PlayHistoryService playHistoryService;
 
+    @Value("${qm.refresh.auto}")
+    private Boolean autoRefresh;
+
     @Scheduled(cron = "0 8 */2 * * *")
     public void refreshSongsCronJob() {
         UserDTO userDTO = userService.findByUsername(defaultUserName);
         if (userDTO != null && Boolean.TRUE.equals(userDTO.getForcePasswordChange())) {
             // 初始化完成后，才会定时刷新歌曲
+            return;
+        }
+        if (Boolean.FALSE.equals(autoRefresh)) {
+            // 默认会自动刷新曲库，需要强制关闭
             return;
         }
         systemService.refreshSongs();

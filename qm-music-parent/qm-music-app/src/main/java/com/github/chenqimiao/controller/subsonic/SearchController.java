@@ -26,9 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Qimiao Chen
@@ -148,8 +146,20 @@ public class SearchController {
         SearchResult3Response.SearchResult3 searchResult3 = builder.build();
         this.wrapStarredTime(searchResult3, authedUserId);
         this.wrapArtistImgUrl(searchResult3);
+        this.wrapOpenSubsonicExt(searchResult3);
         return SearchResult3Response.builder().searchResult3(searchResult3).build();
 
+    }
+
+    private void wrapOpenSubsonicExt(SearchResult3Response.SearchResult3 searchResult3) {
+        if (CollectionUtils.isEmpty(searchResult3.getAlbums()))  return;
+        searchResult3.getAlbums().forEach(album -> {
+            var artist = new SearchResult3Response.AlbumArtist();
+            artist.setId(album.getArtistId());
+            artist.setName(album.getArtistName());
+            album.setAlbumArtists(Collections.singletonList(artist));
+            album.setDisplayArtist(album.getArtistName());
+        });
     }
 
     private void wrapArtistImgUrl(SearchResult3Response.SearchResult3 searchResult3) {

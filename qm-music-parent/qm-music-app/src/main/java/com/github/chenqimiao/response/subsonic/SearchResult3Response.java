@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
-public class SearchResult3Response extends SubsonicResponse {
+public class SearchResult3Response extends OpenSubsonicResponse {
 
     private SearchResult3 searchResult3;
 
@@ -85,6 +86,25 @@ public class SearchResult3Response extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private Integer userRating = 5;
+
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(isAttribute = true, localName = "artists")
+        @JSONField(name = "artists")
+        private List<AlbumArtist> albumArtists;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String year;
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayArtist;
+    }
+
+    @Setter
+    @Getter
+    public static class AlbumArtist {
+        @JacksonXmlProperty(isAttribute = true)
+        private Long id;
+        @JacksonXmlProperty(isAttribute = true)
+        private String name;
     }
 
 

@@ -186,8 +186,22 @@ public class BrowsingController {
         SongResponse response = new SongResponse();
         SongResponse.Song song = modelMapper.map(complexSongs.getFirst(), SongResponse.Song.class);
         song.setArtistName(complexSongs.stream().findFirst().map(ComplexSongDTO::getArtistsName).orElse(""));
+        wrapOpenSubsonic(song);
         response.setSong(song);
         return response;
+    }
+
+    private void wrapOpenSubsonic(SongResponse.Song song) {
+        if (song == null) return;
+        song.setDisplayArtist(song.getArtistName());
+        song.setDisplayAlbumArtist(song.getArtistName());
+        song.setAlbumArtists(song.getArtists());
+
+        var artist = new SongResponse.Artist();
+        artist.setId(song.getArtistId());
+        artist.setName(song.getArtistName());
+        song.setDisplayArtist(song.getArtistName());
+        song.setArtists(Lists.newArrayList(artist));
     }
 
     @GetMapping(value = "/getAlbum")

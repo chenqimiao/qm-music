@@ -2,12 +2,15 @@ package com.github.chenqimiao.response.subsonic;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
 import com.github.chenqimiao.util.DateTimeUtils;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Qimiao Chen
@@ -15,7 +18,7 @@ import java.util.Date;
  **/
 @Setter
 @Getter
-public class SongResponse extends SubsonicResponse {
+public class SongResponse extends OpenSubsonicResponse {
 
     private Song song;
 
@@ -84,7 +87,52 @@ public class SongResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer playCount;
 
+        // open subsonic
+        @JacksonXmlProperty(isAttribute = true)
+        private String track;
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayArtist;
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayAlbumArtist;
+        @JacksonXmlElementWrapper(useWrapping = false)
+        private List<Artist> artists;
+        @JacksonXmlElementWrapper(useWrapping = false)
+        private List<Artist> albumArtists;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String comment;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String sortName;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private String mediaType = "song";
+
+        @JacksonXmlProperty(isAttribute = true, localName = "channelCount")
+        @JSONField(name= "channelCount")
+        private Integer channels ;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer samplingRate ;
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer bitDepth;
+
+
     }
+
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Artist {
+        @JacksonXmlProperty(isAttribute = true)
+        private Long id;
+        @JacksonXmlProperty(isAttribute = true)
+        private String name;
+    }
+
 }
 
 

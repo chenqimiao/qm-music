@@ -51,6 +51,16 @@ public class ModelMapperConfig {
         }
     };
 
+    private final Converter<Long, String> longToStringConverter = new AbstractConverter<>() {
+        @Override
+        protected String convert(Long id) {
+            if (id == null) {
+                return null;
+            }
+            return String.valueOf(id);
+        }
+    };
+
 
     public static class NullSafeModelMapper extends ModelMapper {
 
@@ -103,6 +113,8 @@ public class ModelMapperConfig {
         modelMapper.addConverter(dateToStringConverter);
 
         modelMapper.addConverter(longToDateConverter);
+
+        modelMapper.addConverter(longToStringConverter);
 
         return modelMapper;
     }

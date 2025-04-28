@@ -1,6 +1,5 @@
 package com.github.chenqimiao.config;
 
-import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
 import com.github.chenqimiao.interceptor.SubsonicAuthInterceptor;
@@ -30,9 +29,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
         // 配置序列化特性
-        config.setWriterFeatures(
-                JSONWriter.Feature.WriteNulls        // 输出空字段
-        );
+//        config.setWriterFeatures(
+//                JSONWriter.Feature.WriteNulls        // 输出空字段
+//        );
 
         config.setDateFormat("yyyy-MM-dd HH:mm:ss");
         config.setCharset(StandardCharsets.UTF_8);

@@ -34,7 +34,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         @JSONField(name = "name")
         private String title;
@@ -53,7 +53,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
         @JSONField(name = "artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Long artistId;
+        private String artistId;
         @JacksonXmlProperty(isAttribute = true, localName = "year")
         @JSONField(name = "year")
         private String releaseYear;
@@ -88,7 +88,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class Song {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private Long parent;
         @JacksonXmlProperty(isAttribute = true)
@@ -126,9 +126,9 @@ public class AlbumResponse extends OpenSubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Long albumId;
+        private String albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Long artistId;
+        private String artistId;
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private String type = "music";
@@ -191,7 +191,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class Artist {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
     }

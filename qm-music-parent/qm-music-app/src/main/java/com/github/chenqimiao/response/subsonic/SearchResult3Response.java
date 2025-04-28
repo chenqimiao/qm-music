@@ -20,6 +20,8 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SearchResult3Response extends OpenSubsonicResponse {
 
     private SearchResult3 searchResult3;
@@ -57,7 +59,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class Album {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true, localName = "name")
         @JSONField(name ="name")
         private String title;
@@ -76,7 +78,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         @JSONField(name ="artist")
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
-        private Long artistId;
+        private String artistId;
 
         @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
@@ -103,7 +105,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
     @Getter
     public static class AlbumArtist {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
     }
@@ -116,7 +118,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class Song {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private Long parent;
         @JacksonXmlProperty(isAttribute = true)
@@ -154,9 +156,9 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Long albumId;
+        private String albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Long artistId;
+        private String artistId;
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         private String type = "music";
@@ -182,6 +184,17 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         @Builder.Default
         private Integer userRating =5;
 
+
+        @JacksonXmlProperty(isAttribute = true, localName = "channelCount")
+        @JSONField(name= "channelCount")
+        private Integer channels ;
+
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer samplingRate ;
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer bitDepth;
+
     }
     @Getter
     @Setter
@@ -190,7 +203,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
     @NoArgsConstructor
     public static class ArtistItem{
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)

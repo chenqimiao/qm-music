@@ -494,7 +494,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     public SongStreamDTO getSongStream(Long songId,
                                        Integer maxBitRate,
                                        String format,
-                                       Integer estimateContentLength) {
+                                       Boolean estimateContentLength) {
         SongDTO song = songService.queryBySongId(songId);
         if (song == null) {
             throw new ResourceDisappearException("song do not exist");
@@ -510,12 +510,20 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             return this.getRawSongStream(song);
         }
 
+        Long targetSize = null;
+        if (Boolean.TRUE.equals(estimateContentLength)
+                && song.getDuration() != null
+                && maxBitRate != null ) {
+            targetSize = FFmpegStreamUtils.estimateSize(song.getDuration(), maxBitRate, 2048);
+        }
+
         // 转码
         return SongStreamDTO.builder()
                 .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
                         , maxBitRate
                         , format))
                 .filePath(filePath)
+                .size(targetSize)
                 .mimeType(AudioContentTypeDetector.mapFormatToMimeType(format))
                 .build();
 

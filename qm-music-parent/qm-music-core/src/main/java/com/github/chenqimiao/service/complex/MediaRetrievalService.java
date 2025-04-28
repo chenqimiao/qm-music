@@ -20,7 +20,7 @@ public interface MediaRetrievalService {
 
     String getLyrics(String artistName, String songTitle);
 
-    SongStreamDTO getSongStream(Long songId, Integer maxBitRate, String format, Integer estimateContentLength);
+    SongStreamDTO getSongStream(Long songId, Integer maxBitRate, String format, Boolean estimateContentLength);
 
     LrcParser.StructuredLyrics getLyricsBySongId(Long songId);
 

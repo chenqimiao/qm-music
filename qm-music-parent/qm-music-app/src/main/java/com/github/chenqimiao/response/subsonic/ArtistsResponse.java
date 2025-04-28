@@ -56,7 +56,7 @@ public class ArtistsResponse extends SubsonicResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Artist {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private String name;
         @JacksonXmlProperty(isAttribute = true)

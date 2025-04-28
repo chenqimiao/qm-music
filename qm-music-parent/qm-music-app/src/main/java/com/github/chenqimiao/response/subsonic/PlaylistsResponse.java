@@ -85,7 +85,7 @@ public class PlaylistsResponse extends SubsonicResponse{
     public static class Playlist {
 
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
 
         @JacksonXmlProperty(isAttribute = true)
         private String name;

@@ -156,6 +156,20 @@ public abstract class FFmpegStreamUtils {
         return process.getInputStream();
     }
 
+    /**
+     * 估算转码后文件大小
+     *
+     * @param duration      音频时长（秒）
+     * @param bitrateKbps   目标比特率（kbps）
+     * @param metadataSize  元数据大小（字节），默认2048
+     * @return 预估文件大小（字节）
+     */
+    public static long estimateSize(double duration, int bitrateKbps, long metadataSize) {
+        // 计算比特总量并转换为字节
+        long bitToByte = (long) (bitrateKbps * 1000 * duration) / 8;
+        return bitToByte + metadataSize;
+    }
+
     public static void main(String[] args) {
 
         String fFmpegCommand = getFFmpegCommand();

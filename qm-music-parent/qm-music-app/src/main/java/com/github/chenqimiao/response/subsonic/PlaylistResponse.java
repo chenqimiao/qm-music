@@ -32,7 +32,7 @@ public class PlaylistResponse extends SubsonicResponse {
     public static class Playlist {
 
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
 
         @JacksonXmlProperty(isAttribute = true)
         private String name;
@@ -81,7 +81,7 @@ public class PlaylistResponse extends SubsonicResponse {
     @NoArgsConstructor
     public static class Entry  {
         @JacksonXmlProperty(isAttribute = true)
-        private Long id;
+        private String id;
         @JacksonXmlProperty(isAttribute = true)
         private Long parent;
         @JacksonXmlProperty(isAttribute = true)
@@ -118,9 +118,9 @@ public class PlaylistResponse extends SubsonicResponse {
         @JSONField(name = "path")
         private String filePath;
         @JacksonXmlProperty(isAttribute = true)
-        private Long albumId;
+        private String albumId;
         @JacksonXmlProperty(isAttribute = true)
-        private Long artistId;
+        private String artistId;
         @JacksonXmlProperty(isAttribute = true)
         private String type;
         @JacksonXmlProperty(isAttribute = true)

@@ -5,17 +5,16 @@ import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.dto.*;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
+import com.github.chenqimiao.exception.ResourceDisappearException;
 import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.io.net.model.Album;
 import com.github.chenqimiao.io.net.model.ArtistInfo;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistIndexRequest;
 import com.github.chenqimiao.request.subsonic.ArtistInfoRequest;
 import com.github.chenqimiao.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.response.subsonic.*;
-import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.GenreService;
-import com.github.chenqimiao.service.SongService;
-import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.service.*;
 import com.github.chenqimiao.service.complex.ArtistComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
@@ -67,6 +66,9 @@ public class BrowsingController {
     @Autowired
     private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
+    @Autowired
+    private AlbumService albumService;
+
     @RequestMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
 
@@ -97,7 +99,7 @@ public class BrowsingController {
                 Long id = n.getId();
                 String name = n.getName();
                 ArtistIndexResponse.ArtistItem artistItem = new ArtistIndexResponse.ArtistItem();
-                artistItem.setId(id);
+                artistItem.setId(String.valueOf(id));
                 artistItem.setName(name);
                 Long starredTimestamp = starredTimeMap.get(id);
                 if (starredTimestamp != null) {artistItem.setStarred(new Date(starredTimestamp));}
@@ -135,7 +137,7 @@ public class BrowsingController {
                 ComplexArtistDTO complexArtistDTO = complexArtistMap.get(n.getId());
                 return ArtistsResponse.Artist
                                 .builder()
-                                .id(n.getId())
+                                .id(String.valueOf(n.getId()))
                                 .name(n.getName())
                                 .coverArt(n.getCoverArt())
                         .albumCount(complexArtistDTO.getAlbumCount())
@@ -246,7 +248,7 @@ public class BrowsingController {
                 n.setDisplayArtist(n.getArtistName());
                 n.setDisplayAlbumArtist(n.getArtistName());
                 n.setAlbumArtists(album.getArtists());
-
+                n.setSortName(n.getTitle());
                 var artist = new AlbumResponse.Artist();
                 artist.setId(n.getArtistId());
                 artist.setName(n.getArtistName());
@@ -331,5 +333,23 @@ public class BrowsingController {
         List<TopSongsResponse.Song> songs = modelMapper.map(complexSongs, TYPE_LIST_TOP_SONG);
 
         return new TopSongsResponse(new TopSongsResponse.TopSongs(songs));
+    }
+
+    @RequestMapping("/getAlbumInfo2")
+    public GetAlbumInfo2Response getAlbumInfo2(@RequestParam(name = "id") Long albumId) {
+        AlbumDTO albumDTO = albumService.queryAlbumByAlbumId(albumId);
+        if (albumDTO == null) {
+            throw new ResourceDisappearException("album id do not exit");
+        }
+        Album album = metaDataFetchClientCommander.searchAlbum(albumDTO.getTitle(), albumDTO.getArtistName());
+        if (album == null) return (GetAlbumInfo2Response)(ServerConstants.OPEN_SUBSONIC_EMPTY_RESPONSE);
+        return new GetAlbumInfo2Response(GetAlbumInfo2Response
+                                            .AlbumInfo
+                                            .builder()
+                                            .smallImageUrl(album.getSmallImageUrl())
+                                            .mediumImageUrl(album.getMediumImageUrl())
+                                            .largeImageUrl(album.getLargeImageUrl()).build());
+
+
     }
 }

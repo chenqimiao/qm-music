@@ -25,5 +25,6 @@ public class SearchRequest {
 
     private Integer songOffset = 0;
 
+    private String c;
 
 }

@@ -21,12 +21,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -94,20 +94,20 @@ public class SearchController {
 
         if (CollectionUtils.isNotEmpty(albums)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
-                    .relationIds(albums.stream().map(SearchResult2Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
+                    .relationIds(albums.stream().map(n -> Long.valueOf(n.getId())).toList()).startType(EnumUserStarType.ALBUM).build();
             Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             albums.forEach(album -> {
-                Long starredTimestamp = starredTimeMap.get(album.getId());
+                Long starredTimestamp = starredTimeMap.get(Long.valueOf(album.getId()));
                 album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
             });
 
         }
         if (CollectionUtils.isNotEmpty(artists)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
-                    .relationIds(artists.stream().map(SearchResult2Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
+                    .relationIds(artists.stream().map(n -> Long.valueOf(n.getId())).toList()).startType(EnumUserStarType.ARTIST).build();
             Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             artists.forEach(artistItem -> {
-                Long starredTimestamp = starredTimeMap.get(artistItem.getId());
+                Long starredTimestamp = starredTimeMap.get(Long.valueOf(artistItem.getId()));
                 artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
             });
         }
@@ -133,6 +133,27 @@ public class SearchController {
         SearchResult3Response.SearchResult3.SearchResult3Builder builder = SearchResult3Response.SearchResult3.builder();
 
         Long authedUserId = WebUtils.currentUserId();
+        String query = searchRequest.getQuery();
+
+        if (query != null && query.contains(" - ")) {
+            String[] split = query.split(" - ");
+            if (split.length == 2) {
+                searchRequest.setSongCount(4000);
+                searchRequest.setAlbumCount(4000);
+                SearchRequest searchRequest1 = new SearchRequest();
+                SearchRequest searchRequest2 = new SearchRequest();
+                modelMapper.map(searchRequest, searchRequest1);
+                modelMapper.map(searchRequest, searchRequest2);
+                searchRequest1.setQuery(split[0].trim());
+                searchRequest2.setQuery(split[1].trim());
+                SearchResult3Response searchResult3Response1 = this.search3(searchRequest1);
+                SearchResult3Response searchResult3Response2 = this.search3(searchRequest2);
+                return this.mergeSearchResult(searchResult3Response1, searchResult3Response2);
+            }
+
+
+
+        }
 
         CommonSearchRequest commonSearchRequest = modelMapper.map(searchRequest, CommonSearchRequest.class);
         commonSearchRequest.setAuthedUserId(authedUserId);
@@ -148,6 +169,44 @@ public class SearchController {
         this.wrapArtistImgUrl(searchResult3);
         this.wrapOpenSubsonicExt(searchResult3);
         return SearchResult3Response.builder().searchResult3(searchResult3).build();
+
+    }
+
+    private SearchResult3Response mergeSearchResult(SearchResult3Response r1,
+                                                    SearchResult3Response r2) {
+        var searchResult3 = new SearchResult3Response.SearchResult3();
+        var r13 = r1.getSearchResult3();
+        var r23 = r2.getSearchResult3();
+        if (CollectionUtils.isNotEmpty(r13.getAlbums())
+                && CollectionUtils.isNotEmpty(r23.getAlbums())) {
+            Set<String> albumIdSet
+                    = r13.getAlbums().stream().map(SearchResult3Response.Album::getId)
+                    .collect(Collectors.toSet());
+            List<SearchResult3Response.Album> target
+                    = r23.getAlbums().stream().filter(n -> albumIdSet.contains(n.getId())).toList();
+            searchResult3.setAlbums(target);
+        }
+        if (CollectionUtils.isNotEmpty(r13.getArtists())
+                && CollectionUtils.isNotEmpty(r23.getArtists())) {
+            Set<String> artirstIdSet
+                    = r13.getArtists().stream().map(SearchResult3Response.ArtistItem::getId)
+                    .collect(Collectors.toSet());
+            List<SearchResult3Response.ArtistItem> target
+                    = r23.getArtists().stream().filter(n -> artirstIdSet.contains(n.getId())).toList();
+            searchResult3.setArtists(target);
+
+        }
+
+        if (CollectionUtils.isNotEmpty(r13.getSongs())
+                && CollectionUtils.isNotEmpty(r23.getSongs())) {
+            Set<String> songIdSet
+                    = r13.getSongs().stream().map(SearchResult3Response.Song::getId)
+                    .collect(Collectors.toSet());
+            List<SearchResult3Response.Song> target
+                    = r23.getSongs().stream().filter(n -> songIdSet.contains(n.getId())).toList();
+            searchResult3.setSongs(target);
+        }
+        return new SearchResult3Response(searchResult3);
 
     }
 
@@ -178,20 +237,20 @@ public class SearchController {
 
         if (CollectionUtils.isNotEmpty(albums)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
-                    .relationIds(albums.stream().map(SearchResult3Response.Album::getId).toList()).startType(EnumUserStarType.ALBUM).build();
+                    .relationIds(albums.stream().map(n->Long.valueOf(n.getId())).toList()).startType(EnumUserStarType.ALBUM).build();
             Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             albums.forEach(album -> {
-                Long starredTimestamp = starredTimeMap.get(album.getId());
+                Long starredTimestamp = starredTimeMap.get(Long.valueOf(album.getId()));
                 album.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
             });
 
         }
         if (CollectionUtils.isNotEmpty(artists)) {
             BatchStarInfoRequest batchStarInfoRequest = BatchStarInfoRequest.builder().userId(authedUserId)
-                    .relationIds(artists.stream().map(SearchResult3Response.ArtistItem::getId).toList()).startType(EnumUserStarType.ARTIST).build();
+                    .relationIds(artists.stream().map(n->Long.valueOf(n.getId())).toList()).startType(EnumUserStarType.ARTIST).build();
             Map<Long, Long> starredTimeMap = userStarService.batchQueryStarredTime(batchStarInfoRequest);
             artists.forEach(artistItem -> {
-                Long starredTimestamp = starredTimeMap.get(artistItem.getId());
+                Long starredTimestamp = starredTimeMap.get(Long.valueOf(artistItem.getId()));
                 artistItem.setStarred(starredTimestamp != null ? new Date(starredTimestamp): null);
             });
         }

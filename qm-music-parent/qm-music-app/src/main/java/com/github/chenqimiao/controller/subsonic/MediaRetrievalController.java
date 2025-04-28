@@ -92,7 +92,7 @@ public class MediaRetrievalController {
     @SneakyThrows
     public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Long songId,
                                                       Integer maxBitRate, String format,
-                                                      Integer estimateContentLength) {
+                                                      Boolean estimateContentLength) {
 
         SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
         HttpHeaders headers = new HttpHeaders();

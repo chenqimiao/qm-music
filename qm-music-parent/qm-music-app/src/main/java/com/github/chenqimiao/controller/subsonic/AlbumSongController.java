@@ -70,7 +70,7 @@ public class AlbumSongController {
     @Autowired
     private AlbumComplexService albumComplexService;
 
-    @GetMapping(value = "/getAlbumList2")
+    @RequestMapping(value = "/getAlbumList2")
     public AlbumList2Response getAlbumList2(AlbumList2Request albumList2Request) {
         String type = albumList2Request.getType();
 
@@ -110,7 +110,7 @@ public class AlbumSongController {
     private static final Type TYPE_STAR_LIST_SONG = new TypeToken<List<StarredResponse.Song>>() {}.getType();
     private static final Type TYPE_STAR_LIST_ARTIST = new TypeToken<List<StarredResponse.Artist>>() {}.getType();
 
-    @GetMapping("/getStarred")
+    @RequestMapping("/getStarred")
     public StarredResponse getStarred(@RequestParam(required = false) Long musicFolderId) {
 
         Long authedUserId = WebUtils.currentUserId();
@@ -130,7 +130,7 @@ public class AlbumSongController {
     private static final Type TYPE_STAR2_LIST_SONG = new TypeToken<List<StarredResponse.Song>>() {}.getType();
     private static final Type TYPE_STAR2_LIST_ARTIST = new TypeToken<List<StarredResponse.Artist>>() {}.getType();
 
-    @GetMapping("/getStarred2")
+    @RequestMapping("/getStarred2")
     public Starred2Response getStarred2(@RequestParam(required = false) Long musicFolderId) {
 
         Long authedUserId = WebUtils.currentUserId();
@@ -146,7 +146,7 @@ public class AlbumSongController {
 
     }
 
-    @GetMapping("/setRating")
+    @RequestMapping("/setRating")
     public SubsonicPong setRating(String id, Integer rating) {
         // mock
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
@@ -154,7 +154,7 @@ public class AlbumSongController {
 
     private static final Type TYPE_LIST_RANDOM_SONG = new TypeToken<List<RandSongsResponse.Song>>() {}.getType();
 
-    @GetMapping("/getRandomSongs")
+    @RequestMapping("/getRandomSongs")
     public RandSongsResponse getRandomSongs(RandomSongsRequest request) {
         SongSearchRequest searchRequest = new SongSearchRequest();
         searchRequest.setToYear(request.getToYear());
@@ -178,7 +178,7 @@ public class AlbumSongController {
     private static final Type c = new TypeToken<List<SongsByGenreResponse.Song>>() {}.getType();
 
 
-    @GetMapping("/getSongsByGenre")
+    @RequestMapping("/getSongsByGenre")
     public SongsByGenreResponse getSongsByGenre(SongsByGenreRequest songsByGenreRequest) {
         String genre = songsByGenreRequest.getGenre();
         if (StringUtils.isBlank(genre)) {

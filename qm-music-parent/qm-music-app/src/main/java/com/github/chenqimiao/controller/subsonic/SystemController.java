@@ -15,7 +15,6 @@ import com.github.chenqimiao.util.WebUtils;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,13 +39,13 @@ public class SystemController {
     private SystemService systemService;
 
 
-    @GetMapping(value = {"/ping","/ping.view"})
+    @RequestMapping(value = {"/ping","/ping.view"})
     public SubsonicPong ping() {
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
 
-    @GetMapping(value = {"/getLicense"})
+    @RequestMapping(value = {"/getLicense"})
     public SubsonicLicenseResponse getLicense(SubsonicRequest subsonicRequest) {
         String email = userRepository.findEmailByUserName(subsonicRequest.getU());
         if (StringUtils.isBlank(email)) {
@@ -60,7 +59,7 @@ public class SystemController {
                 .build();
     }
 
-    @GetMapping(value = {"/getScanStatus"})
+    @RequestMapping(value = {"/getScanStatus"})
     public ScanStatusResponse getScanStatus() {
         ScanStatusResponse scanStatusResponse = new ScanStatusResponse();
         scanStatusResponse
@@ -72,7 +71,7 @@ public class SystemController {
         return scanStatusResponse;
     }
 
-    @GetMapping(value = "/refresh")
+    @RequestMapping(value = "/refresh")
     public SubsonicResponse refresh() {
         if(!WebUtils.currentUserIsAdmin()) {
             throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_50);

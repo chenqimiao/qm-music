@@ -30,7 +30,7 @@ public abstract class ServerConstants {
 
     public static String OPEN_SUBSONIC_TYPE = "Qm-Music";
 
-    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.8";
+    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.8.1";
 
     public static final OpenSubsonicResponse OPEN_SUBSONIC_EMPTY_RESPONSE = new OpenSubsonicResponse();
 

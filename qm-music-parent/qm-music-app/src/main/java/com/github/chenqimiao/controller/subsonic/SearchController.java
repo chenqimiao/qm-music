@@ -61,7 +61,7 @@ public class SearchController {
 
     public static Type TYPE_LIST_SONG_2 = new TypeToken<List<SearchResult2Response.Song>>() {}.getType();
 
-    @GetMapping("/search2")
+    @RequestMapping("/search2")
     public SearchResult2Response search2(SearchRequest searchRequest) {
 
         searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));
@@ -125,7 +125,7 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @GetMapping("/search3")
+    @RequestMapping("/search3")
     public SearchResult3Response search3(SearchRequest searchRequest) {
 
         searchRequest.setQuery(searchRequest.getQuery().replace("\"",""));

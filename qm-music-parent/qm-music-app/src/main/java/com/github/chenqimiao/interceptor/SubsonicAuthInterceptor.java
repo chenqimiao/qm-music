@@ -1,5 +1,6 @@
 package com.github.chenqimiao.interceptor;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
 import com.github.chenqimiao.exception.SubsonicCommonErrorException;
@@ -35,7 +36,12 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        log.debug("request uri :{}, param: {}", request.getRequestURI(), request.getQueryString());
+        if (request.getMethod().equals("GET")) {
+            log.debug("request uri :{}, param: {}", request.getRequestURI(), request.getQueryString());
+        }else {
+            log.debug("request uri :{}, param: {}", request.getRequestURI()
+                    , JSONObject.toJSONString(request.getParameterMap()));
+        }
         String username = request.getParameter("u");
 
         String clientVersion = request.getParameter("v");

@@ -15,6 +15,7 @@ import java.util.List;
 public enum EnumOpenSubsonicExt {
 
     SONG_LYRICS("songLyrics", Lists.newArrayList(1, 2), "structuredSongLyrics"),
+    FORM_POST("formPost", Lists.newArrayList(1, 2), "formPost"),
 
     ;
 

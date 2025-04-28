@@ -34,7 +34,7 @@ public class MediaAnnotationController {
     @Autowired
     private PlayHistoryService playHistoryService;
 
-    @GetMapping("/star")
+    @RequestMapping("/star")
     public SubsonicPong star(StarRequest starRequest){
         if (starRequest.getAlbumId() == null
                 && starRequest.getId() == null
@@ -81,7 +81,7 @@ public class MediaAnnotationController {
 
 
 
-    @GetMapping("/unstar")
+    @RequestMapping("/unstar")
     public SubsonicPong unstar(UnStarRequest unStarRequest){
         if (unStarRequest.getAlbumId() == null
                 && unStarRequest.getId() == null

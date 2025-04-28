@@ -26,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,7 +67,7 @@ public class BrowsingController {
     @Autowired
     private MetaDataFetchClientCommander metaDataFetchClientCommander;
 
-    @GetMapping(value = "/getMusicFolders")
+    @RequestMapping(value = "/getMusicFolders")
     public SubsonicMusicFolder getMusicFolders() {
 
         return SubsonicMusicFolder.builder().musicFolders(
@@ -77,7 +76,7 @@ public class BrowsingController {
                 .build();
     }
 
-    @GetMapping(value = "/getIndexes")
+    @RequestMapping(value = "/getIndexes")
     public ArtistIndexResponse getIndexes(ArtistIndexRequest artistIndexRequest) {
         Map<String, List<ArtistDTO>> artistMap = artistService.searchArtistMap(artistIndexRequest.getIfModifiedSince());
         ArtistIndexResponse artistIndexResponse = new ArtistIndexResponse();
@@ -118,7 +117,7 @@ public class BrowsingController {
         return artistIndexResponse;
     }
 
-    @GetMapping(value = "/getArtists")
+    @RequestMapping(value = "/getArtists")
     public ArtistsResponse getArtists(ArtistsRequest artistsRequest) {
         Map<String, List<ArtistDTO>> artistGroup =
                 artistService.queryAllArtistGroupByFirstLetter(artistsRequest.getMusicFolderId(), EnumArtistRelationType.SONG);
@@ -164,7 +163,7 @@ public class BrowsingController {
         return artistsResponse;
     }
 
-    @GetMapping(value = "/getGenres")
+    @RequestMapping(value = "/getGenres")
     public GenresResponse getGenres() {
         List<GenreStatisticsDTO> statistics = genreService.statistics();
         GenresResponse genresResponse = new GenresResponse();
@@ -177,7 +176,7 @@ public class BrowsingController {
         return genresResponse;
     }
 
-    @GetMapping("/getSong")
+    @RequestMapping("/getSong")
     public SongResponse getSong(@RequestParam("id") Long songId) {
         Long authedUserId = WebUtils.currentUserId();
         List<ComplexSongDTO> complexSongs = songComplexService.queryBySongIds(Lists.newArrayList(songId), authedUserId);
@@ -208,7 +207,7 @@ public class BrowsingController {
 
     }
 
-    @GetMapping(value = "/getAlbum")
+    @RequestMapping(value = "/getAlbum")
     public AlbumResponse getAlbum(@RequestParam("id") Long albumId) {
         AlbumAggDTO albumAggDTO = songService.queryByAlbumId(albumId);
         AlbumDTO albumDTO = albumAggDTO.getAlbum();
@@ -259,7 +258,7 @@ public class BrowsingController {
 
     private static final Type TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST = new TypeToken<List<ArtistInfoResponse.Artist>>() {}.getType();
 
-    @GetMapping(value = "/getArtistInfo2")
+    @RequestMapping(value = "/getArtistInfo2")
     public ArtistInfoResponse getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.GET_ARTIST_INFO2_BY_REMOTE_LIMIT_KEY,
                 key -> RateLimiter.create(3));
@@ -319,7 +318,7 @@ public class BrowsingController {
 
     private static final Type TYPE_LIST_TOP_SONG = new TypeToken<List<TopSongsResponse.Song>>() {}.getType();
 
-    @GetMapping("/getTopSongs")
+    @RequestMapping("/getTopSongs")
     public TopSongsResponse getTopSongs(@RequestParam(name = "artist", required = true) String artistName,
                             @RequestParam(defaultValue = "50", required = false) Integer count) {
 

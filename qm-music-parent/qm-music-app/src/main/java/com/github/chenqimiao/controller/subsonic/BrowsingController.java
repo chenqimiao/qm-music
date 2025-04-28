@@ -196,12 +196,16 @@ public class BrowsingController {
         song.setDisplayArtist(song.getArtistName());
         song.setDisplayAlbumArtist(song.getArtistName());
         song.setAlbumArtists(song.getArtists());
+        song.setSortName(song.getTitle());
 
         var artist = new SongResponse.Artist();
         artist.setId(song.getArtistId());
         artist.setName(song.getArtistName());
         song.setDisplayArtist(song.getArtistName());
-        song.setArtists(Lists.newArrayList(artist));
+        ArrayList<SongResponse.Artist> artists = Lists.newArrayList(artist);
+        song.setArtists(artists);
+        song.setAlbumArtists(artists);
+
     }
 
     @GetMapping(value = "/getAlbum")

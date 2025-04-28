@@ -70,7 +70,8 @@ public class SongResponse extends OpenSubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Long artistId;
         @JacksonXmlProperty(isAttribute = true)
-        private String type;
+        @Builder.Default
+        private String type = "music";
         @JacksonXmlProperty(isAttribute = true)
         @Builder.Default
         // mock: 私人乐库喜欢才收藏
@@ -113,11 +114,11 @@ public class SongResponse extends OpenSubsonicResponse {
         @JSONField(name= "channelCount")
         private Integer channels ;
 
+
         @JacksonXmlProperty(isAttribute = true)
         private Integer samplingRate ;
         @JacksonXmlProperty(isAttribute = true)
         private Integer bitDepth;
-
 
     }
 

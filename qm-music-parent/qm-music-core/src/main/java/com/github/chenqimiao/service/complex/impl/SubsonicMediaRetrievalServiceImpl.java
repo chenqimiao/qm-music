@@ -508,7 +508,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             // 转码
             return SongStreamDTO.builder()
                     .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
-                    , maxBitRate == null ? 128  : maxBitRate
+                    , maxBitRate
                     , format))
                     .filePath(filePath)
                     .mimeType("audio/mpeg")

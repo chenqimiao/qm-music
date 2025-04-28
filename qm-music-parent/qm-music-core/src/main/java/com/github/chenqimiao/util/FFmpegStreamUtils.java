@@ -94,6 +94,11 @@ public abstract class FFmpegStreamUtils {
     @SneakyThrows
     public static InputStream streamByOutFFmpeg(String inputPath, Integer maxBitRate,
                                             String outputFormat) {
+
+        if (maxBitRate == null) {
+            return streamByOutFFmpeg(inputPath, outputFormat);
+        }
+
         ProcessBuilder pb = new ProcessBuilder(
                 FFMPEG,
                 "-i", inputPath,       // 输入文件
@@ -106,6 +111,32 @@ public abstract class FFmpegStreamUtils {
                 "-"                   // 输出到标准输出
         );
 
+        return exec(pb, inputPath);
+
+    }
+
+
+    @SneakyThrows
+    public static InputStream streamByOutFFmpeg(String inputPath,
+                                                String outputFormat) {
+        ProcessBuilder pb = new ProcessBuilder(
+                FFMPEG,
+                "-i", inputPath,       // 输入文件
+                "-vn",                // 禁用视频
+                "-f", outputFormat,          // 强制输出格式为MP3
+                "-codec:a", EnumAudioCodec.byFormat(outputFormat).getFirst().getName(),
+                "-threads", "0",      // 自动线程数
+                "-loglevel", "error", // 仅显示错误日志
+                "-"                   // 输出到标准输出
+        );
+
+        return exec(pb, inputPath);
+
+    }
+
+
+    @SneakyThrows
+    public static InputStream exec(ProcessBuilder pb, String inputPath) {
         Process process = pb.start();
         InputStream errorStream = process.getErrorStream();
         executor.submit(() -> {
@@ -123,7 +154,6 @@ public abstract class FFmpegStreamUtils {
 
 
         return process.getInputStream();
-
     }
 
     public static void main(String[] args) {

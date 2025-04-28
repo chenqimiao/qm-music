@@ -1,8 +1,8 @@
 package com.github.chenqimiao.interceptor;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.service.UserAuthService;
 import com.github.chenqimiao.service.UserService;
@@ -47,11 +47,11 @@ public class SubsonicAuthInterceptor implements HandlerInterceptor {
         String salt = request.getParameter("s");
         boolean authExtCheck = StringUtils.isNotBlank(password) || StringUtils.isNoneBlank(token, salt);
         if (!necessary || !authExtCheck) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
         }
 
         if (!this.authCheck(username, password, token,salt)) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_40);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_40);
         }
 
         request.setAttribute(ServerConstants.AUTHED_USER_KEY, userService.findByUsername(username));

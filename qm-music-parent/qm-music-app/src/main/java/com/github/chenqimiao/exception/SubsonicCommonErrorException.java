@@ -1,6 +1,6 @@
 package com.github.chenqimiao.exception;
 
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,8 +10,8 @@ import lombok.Getter;
  **/
 @Getter
 @AllArgsConstructor
-public class SubsonicUnauthorizedException extends RuntimeException{
+public class SubsonicCommonErrorException extends RuntimeException{
 
-    private EnumSubsonicAuthCode enumSubsonicAuthCode;
+    private EnumSubsonicErrorCode enumSubsonicErrorCode;
 
 }

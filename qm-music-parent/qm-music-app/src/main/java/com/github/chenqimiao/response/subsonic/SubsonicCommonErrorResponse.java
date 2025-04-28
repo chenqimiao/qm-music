@@ -9,7 +9,7 @@ import lombok.*;
  **/
 @Getter
 @Setter
-public class SubsonicAuthErrorResponse extends SubsonicResponse {
+public class SubsonicCommonErrorResponse extends SubsonicResponse {
 
     private Error error;
 

@@ -6,8 +6,8 @@ import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.ComplexSongDTO;
 import com.github.chenqimiao.dto.SongDTO;
 import com.github.chenqimiao.dto.UserStarResourceDTO;
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.request.SongSearchRequest;
 import com.github.chenqimiao.request.subsonic.AlbumList2Request;
@@ -75,7 +75,7 @@ public class AlbumSongController {
         String type = albumList2Request.getType();
 
         if ((albumList2Request.getSize() != null && albumList2Request.getSize() > 500) || type == null) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_0);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_0);
         }
 
         Integer fromYear = albumList2Request.getFromYear();
@@ -182,7 +182,7 @@ public class AlbumSongController {
     public SongsByGenreResponse getSongsByGenre(SongsByGenreRequest songsByGenreRequest) {
         String genre = songsByGenreRequest.getGenre();
         if (StringUtils.isBlank(genre)) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_0);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_0);
         }
         SongSearchRequest searchRequest = new SongSearchRequest();
         searchRequest.setOffset(songsByGenreRequest.getOffset());
@@ -208,13 +208,13 @@ public class AlbumSongController {
         String[] split = vagueId.split("-");
 
         if (split.length <= 0 ) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
         }
 
         long bizId = NumberUtils.toLong(split[split.length-1] , NumberUtils.LONG_ZERO);
 
         if (bizId <= NumberUtils.LONG_ZERO) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
         }
 
         List<ComplexSongDTO> similarSongs = new ArrayList<>();

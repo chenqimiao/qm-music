@@ -1,8 +1,8 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.request.subsonic.SubsonicRequest;
@@ -75,7 +75,7 @@ public class SystemController {
     @GetMapping(value = "/refresh")
     public SubsonicResponse refresh() {
         if(!WebUtils.currentUserIsAdmin()) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_50);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_50);
         }
         systemService.refreshSongs();
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;

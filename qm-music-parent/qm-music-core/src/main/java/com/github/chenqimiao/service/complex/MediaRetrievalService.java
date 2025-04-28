@@ -23,4 +23,6 @@ public interface MediaRetrievalService {
     SongStreamDTO getSongStream(Long songId, Integer maxBitRate, String format, Integer estimateContentLength);
 
     LrcParser.StructuredLyrics getLyricsBySongId(Long songId);
+
+    SongStreamDTO getRawSongStream(Long songId);
 }

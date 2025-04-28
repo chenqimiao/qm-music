@@ -3,8 +3,8 @@ package com.github.chenqimiao.controller.subsonic;
 import com.github.chenqimiao.constant.CoverArtPrefixConstants;
 import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.response.subsonic.LyricsResponse;
 import com.github.chenqimiao.service.ArtistService;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
@@ -41,13 +41,13 @@ public class MediaRetrievalController {
         CoverStreamDTO songCoverStreamDTO = null;
 
         if (split.length <= 0 ) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
         }
 
         long bizId = NumberUtils.toLong(split[split.length-1] , NumberUtils.LONG_ZERO);
 
         if (bizId <= NumberUtils.LONG_ZERO) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
         }
 
         if (id.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){
@@ -56,7 +56,7 @@ public class MediaRetrievalController {
 
             songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
             if(songCoverStreamDTO == null){
-                 throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_10);
+                 throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
             }
 
         }else if (id.startsWith(CoverArtPrefixConstants.SONG_COVER_ART_PREFIX)) {
@@ -104,7 +104,20 @@ public class MediaRetrievalController {
                 headers, HttpStatus.OK);
 
     }
+    @RequestMapping(value = "/download")
+    @SneakyThrows
+    public ResponseEntity<InputStreamResource> download(@RequestParam("id") Long songId) {
 
+        SongStreamDTO songStream = mediaRetrievalService.getRawSongStream(songId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
+        if (songStream.getSize() != null) {
+            headers.setContentLength(songStream.getSize());
+        }
+        return new ResponseEntity<>(new InputStreamResource(songStream.getSongStream()),
+                headers, HttpStatus.OK);
+
+    }
 
 
 }

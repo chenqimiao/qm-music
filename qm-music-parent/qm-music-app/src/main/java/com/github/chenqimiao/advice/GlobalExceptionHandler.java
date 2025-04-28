@@ -1,8 +1,10 @@
 package com.github.chenqimiao.advice;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
-import com.github.chenqimiao.response.subsonic.SubsonicAuthErrorResponse;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.ResourceDisappearException;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
+import com.github.chenqimiao.response.subsonic.SubsonicCommonErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,14 +22,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(SubsonicUnauthorizedException.class)
+    @ExceptionHandler(SubsonicCommonErrorException.class)
     @ResponseStatus(HttpStatus.OK)
-    public SubsonicAuthErrorResponse handleUnauthorized(SubsonicUnauthorizedException e) {
-        SubsonicAuthErrorResponse errorResponse = new SubsonicAuthErrorResponse();
+    public SubsonicCommonErrorResponse handleUnauthorized(SubsonicCommonErrorException e) {
+        SubsonicCommonErrorResponse errorResponse = new SubsonicCommonErrorResponse();
         errorResponse.setStatus(ServerConstants.STATUS_FAIL);
-        errorResponse.setError(SubsonicAuthErrorResponse.Error.builder()
-                .code(e.getEnumSubsonicAuthCode().getCode())
-                .message(e.getEnumSubsonicAuthCode().getMessage()).build());
+        errorResponse.setError(SubsonicCommonErrorResponse.Error.builder()
+                .code(e.getEnumSubsonicErrorCode().getCode())
+                .message(e.getEnumSubsonicErrorCode().getMessage()).build());
+        return errorResponse;
+    }
+
+
+
+    @ExceptionHandler(ResourceDisappearException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public SubsonicCommonErrorResponse handleResourceDisappearException(ResourceDisappearException e) {
+        SubsonicCommonErrorResponse errorResponse = new SubsonicCommonErrorResponse();
+        errorResponse.setStatus(ServerConstants.STATUS_FAIL);
+        errorResponse.setError(SubsonicCommonErrorResponse.Error.builder()
+                .code(EnumSubsonicErrorCode.E_70.getCode())
+                .message(e.getMessage()).build());
         return errorResponse;
     }
 

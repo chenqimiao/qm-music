@@ -12,7 +12,7 @@ import java.util.Optional;
  **/
 @AllArgsConstructor
 @Getter
-public enum EnumSubsonicAuthCode {
+public enum EnumSubsonicErrorCode {
     E_0("0", "A generic error"),
     E_10("10", "Required parameter is missing"),
     E_20("20", "Incompatible Subsonic REST protocol version. Client must upgrade"),
@@ -28,8 +28,8 @@ public enum EnumSubsonicAuthCode {
 
     private final String message;
 
-    public static EnumSubsonicAuthCode parseObjByCode(String code){
-        Optional<EnumSubsonicAuthCode> instance = Arrays.stream(values()).filter(obj -> obj.getCode().equals(code)).findFirst();
+    public static EnumSubsonicErrorCode parseObjByCode(String code){
+        Optional<EnumSubsonicErrorCode> instance = Arrays.stream(values()).filter(obj -> obj.getCode().equals(code)).findFirst();
         return instance.orElse(null);
     }
 }

@@ -5,8 +5,8 @@ import com.github.chenqimiao.dto.ComplexPlaylistDTO;
 import com.github.chenqimiao.dto.PlaylistDTO;
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.enums.EnumPlayListVisibility;
-import com.github.chenqimiao.enums.EnumSubsonicAuthCode;
-import com.github.chenqimiao.exception.SubsonicUnauthorizedException;
+import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
+import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.request.UpdatePlaylistRequest;
 import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
@@ -53,7 +53,7 @@ public class PlaylistsController {
     public PlaylistsResponse getPlaylists(@RequestParam(required = false) String username) {
         boolean isAdmin = WebUtils.currentUserIsAdmin();
         if (!isAdmin && StringUtils.isNotBlank(username)) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_50);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_50);
         }
 
         Map<Long, UserDTO> userMap = Maps.newHashMapWithExpectedSize(2);
@@ -67,7 +67,7 @@ public class PlaylistsController {
         if (!StringUtils.isBlank(username)) {
             effectiveUserDTO = userService.findByUsername(username);
             if(effectiveUserDTO == null) {
-                throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
+                throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
             }
             effectiveUserId = effectiveUserDTO.getId();
 
@@ -139,7 +139,7 @@ public class PlaylistsController {
         PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
 
         if (playlistDTO == null || !Objects.equals(playlistDTO.getUserId(), WebUtils.currentUserId())) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
         }
 
         playlistComplexService.deletePlaylistByPlaylistId(playlistId);
@@ -154,7 +154,7 @@ public class PlaylistsController {
         PlaylistDTO playlistDTO = playlistService.queryPlaylistByPlaylistId(playlistId);
 
         if (playlistDTO == null || !Objects.equals(playlistDTO.getUserId(), WebUtils.currentUserId())) {
-            throw new SubsonicUnauthorizedException(EnumSubsonicAuthCode.E_70);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
         }
         com.github.chenqimiao.request.UpdatePlaylistRequest updatePlaylistRequest = new UpdatePlaylistRequest();
         updatePlaylistRequest.setPlaylistId(playlistId);

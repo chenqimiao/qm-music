@@ -10,6 +10,7 @@ import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
+import com.github.chenqimiao.enums.EnumAudioCodec;
 import com.github.chenqimiao.exception.ResourceDisappearException;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
@@ -36,6 +37,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jaudiotagger.tag.images.Artwork;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -501,6 +503,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String contentType = song.getContentType();
 
         if (!Boolean.TRUE.equals(ffmpegEnable) || "raw".equals(format)  || StringUtils.isBlank(format)
+                ||  CollectionUtils.size(EnumAudioCodec.byFormat(format)) == NumberUtils.INTEGER_ZERO
                 || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
                         && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null || song.getBitRate() == null) )
             ) {

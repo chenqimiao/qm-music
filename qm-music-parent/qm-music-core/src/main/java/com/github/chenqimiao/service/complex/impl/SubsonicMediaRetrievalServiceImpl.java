@@ -10,7 +10,6 @@ import com.github.chenqimiao.dto.CoverStreamDTO;
 import com.github.chenqimiao.dto.SongDTO;
 import com.github.chenqimiao.dto.SongStreamDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
-import com.github.chenqimiao.enums.EnumAudioFormat;
 import com.github.chenqimiao.exception.ResourceDisappearException;
 import com.github.chenqimiao.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.io.local.ImageResolver;
@@ -501,22 +500,21 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String filePath = song.getFilePath();
         String contentType = song.getContentType();
 
-        if (Boolean.TRUE.equals(ffmpegEnable)
-                && EnumAudioFormat.MP3.getName().equals(format)
-                && !Objects.equals(contentType,
-                AudioContentTypeDetector.mapFormatToMimeType(EnumAudioFormat.MP3.getName()))) {
-            // 转码
-            return SongStreamDTO.builder()
-                    .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
-                    , maxBitRate
-                    , format))
-                    .filePath(filePath)
-                    .mimeType("audio/mpeg")
-                    .build();
-
-        } else {
-           return this.getRawSongStream(song);
+        if (!Boolean.TRUE.equals(ffmpegEnable) || "raw".equals(format)  || StringUtils.isBlank(format)
+                || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
+                        && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null || song.getBitRate() == null) )
+            ) {
+            return this.getRawSongStream(song);
         }
+
+        // 转码
+        return SongStreamDTO.builder()
+                .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
+                        , maxBitRate
+                        , format))
+                .filePath(filePath)
+                .mimeType(AudioContentTypeDetector.mapFormatToMimeType(format))
+                .build();
 
     }
 

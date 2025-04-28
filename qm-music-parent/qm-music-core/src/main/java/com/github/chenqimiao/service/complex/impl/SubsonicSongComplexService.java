@@ -88,7 +88,7 @@ public class SubsonicSongComplexService implements SongComplexService {
             List<PlayHistoryDTO> playHistories = playHistoryService.queryUserSpecifiedSongPlayHistoryList(userId, songIds);
             if (CollectionUtils.isNotEmpty(playHistories)) {
                 Map<Long, Integer> userPlayCountMap = playHistories.stream().collect(Collectors.toMap(PlayHistoryDTO::getSongId
-                        , PlayHistoryDTO::getPlayCount));
+                        , PlayHistoryDTO::getPlayCount, Integer::sum));
                 playCountMap.putAll(userPlayCountMap);
             }
         }

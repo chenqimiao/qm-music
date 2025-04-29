@@ -505,13 +505,15 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         if (!Boolean.TRUE.equals(ffmpegEnable) || "raw".equals(format)  || StringUtils.isBlank(format)
                 ||  CollectionUtils.size(EnumAudioCodec.byFormat(format)) == NumberUtils.INTEGER_ZERO
                 || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
-                        && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null || song.getBitRate() == null) )
+                        && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null
+                                    || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || song.getBitRate() == null) )
             ) {
             return this.getRawSongStream(song);
         }
 
         Long targetSize = null;
-        if (Boolean.TRUE.equals(estimateContentLength)
+        //
+        if (!Boolean.FALSE.equals(estimateContentLength)
                 && song.getDuration() != null
                 && maxBitRate != null ) {
             targetSize = FFmpegStreamUtils.estimateSize(song.getDuration(), maxBitRate, 2048);

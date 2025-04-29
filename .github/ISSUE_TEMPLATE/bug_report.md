@@ -7,7 +7,7 @@ assignees: [chenqimiao]
 ---
 
 <!-- 删除此注释开始填写 -->
-
+<!--
 ## 版本信息
 ### QM-Music 版本
 ```markdown
@@ -47,3 +47,4 @@ assignees: [chenqimiao]
 ```log
 [完整错误日志（注意脱敏）]
 ```
+-->

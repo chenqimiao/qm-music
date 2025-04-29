@@ -32,6 +32,7 @@ public class TopSongsResponse extends SubsonicResponse {
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")
+        @JSONField(name = "song")
         private List<Song> songs;
     }
 

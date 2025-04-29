@@ -244,7 +244,7 @@ public class BrowsingController {
             album.setArtists(albumArtists);
         }
         if (album != null && album.getSongs() != null) {
-            album.getSongs().forEach(n -> {
+            album.getSongs().stream().filter(n -> album.getArtistId() != null).forEach(n -> {
                 n.setDisplayArtist(n.getArtistName());
                 n.setDisplayAlbumArtist(n.getArtistName());
                 n.setAlbumArtists(album.getArtists());

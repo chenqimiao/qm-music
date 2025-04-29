@@ -40,6 +40,7 @@ public class ArtistResponse extends SubsonicResponse {
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "album")
+        @JSONField(name = "album")
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         private List<Album> albumList;
 

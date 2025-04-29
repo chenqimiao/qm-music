@@ -60,6 +60,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")
+        @JSONField(name = "song")
         private List<Song> songs;
 
         // mock: 私人乐库喜欢才收藏

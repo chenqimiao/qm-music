@@ -1,8 +1,8 @@
 ---
-name: "🚀 Feature Request"
+name: 🚀 Feature Request
 description: 新功能或改进建议
-title: "[FEATURE] "
-labels: ["enhancement"]
+title: ''
+labels: '["enhancement"]'
 ---
 
 <!-- 请删除注释后填写 -->

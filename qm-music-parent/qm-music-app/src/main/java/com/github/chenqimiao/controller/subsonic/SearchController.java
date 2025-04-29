@@ -9,12 +9,8 @@ import com.github.chenqimiao.request.CommonSearchRequest;
 import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.SearchResult2Response;
 import com.github.chenqimiao.response.subsonic.SearchResult3Response;
-import com.github.chenqimiao.service.AlbumService;
-import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.SongService;
 import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.SearchService;
-import com.github.chenqimiao.service.complex.SongComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,23 +32,12 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/rest")
 public class SearchController {
 
-    @Autowired
-    private AlbumService albumService;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    private SongService songService;
-
-    @Autowired
-    private ArtistService artistService;
-
-    @Autowired
     private UserStarService userStarService;
-
-    @Autowired
-    private SongComplexService songComplexService;
 
 
     public static Type TYPE_LIST_ALBUM_2 = new TypeToken<List<SearchResult2Response.Album>>() {}.getType();

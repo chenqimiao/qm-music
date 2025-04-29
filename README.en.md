@@ -4,7 +4,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/qmmusic/qm-music)](https://hub.docker.com/r/qmmusic/qm-music)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**QM-Music** is a private cloud music server based on Subsonic, designed as a lightweight high-performance solution for music enthusiasts. Supports one-click Docker deployment and provides full compatibility with Subsonic ecosystem clients (e.g. StreamMusic/Amperfy/substream/music-assistant), enabling secure access to your personal music library anytime, anywhere.
+**QM-Music** is a private cloud music server based on Subsonic, designed as a lightweight high-performance solution for music enthusiasts. Supports one-click Docker deployment and provides full compatibility with Subsonic ecosystem clients (e.g. StreamMusic/Amperfy/substreamer/music-assistant), enabling secure access to your personal music library anytime, anywhere.
 
 
 ## 🌟 Core Features
@@ -88,7 +88,7 @@ services:
 3. Immediately change the default password on the homepage.
 4. Navigate to **Library Management** and click the **[Refresh Library]** button.
 5. Wait for metadata parsing to complete (check progress via logs).
-6. Use the following connection parameters in client apps (StreamMusic/Amperfy/substream/music-assistant, etc.):
+6. Use the following connection parameters in client apps (StreamMusic/Amperfy/substreamer/music-assistant, etc.):
    ```properties
    Server URL: http://[Server IP]:6688
    Username: Updated admin username

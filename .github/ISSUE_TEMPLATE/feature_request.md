@@ -1,8 +1,9 @@
 ---
-name: 🚀 Feature Request
-description: 新功能或改进建议
+name: 🐞  报告问题
+about: "程序错误或异常行为报告"
 title: ''
-labels: '["enhancement"]'
+labels: '["bug"]'
+assignees: ''
 ---
 
 <!-- 请删除注释后填写 -->

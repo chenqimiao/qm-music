@@ -1,0 +1,9 @@
+blank_issues_enabled: false  # 禁用空白 Issue
+contact_links:
+  - name: "📚 查看文档"
+    url: https://github.com/chenqimiao/qm-music/blob/main/README.md  
+    about: "请先查阅文档寻找答案"
+    
+  - name: "💬 社区讨论"
+    url: https://github.com/chenqimiao/qm-music/discussions  
+    about: "非错误类问题请到讨论区交流"

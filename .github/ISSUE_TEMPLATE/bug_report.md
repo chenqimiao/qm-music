@@ -1,6 +1,6 @@
 ---
 name: 🐞  报告问题
-about: Bugs
+about: "程序错误或异常行为报告"
 title: ''
 labels: '["bug"]'
 assignees: ''

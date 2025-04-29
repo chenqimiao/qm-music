@@ -1,8 +1,8 @@
 ---
 name: ✨ 功能建议
-about: "程序错误或异常行为报告"
+about: "提出新功能或者更改建议"
 title: ''
-labels: '["bug"]'
+labels: '["enhancement"]'
 assignees: ''
 ---
 

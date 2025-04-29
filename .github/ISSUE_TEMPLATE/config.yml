@@ -1,9 +1,18 @@
 blank_issues_enabled: false  # 禁用空白 Issue
 contact_links:
   - name: "📚 查看文档"
-    url: https://github.com/chenqimiao/qm-music/blob/main/README.md  
+    url: https://github.com/chenqimiao/qm-music/blob/main/README.md
     about: "请先查阅文档寻找答案"
-    
+
   - name: "💬 社区讨论"
-    url: https://github.com/chenqimiao/qm-music/discussions  
+    url: https://github.com/chenqimiao/qm-music/discussions
     about: "非错误类问题请到讨论区交流"
+
+  - name: "🐞 报告问题"
+    url: https://github.com/chenqimiao/qm-music/issues/new?template=bug_report.md
+    about: "程序错误或异常行为报告"
+
+  - name: "✨ 功能建议"
+    url: https://github.com/chenqimiao/qm-music/issues/new?template=feature_request.md
+    about: "提出新功能或改进建议"
+

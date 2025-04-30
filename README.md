@@ -83,12 +83,12 @@ services:
 - **环境变量**  
   - `QM_FFMPEG_ENABLE=true` 启用智能音频转码（推荐在户外使用的用户开启），支持按网络状况自动切换 libmp3lame/acc 编码，有效节省流量消耗（默认关闭）
   - `TZ=Asia/Shanghai` 请务必根据所在地区设置
-  - `QM_SPOTIFY_ENABLE=false` 开启后，可以获得更多元数据支持 [SPOTIFY KEY 申请地址](https://developer.spotify.com/) 
+  - `QM_SPOTIFY_ENABLE=false` 非必须 开启后，可以获得更多元数据支持 [SPOTIFY KEY 申请地址](https://developer.spotify.com/) 
   - `QM_SPOTIFY_CLIENT_ID` 非必须
   - `QM_SPOTIFY_CLIENT_SECRET` 非必须
-  - `QM_LASTFM_ENABLE=false` 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://www.last.fm/api#getting-started)
+  - `QM_LASTFM_ENABLE=false` 非必须 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://www.last.fm/api#getting-started)
   - `QM_LASTFM_API_KEY` 非必须
-  - `QM_REFRESH_AUTO` 定时刷新曲库开关 默认开启
+  - `QM_REFRESH_AUTO` 非必须 定时刷新曲库开关 默认开启
 - **卷挂载**  
   - `/data/qm-music/music_dir`：音乐文件存储目录
   - `/data/qm-music/db`：数据库及元数据存储目录（请勿存放其他文件）

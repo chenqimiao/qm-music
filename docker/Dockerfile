@@ -43,7 +43,7 @@ RUN chmod +x /app/entrypoint.sh
 
 # 默认环境变量
 ENV QM_FFMPEG_ENABLE=false \
-    JAVA_OPTS="-XX:+UseContainerSupport -XX:+UseG1GC -Xss256k -XX:MaxDirectMemorySize=512m" \
+    JAVA_OPTS="-XX:+UseContainerSupport -XX:+UseG1GC -Xss256k" \
     TZ=Asia/Shanghai \
     QM_SPOTIFY_ENABLE=false \
     QM_SPOTIFY_CLIENT_ID="" \

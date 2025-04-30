@@ -244,7 +244,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
         String filePath = path.toAbsolutePath().normalize().toString();
         songDO.setFile_path(filePath);
-        songDO.setFile_hash(filePath);
+        songDO.setFile_hash(String.valueOf(songId));
         songDO.setSize(Files.size(path));
         String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear();

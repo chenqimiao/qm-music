@@ -1,6 +1,7 @@
 package com.github.chenqimiao.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class FileUtils {
 
-    private static Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a");
+    private static final Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a", "wma", "ape");
 
 
     private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(
@@ -67,7 +68,7 @@ public abstract class FileUtils {
 
     public static boolean isVideo(Path path) {
         String fileExtension = getFileExtension(path);
-        return audioExtensions.contains(fileExtension);
+        return audioExtensions.contains(StringUtils.lowerCase(fileExtension));
     }
 
     public static String buildCoverArtPath(String baseDir, Long bizId, int size) {

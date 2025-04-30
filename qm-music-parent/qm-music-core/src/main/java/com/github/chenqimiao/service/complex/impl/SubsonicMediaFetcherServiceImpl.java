@@ -242,8 +242,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
-        songDO.setFile_path(path.toAbsolutePath().normalize().toString());
-        songDO.setFile_hash(MD5Utils.calculateMD5(path));
+        String filePath = path.toAbsolutePath().normalize().toString();
+        songDO.setFile_path(filePath);
+        songDO.setFile_hash(filePath);
         songDO.setSize(Files.size(path));
         String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                 : musicAlbumMeta.getOriginalYear();

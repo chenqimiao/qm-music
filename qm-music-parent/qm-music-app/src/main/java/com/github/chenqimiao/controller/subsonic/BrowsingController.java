@@ -342,7 +342,7 @@ public class BrowsingController {
             throw new ResourceDisappearException("album id do not exit");
         }
         Album album = metaDataFetchClientCommander.searchAlbum(albumDTO.getTitle(), albumDTO.getArtistName());
-        if (album == null) return (GetAlbumInfo2Response)(ServerConstants.OPEN_SUBSONIC_EMPTY_RESPONSE);
+        if (album == null) return new GetAlbumInfo2Response();
         return new GetAlbumInfo2Response(GetAlbumInfo2Response
                                             .AlbumInfo
                                             .builder()

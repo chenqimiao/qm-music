@@ -1,6 +1,5 @@
 package com.github.chenqimiao.controller.opensubsonicext;
 
-import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.io.local.LrcParser;
 import com.github.chenqimiao.response.opensubsonic.LyricsBySongIdResponse;
 import com.github.chenqimiao.service.complex.MediaRetrievalService;
@@ -37,7 +36,7 @@ public class OpenSubsonicMediaRetrievalController {
         LrcParser.StructuredLyrics lyrics = subsonicMediaRetrievalService.getLyricsBySongId(songId);
 
         if (lyrics == null) {
-            return (LyricsBySongIdResponse) ServerConstants.OPEN_SUBSONIC_EMPTY_RESPONSE;
+            return new LyricsBySongIdResponse();
         }
 
         var structuredLyrics = modelMapper.map(lyrics, LyricsBySongIdResponse.StructuredLyrics.class);

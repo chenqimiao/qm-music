@@ -1,6 +1,5 @@
 package com.github.chenqimiao.constant;
 
-import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 
 /**

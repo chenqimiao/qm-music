@@ -1,6 +1,7 @@
 package com.github.chenqimiao.service;
 
 import com.github.chenqimiao.dto.UserStarDTO;
+import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.StarInfoRequest;
 import com.github.chenqimiao.request.StarOrNotRequest;
@@ -27,4 +28,7 @@ public interface UserStarService {
 
 
      List<UserStarDTO> queryUserStarByUserId(Long userId);
+
+     List<UserStarDTO> queryUserStarByUserIdAndType(Long userId, EnumUserStarType type);
+
 }

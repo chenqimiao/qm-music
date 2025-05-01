@@ -6,6 +6,7 @@ import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.AlbumDTO;
 import com.github.chenqimiao.dto.PlayHistoryDTO;
 import com.github.chenqimiao.dto.SongDTO;
+import com.github.chenqimiao.dto.UserStarDTO;
 import com.github.chenqimiao.enums.EnumArtistRelationType;
 import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.repository.AlbumRepository;
@@ -16,6 +17,7 @@ import com.github.chenqimiao.request.AlbumSearchRequest;
 import com.github.chenqimiao.service.AlbumService;
 import com.github.chenqimiao.service.PlayHistoryService;
 import com.github.chenqimiao.service.SongService;
+import com.github.chenqimiao.service.UserStarService;
 import com.github.chenqimiao.service.complex.AlbumComplexService;
 import com.github.chenqimiao.service.complex.SongComplexService;
 import com.google.common.collect.Lists;
@@ -61,6 +63,8 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
 
     @Autowired
     private ArtistRelationRepository artistRelationRepository;
+    @Autowired
+    private UserStarService userStarService;
 
 
     @Override
@@ -102,10 +106,51 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
             return this.getNewestAlbumList2(albumSearchRequest);
         }else if(Objects.equals("frequent" ,type)) {
             return this.getFrequentAlbumList2(albumSearchRequest);
+        }else if(Objects.equals("starred" ,type)) {
+            return this.getStarredAlbumList2(albumSearchRequest);
+        }else if(Objects.equals("alphabeticalByName" ,type)) {
+            return this.getAlbumList2OrderByAlbumName(albumSearchRequest);
+        }else if(Objects.equals("alphabeticalByArtist" ,type)) {
+            return this.getAlbumList2OrderByArtistName(albumSearchRequest);
+        }else if(Objects.equals("byGenre" ,type)) {
+            return this.getAlbumList2ByGenre(albumSearchRequest);
         }else if(Objects.equals("byYear" ,type)) {
             return this.getDefaultAlbumList2(albumSearchRequest);
         }
         return this.getDefaultAlbumList2(albumSearchRequest);
+    }
+
+    private List<AlbumDTO> getAlbumList2ByGenre(AlbumSearchRequest albumSearchRequest) {
+
+        return this.getDefaultAlbumList2(albumSearchRequest);
+    }
+
+    private List<AlbumDTO> getAlbumList2OrderByArtistName(AlbumSearchRequest albumSearchRequest) {
+        albumSearchRequest.setSortColumn("artistName");
+        albumSearchRequest.setSortDirection("asc");
+
+        return this.getDefaultAlbumList2(albumSearchRequest);
+    }
+
+    private List<AlbumDTO> getAlbumList2OrderByAlbumName(AlbumSearchRequest albumSearchRequest) {
+
+        albumSearchRequest.setSortColumn("title");
+        albumSearchRequest.setSortDirection("asc");
+
+        return this.getDefaultAlbumList2(albumSearchRequest);
+    }
+
+    private List<AlbumDTO> getStarredAlbumList2(AlbumSearchRequest albumSearchRequest) {
+        List<UserStarDTO> userStars
+                = userStarService.queryUserStarByUserIdAndType(albumSearchRequest.getUserId(), EnumUserStarType.ALBUM);
+
+        if(CollectionUtils.isEmpty(userStars)) {
+            return Collections.emptyList();
+        }
+        List<Long> albumIds = userStars.stream().map(UserStarDTO::getRelationId).toList();
+
+        return albumService.batchQueryAlbumByAlbumIds(albumIds);
+
     }
 
     @Override
@@ -186,7 +231,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
             }
         }
         stringBuilder.append(" order by ")
-                .append(" release_year desc ").append(" , gmt_create desc ");
+                .append(" gmt_create desc ");
 
         stringBuilder.append(" limit ").append(albumSearchRequest.getOffset()).append(",")
                 .append(albumSearchRequest.getSize());

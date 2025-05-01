@@ -5,6 +5,7 @@ import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.UserStarDTO;
 import com.github.chenqimiao.enums.EnumStarActionType;
 
+import com.github.chenqimiao.enums.EnumUserStarType;
 import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.request.BatchStarInfoRequest;
 import com.github.chenqimiao.request.StarInfoRequest;
@@ -68,6 +69,12 @@ public class SubsonicUserStarServiceImpl implements UserStarService {
     @Override
     public List<UserStarDTO> queryUserStarByUserId(Long userId) {
         List<UserStarDO> userStars = userStarRepository.queryUserStarByUserId(userId);
+        return ucModelMapper.map(userStars, ModelMapperTypeConstants.TYPE_LIST_USER_STAR_DTO);
+    }
+
+    @Override
+    public List<UserStarDTO> queryUserStarByUserIdAndType(Long userId, EnumUserStarType type) {
+        List<UserStarDO> userStars = userStarRepository.queryUserStarByUserIdAndType(userId, type.getCode());
         return ucModelMapper.map(userStars, ModelMapperTypeConstants.TYPE_LIST_USER_STAR_DTO);
     }
 

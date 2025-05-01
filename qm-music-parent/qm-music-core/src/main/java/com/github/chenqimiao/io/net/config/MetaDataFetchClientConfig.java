@@ -6,6 +6,7 @@ import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.io.net.client.SpotifyApiDataFetchClient;
 import com.github.chenqimiao.third.lastfm.LastfmClient;
 import com.github.chenqimiao.third.spotify.SpotifyClient;
+import com.github.chenqimiao.util.OrderUtils;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -61,23 +62,11 @@ public class MetaDataFetchClientConfig implements ApplicationContextAware, Appli
             }
         }
 
-        metaDataFetchClients.sort(Comparator.comparingInt(this::getOrderValue));
+        metaDataFetchClients.sort(Comparator.comparingInt(OrderUtils::getOrderValue));
 
         unmodifiedMetaDataFetchClients = Collections.unmodifiableList(metaDataFetchClients);
     }
 
-    // 获取Bean的Order值的方法
-    private int getOrderValue(MetaDataFetchClient client) {
-        // 优先检查是否实现了Ordered接口
-        if (client instanceof Ordered) {
-            return ((Ordered) client).getOrder();
-        }
-        // 获取目标类（处理可能的AOP代理）
-        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(client);
-        // 查找@Order注解
-        Order order = AnnotationUtils.findAnnotation(targetClass, Order.class);
-        return (order != null) ? order.value() : Ordered.LOWEST_PRECEDENCE;
-    }
 
     public static List<MetaDataFetchClient> getMetaDataFetchClients() {
         return unmodifiedMetaDataFetchClients;

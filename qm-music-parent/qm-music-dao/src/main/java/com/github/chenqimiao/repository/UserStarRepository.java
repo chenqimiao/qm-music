@@ -131,6 +131,20 @@ public class UserStarRepository {
 
     }
 
+
+    public List<UserStarDO> queryUserStarByUserIdAndType(Long userId, Integer starType) {
+        var sql = """
+                    select * from user_star where
+                    user_id = :user_id and star_type = :star_type
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("user_id", userId);
+        param.put("star_type", starType);
+
+        return namedParameterJdbcTemplate.query(sql, param, ROW_MAPPER_USER_STAR);
+
+    }
+
     public void delByRelationIdsAndStartType(List<Long> relationIds, Integer starType) {
         var sql = """
                     delete from user_star where

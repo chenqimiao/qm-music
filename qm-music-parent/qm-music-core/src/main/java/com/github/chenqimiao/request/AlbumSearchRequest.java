@@ -20,6 +20,9 @@ public class AlbumSearchRequest {
      */
     private String sortDirection;
 
+
+    private String orderBySql;
+
     private Integer fromYear;
 
     private Integer toYear;

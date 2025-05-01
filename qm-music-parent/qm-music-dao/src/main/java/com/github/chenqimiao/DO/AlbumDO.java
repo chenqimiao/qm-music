@@ -23,5 +23,7 @@ public class AlbumDO {
     private Integer song_count;
     private Integer duration;
     private String cover_art;
+    private String first_letter_title;
+    private String first_letter_artist_name;
 
 }

@@ -99,8 +99,8 @@ public class AlbumRepository {
 
         String sql = """
                     insert or ignore into album(`id`,`title`,`artist_id`, `release_year`,
-                                      `genre`, `duration`, `artist_name`, `song_count`)
-                    values( :id, :title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count);
+                                      `genre`, `duration`, `artist_name`, `song_count`, `first_letter_title`, 'first_letter_artist_name')
+                    values( :id, :title, :artist_id, :release_year, :genre, :duration, :artist_name, :song_count, :first_letter_title, :first_letter_artist_name);
                """;
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(albumDO);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);

@@ -217,14 +217,17 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                 albumDO = new AlbumDO();
                 albumDO.setId(sequence.nextId());
                 albumDO.setTitle(musicAlbumMeta.getAlbum());
-                albumDO.setArtist_id(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getId(): null);
+                ArtistDO albumArtist = CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst(): null;
+                albumDO.setArtist_id(Optional.ofNullable(albumArtist).map(ArtistDO::getId).orElse(null));
                 String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()
                         : musicAlbumMeta.getOriginalYear();
                 albumDO.setRelease_year(MusicFileReader.beautifyReleaseYear(releaseYear));
                 albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
                 albumDO.setSong_count(0);
                 albumDO.setDuration(1234);
-                albumDO.setArtist_name(CollectionUtils.isNotEmpty(albumArtists)? albumArtists.getFirst().getName(): null);
+                albumDO.setArtist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getName).orElse(null));
+                albumDO.setFirst_letter_artist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getFirst_letter).orElse("#"));
+                albumDO.setFirst_letter_title(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbum()));
                 albumDO = albumRepository.saveAndReturn(albumDO);
             }
         }

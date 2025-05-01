@@ -126,17 +126,27 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     }
 
     private List<AlbumDTO> getAlbumList2OrderByArtistName(AlbumSearchRequest albumSearchRequest) {
-        albumSearchRequest.setSortColumn("artist_name");
-        albumSearchRequest.setSortDirection("asc");
+
+        albumSearchRequest.setOrderBySql("""
+                                         CASE
+                                            WHEN first_letter_artist_name = '#' THEN 1
+                                            ELSE 0
+                                         END,
+                                         first_letter_artist_name
+                                      """);
 
         return this.getDefaultAlbumList2(albumSearchRequest);
     }
 
     private List<AlbumDTO> getAlbumList2OrderByAlbumName(AlbumSearchRequest albumSearchRequest) {
 
-        albumSearchRequest.setSortColumn("title");
-        albumSearchRequest.setSortDirection("asc");
-
+        albumSearchRequest.setOrderBySql("""
+                                        CASE
+                                            WHEN first_letter_title = '#' THEN 1
+                                            ELSE 0
+                                         END,
+                                         first_letter_title
+                                    """);
         return this.getDefaultAlbumList2(albumSearchRequest);
     }
 
@@ -285,10 +295,14 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
                 stringBuilder.append(" and genre = '").append(albumSearchRequest.getGenre()).append("'");
             }
         }
-        stringBuilder.append(" order by ")
-                .append(albumSearchRequest.getSortColumn()).append(" ")
-                .append(albumSearchRequest.getSortDirection());
-
+        if (albumSearchRequest.getOrderBySql() != null) {
+            stringBuilder.append(" order by ")
+                    .append(albumSearchRequest.getOrderBySql()).append(" ");
+        }else if (albumSearchRequest.getSortColumn() != null) {
+             stringBuilder.append(" order by ")
+             .append(albumSearchRequest.getSortColumn()).append(" ")
+                    .append(albumSearchRequest.getSortDirection());
+        }
         stringBuilder.append(" limit ").append(albumSearchRequest.getOffset()).append(",")
                 .append(albumSearchRequest.getSize());
 

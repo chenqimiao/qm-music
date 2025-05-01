@@ -126,7 +126,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     }
 
     private List<AlbumDTO> getAlbumList2OrderByArtistName(AlbumSearchRequest albumSearchRequest) {
-        albumSearchRequest.setSortColumn("artistName");
+        albumSearchRequest.setSortColumn("artist_name");
         albumSearchRequest.setSortDirection("asc");
 
         return this.getDefaultAlbumList2(albumSearchRequest);

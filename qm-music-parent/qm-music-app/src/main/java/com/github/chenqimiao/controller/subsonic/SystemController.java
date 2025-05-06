@@ -81,7 +81,7 @@ public class SystemController {
     }
 
     @RequestMapping(value = "/startScan")
-    public SubsonicResponse startScan() {
+    public ScanStatusResponse startScan() {
         this.refresh();
         return this.getScanStatus();
     }

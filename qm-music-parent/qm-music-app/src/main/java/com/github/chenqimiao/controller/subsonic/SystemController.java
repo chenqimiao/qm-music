@@ -80,4 +80,10 @@ public class SystemController {
         return ServerConstants.SUBSONIC_EMPTY_RESPONSE;
     }
 
+    @RequestMapping(value = "/startScan")
+    public SubsonicResponse startScan() {
+        this.refresh();
+        return this.getScanStatus();
+    }
+
 }

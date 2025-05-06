@@ -10,7 +10,7 @@ import com.github.chenqimiao.response.subsonic.ScanStatusResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.response.subsonic.SubsonicResponse;
-import com.github.chenqimiao.service.SystemService;
+import com.github.chenqimiao.service.complex.SystemService;
 import com.github.chenqimiao.util.WebUtils;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;

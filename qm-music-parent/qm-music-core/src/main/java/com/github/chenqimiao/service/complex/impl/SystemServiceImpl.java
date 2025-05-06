@@ -1,6 +1,6 @@
-package com.github.chenqimiao.service.impl;
+package com.github.chenqimiao.service.complex.impl;
 
-import com.github.chenqimiao.service.SystemService;
+import com.github.chenqimiao.service.complex.SystemService;
 import com.github.chenqimiao.service.complex.MediaFetcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

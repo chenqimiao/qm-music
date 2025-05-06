@@ -2,7 +2,7 @@ package com.github.chenqimiao.job;
 
 import com.github.chenqimiao.dto.UserDTO;
 import com.github.chenqimiao.service.PlayHistoryService;
-import com.github.chenqimiao.service.SystemService;
+import com.github.chenqimiao.service.complex.SystemService;
 import com.github.chenqimiao.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

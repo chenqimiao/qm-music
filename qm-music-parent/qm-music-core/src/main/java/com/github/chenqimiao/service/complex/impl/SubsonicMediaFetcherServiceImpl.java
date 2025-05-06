@@ -226,7 +226,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                 albumDO.setSong_count(0);
                 albumDO.setDuration(1234);
                 albumDO.setArtist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getName).orElse(null));
-                albumDO.setFirst_letter_artist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getFirst_letter).orElse("#"));
+                albumDO.setFirst_letter_artist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getFirst_letter).orElse(CommonConstants.UN_KNOWN_FIRST_LETTER));
                 albumDO.setFirst_letter_title(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbum()));
                 albumDO = albumRepository.saveAndReturn(albumDO);
             }

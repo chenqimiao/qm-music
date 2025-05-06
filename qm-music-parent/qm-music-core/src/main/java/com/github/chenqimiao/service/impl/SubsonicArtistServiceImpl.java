@@ -3,6 +3,7 @@ package com.github.chenqimiao.service.impl;
 import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.DO.ArtistDO;
 import com.github.chenqimiao.DO.ArtistRelationDO;
+import com.github.chenqimiao.constant.CommonConstants;
 import com.github.chenqimiao.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.dto.ArtistAggDTO;
 import com.github.chenqimiao.dto.ArtistDTO;
@@ -106,14 +107,15 @@ public class SubsonicArtistServiceImpl implements ArtistService {
 
     @Override
     public Map<String, List<ArtistDTO>> queryAllArtistGroupByFirstLetter(Long musicFolderId, EnumArtistRelationType enumArtistRelationType) {
-        List<ArtistDO> artistList = null;
-        artistList = artistRepository.findAll();
-
+        List<ArtistDO> artistList = artistRepository.findAll();
         if (CollectionUtils.isEmpty(artistList)) {
             return Collections.EMPTY_MAP;
         }
         List<ArtistDTO> artists = ucModelMapper.map(artistList, ModelMapperTypeConstants.TYPE_LIST_ARTIST_DTO);
-        return artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter, TreeMap::new, Collectors.toList()));
+        return artists.stream().collect(Collectors.groupingBy(ArtistDTO::getFirstLetter,  () -> new TreeMap<>(
+                Comparator.comparing((String s) -> Objects.equals(s, CommonConstants.UN_KNOWN_FIRST_LETTER))
+                        .thenComparing(Comparator.naturalOrder())
+        ), Collectors.toList()));
     }
 
     @Override

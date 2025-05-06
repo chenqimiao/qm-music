@@ -1,5 +1,6 @@
 package com.github.chenqimiao.util;
 
+import com.github.chenqimiao.constant.CommonConstants;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -17,7 +18,7 @@ public abstract class FirstLetterUtil {
      */
     public static String getFirstLetter(String input) {
         if (input == null || input.isEmpty()) {
-            return "#";
+            return CommonConstants.UN_KNOWN_FIRST_LETTER;
         }
 
         char firstChar = input.charAt(0);
@@ -32,7 +33,7 @@ public abstract class FirstLetterUtil {
         }
         // 其他字符返回#
         else {
-            return "#";
+            return CommonConstants.UN_KNOWN_FIRST_LETTER;
         }
     }
 

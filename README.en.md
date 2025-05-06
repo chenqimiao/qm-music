@@ -69,7 +69,7 @@ services:
 - **Environment Variables**
     - `QM_FFMPEG_ENABLE=true` Enable smart audio transcoding (recommended for outdoor use). Automatically switches between libmp3lame/acc encodings based on network conditions to reduce data usage (disabled by default).
     - `TZ=Asia/Shanghai` Configure according to your timezone.
-    - `QM_SPOTIFY_ENABLE=false` Enable for enhanced metadata support [SPOTIFY KEY Application](https://developer.spotify.com/)
+    - `QM_SPOTIFY_ENABLE=false` Enable for enhanced metadata support [SPOTIFY KEY Application](https://developer.spotify.com/documentation/web-api)
     - `QM_SPOTIFY_CLIENT_ID` Not required
     - `QM_SPOTIFY_CLIENT_SECRET` Not required
     - `QM_LASTFM_ENABLE=false` Enable for enhanced metadata support [LAST FM KEY Application](https://www.last.fm/api#getting-started)

@@ -10,7 +10,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 COPY qm-music-parent/ .
-RUN mvn clean package -DskipTests
+RUN mvn package -DskipTests && \
+    rm -rf ~/.m2/repository  # 清理 Maven 本地仓库缓存
+
+
+
 
 # 下载静态FFmpeg（需提前准备 download-ffmpeg.sh）
 ARG TARGETARCH

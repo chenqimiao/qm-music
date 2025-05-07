@@ -2,9 +2,9 @@ package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.core.dto.ArtistAggDTO;
 import com.github.chenqimiao.core.dto.ComplexArtistDTO;
-import com.github.chenqimiao.response.subsonic.ArtistResponse;
 import com.github.chenqimiao.core.service.ArtistService;
 import com.github.chenqimiao.core.service.complex.ArtistComplexService;
+import com.github.chenqimiao.response.subsonic.ArtistResponse;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;

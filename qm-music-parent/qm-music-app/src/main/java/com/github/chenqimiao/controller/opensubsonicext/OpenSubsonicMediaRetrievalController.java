@@ -1,8 +1,8 @@
 package com.github.chenqimiao.controller.opensubsonicext;
 
 import com.github.chenqimiao.core.io.local.LrcParser;
-import com.github.chenqimiao.response.opensubsonic.LyricsBySongIdResponse;
 import com.github.chenqimiao.core.service.complex.MediaRetrievalService;
+import com.github.chenqimiao.response.opensubsonic.LyricsBySongIdResponse;
 import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;

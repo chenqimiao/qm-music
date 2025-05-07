@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,15 +79,21 @@ public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationServic
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.SONG.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
+        songWithStars = songWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
+
         albumWithStars.forEach(n -> {
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ALBUM.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
+
+        albumWithStars = albumWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
+
         artistWithStars.forEach(n -> {
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ARTIST.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
 
+        artistWithStars = artistWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
 
 
         return UserStarResourceDTO.builder().userId(userId)

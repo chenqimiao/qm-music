@@ -1,20 +1,20 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.dto.ComplexPlaylistDTO;
-import com.github.chenqimiao.dto.PlaylistDTO;
-import com.github.chenqimiao.dto.UserDTO;
-import com.github.chenqimiao.enums.EnumPlayListVisibility;
+import com.github.chenqimiao.core.dto.ComplexPlaylistDTO;
+import com.github.chenqimiao.core.dto.PlaylistDTO;
+import com.github.chenqimiao.core.dto.UserDTO;
+import com.github.chenqimiao.core.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
 import com.github.chenqimiao.exception.SubsonicCommonErrorException;
-import com.github.chenqimiao.request.UpdatePlaylistRequest;
+import com.github.chenqimiao.core.request.UpdatePlaylistRequest;
 import com.github.chenqimiao.request.subsonic.CreatePlaylistRequest;
 import com.github.chenqimiao.response.subsonic.PlaylistResponse;
 import com.github.chenqimiao.response.subsonic.PlaylistsResponse;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
-import com.github.chenqimiao.service.PlaylistService;
-import com.github.chenqimiao.service.UserService;
-import com.github.chenqimiao.service.complex.PlaylistComplexService;
+import com.github.chenqimiao.core.service.PlaylistService;
+import com.github.chenqimiao.core.service.UserService;
+import com.github.chenqimiao.core.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -156,7 +156,7 @@ public class PlaylistsController {
         if (playlistDTO == null || !Objects.equals(playlistDTO.getUserId(), WebUtils.currentUserId())) {
             throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
         }
-        com.github.chenqimiao.request.UpdatePlaylistRequest updatePlaylistRequest = new UpdatePlaylistRequest();
+        UpdatePlaylistRequest updatePlaylistRequest = new UpdatePlaylistRequest();
         updatePlaylistRequest.setPlaylistId(playlistId);
         updatePlaylistRequest.setName(name);
         updatePlaylistRequest.setDescription(comment);

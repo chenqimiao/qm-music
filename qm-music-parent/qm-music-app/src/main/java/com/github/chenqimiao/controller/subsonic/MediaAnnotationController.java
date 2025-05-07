@@ -1,19 +1,18 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.enums.EnumStarActionType;
-import com.github.chenqimiao.enums.EnumUserStarType;
-import com.github.chenqimiao.request.PlayHistoryRequest;
-import com.github.chenqimiao.request.StarOrNotRequest;
+import com.github.chenqimiao.core.enums.EnumStarActionType;
+import com.github.chenqimiao.core.enums.EnumUserStarType;
+import com.github.chenqimiao.core.request.PlayHistoryRequest;
+import com.github.chenqimiao.core.request.StarOrNotRequest;
 import com.github.chenqimiao.request.subsonic.StarRequest;
 import com.github.chenqimiao.request.subsonic.UnStarRequest;
 import com.github.chenqimiao.response.subsonic.SubsonicPong;
-import com.github.chenqimiao.service.PlayHistoryService;
-import com.github.chenqimiao.service.UserStarService;
+import com.github.chenqimiao.core.service.PlayHistoryService;
+import com.github.chenqimiao.core.service.UserStarService;
 import com.github.chenqimiao.util.WebUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

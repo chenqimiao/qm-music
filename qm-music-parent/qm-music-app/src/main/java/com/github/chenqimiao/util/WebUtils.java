@@ -1,8 +1,8 @@
 package com.github.chenqimiao.util;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.dto.UserDTO;
-import com.github.chenqimiao.enums.EnumYesOrNo;
+import com.github.chenqimiao.core.dto.UserDTO;
+import com.github.chenqimiao.core.enums.EnumYesOrNo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

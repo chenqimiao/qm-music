@@ -1,6 +1,6 @@
 package com.github.chenqimiao.command;
 
-import com.github.chenqimiao.constant.CommonConstants;
+import com.github.chenqimiao.core.constant.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

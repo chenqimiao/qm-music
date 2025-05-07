@@ -2,7 +2,7 @@ package com.github.chenqimiao.advice;
 
 import com.github.chenqimiao.constant.ServerConstants;
 import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
-import com.github.chenqimiao.exception.ResourceDisappearException;
+import com.github.chenqimiao.core.exception.ResourceDisappearException;
 import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.response.subsonic.SubsonicCommonErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;

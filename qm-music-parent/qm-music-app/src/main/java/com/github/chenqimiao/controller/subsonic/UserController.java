@@ -1,13 +1,13 @@
 package com.github.chenqimiao.controller.subsonic;
 
 import com.github.chenqimiao.constant.ServerConstants;
-import com.github.chenqimiao.dto.UserDTO;
+import com.github.chenqimiao.core.dto.UserDTO;
 import com.github.chenqimiao.enums.EnumSubsonicErrorCode;
-import com.github.chenqimiao.enums.EnumYesOrNo;
+import com.github.chenqimiao.core.enums.EnumYesOrNo;
 import com.github.chenqimiao.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.request.subsonic.UserRequest;
 import com.github.chenqimiao.response.subsonic.*;
-import com.github.chenqimiao.service.UserService;
+import com.github.chenqimiao.core.service.UserService;
 import com.github.chenqimiao.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +66,7 @@ public class UserController {
         if(!WebUtils.currentUserIsAdmin()) {
             throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_50);
         }
-        com.github.chenqimiao.request.UserRequest request = new com.github.chenqimiao.request.UserRequest();
+        com.github.chenqimiao.core.request.UserRequest request = new com.github.chenqimiao.core.request.UserRequest();
         request.setUsername(userRequest.getUsername());
         request.setEmail(userRequest.getEmail());
         request.setPassword(userRequest.getPassword());
@@ -86,7 +86,7 @@ public class UserController {
             throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_50);
         }
 
-        com.github.chenqimiao.request.UserRequest request = new com.github.chenqimiao.request.UserRequest();
+        com.github.chenqimiao.core.request.UserRequest request = new com.github.chenqimiao.core.request.UserRequest();
         request.setUsername(userRequest.getUsername());
         request.setEmail(userRequest.getEmail());
         request.setPassword(userRequest.getPassword());

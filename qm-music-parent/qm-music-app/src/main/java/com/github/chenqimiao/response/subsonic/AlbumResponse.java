@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.github.chenqimiao.response.opensubsonic.OpenSubsonicResponse;
-import com.github.chenqimiao.util.DateTimeUtils;
+import com.github.chenqimiao.core.util.DateTimeUtils;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 

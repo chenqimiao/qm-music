@@ -1,7 +1,7 @@
 package com.github.chenqimiao.com.github.chenqimiao.service.complex;
 
 import com.github.chenqimiao.QmMusicApplication;
-import com.github.chenqimiao.service.complex.AlbumComplexService;
+import com.github.chenqimiao.core.service.complex.AlbumComplexService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.github.chenqimiao.controller.opensubsonicext;
 
-import com.github.chenqimiao.enums.EnumOpenSubsonicExt;
+import com.github.chenqimiao.core.enums.EnumOpenSubsonicExt;
 import com.github.chenqimiao.response.opensubsonic.OpenSubsonicExtensionsResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

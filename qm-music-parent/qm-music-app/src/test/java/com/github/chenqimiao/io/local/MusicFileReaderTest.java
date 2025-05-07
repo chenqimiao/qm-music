@@ -2,7 +2,8 @@ package com.github.chenqimiao.io.local;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.QmMusicApplication;
-import com.github.chenqimiao.io.local.model.MusicMeta;
+import com.github.chenqimiao.core.io.local.MusicFileReader;
+import com.github.chenqimiao.core.io.local.model.MusicMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

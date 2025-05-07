@@ -1,16 +1,16 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.dto.SearchResultDTO;
-import com.github.chenqimiao.enums.EnumUserStarType;
-import com.github.chenqimiao.io.net.client.MetaDataFetchClientCommander;
-import com.github.chenqimiao.io.net.model.ArtistInfo;
-import com.github.chenqimiao.request.BatchStarInfoRequest;
-import com.github.chenqimiao.request.CommonSearchRequest;
+import com.github.chenqimiao.core.dto.SearchResultDTO;
+import com.github.chenqimiao.core.enums.EnumUserStarType;
+import com.github.chenqimiao.core.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.core.io.net.model.ArtistInfo;
+import com.github.chenqimiao.core.request.BatchStarInfoRequest;
+import com.github.chenqimiao.core.request.CommonSearchRequest;
 import com.github.chenqimiao.request.subsonic.SearchRequest;
 import com.github.chenqimiao.response.subsonic.SearchResult2Response;
 import com.github.chenqimiao.response.subsonic.SearchResult3Response;
-import com.github.chenqimiao.service.UserStarService;
-import com.github.chenqimiao.service.complex.SearchService;
+import com.github.chenqimiao.core.service.UserStarService;
+import com.github.chenqimiao.core.service.complex.SearchService;
 import com.github.chenqimiao.util.WebUtils;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;

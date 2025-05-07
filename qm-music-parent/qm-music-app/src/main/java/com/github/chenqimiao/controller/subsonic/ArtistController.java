@@ -1,17 +1,16 @@
 package com.github.chenqimiao.controller.subsonic;
 
-import com.github.chenqimiao.dto.ArtistAggDTO;
-import com.github.chenqimiao.dto.ComplexArtistDTO;
+import com.github.chenqimiao.core.dto.ArtistAggDTO;
+import com.github.chenqimiao.core.dto.ComplexArtistDTO;
 import com.github.chenqimiao.response.subsonic.ArtistResponse;
-import com.github.chenqimiao.service.ArtistService;
-import com.github.chenqimiao.service.complex.ArtistComplexService;
+import com.github.chenqimiao.core.service.ArtistService;
+import com.github.chenqimiao.core.service.complex.ArtistComplexService;
 import com.github.chenqimiao.util.WebUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

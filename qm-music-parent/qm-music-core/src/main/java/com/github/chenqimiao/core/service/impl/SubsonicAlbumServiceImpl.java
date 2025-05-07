@@ -1,10 +1,10 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.AlbumDO;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.AlbumDTO;
-import com.github.chenqimiao.repository.AlbumRepository;
 import com.github.chenqimiao.core.service.AlbumService;
+import com.github.chenqimiao.dao.DO.AlbumDO;
+import com.github.chenqimiao.dao.repository.AlbumRepository;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;

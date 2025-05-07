@@ -1,7 +1,7 @@
 package com.github.chenqimiao.core.service.complex.impl;
 
-import com.github.chenqimiao.core.service.complex.SystemService;
 import com.github.chenqimiao.core.service.complex.MediaFetcherService;
+import com.github.chenqimiao.core.service.complex.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

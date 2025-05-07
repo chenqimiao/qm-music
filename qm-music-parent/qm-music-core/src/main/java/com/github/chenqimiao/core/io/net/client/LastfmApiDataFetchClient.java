@@ -1,10 +1,10 @@
 package com.github.chenqimiao.core.io.net.client;
 
 import com.github.chenqimiao.core.constant.RateLimiterConstants;
-import com.github.chenqimiao.core.third.lastfm.model.ArtistInfo;
 import com.github.chenqimiao.core.exception.RateLimitException;
 import com.github.chenqimiao.core.third.lastfm.LastfmClient;
 import com.github.chenqimiao.core.third.lastfm.model.Artist;
+import com.github.chenqimiao.core.third.lastfm.model.ArtistInfo;
 import com.github.chenqimiao.core.third.lastfm.model.Track;
 import com.github.chenqimiao.core.util.TransliteratorUtils;
 import com.google.common.util.concurrent.RateLimiter;

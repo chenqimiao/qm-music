@@ -1,9 +1,9 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.core.service.UserAuthService;
 import com.github.chenqimiao.core.util.HexToDecimalConverter;
 import com.github.chenqimiao.core.util.MD5Utils;
+import com.github.chenqimiao.dao.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

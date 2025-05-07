@@ -1,6 +1,6 @@
-package com.github.chenqimiao.repository;
+package com.github.chenqimiao.dao.repository;
 
-import com.github.chenqimiao.DO.ArtistDO;
+import com.github.chenqimiao.dao.DO.ArtistDO;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

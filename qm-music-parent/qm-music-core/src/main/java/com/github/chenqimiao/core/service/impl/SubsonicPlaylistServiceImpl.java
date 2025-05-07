@@ -1,14 +1,14 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.PlaylistDO;
-import com.github.chenqimiao.DO.PlaylistItemDO;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.PlaylistDTO;
 import com.github.chenqimiao.core.dto.PlaylistItemDTO;
 import com.github.chenqimiao.core.enums.EnumPlayListVisibility;
-import com.github.chenqimiao.repository.PlaylistItemRepository;
-import com.github.chenqimiao.repository.PlaylistRepository;
 import com.github.chenqimiao.core.service.PlaylistService;
+import com.github.chenqimiao.dao.DO.PlaylistDO;
+import com.github.chenqimiao.dao.DO.PlaylistItemDO;
+import com.github.chenqimiao.dao.repository.PlaylistItemRepository;
+import com.github.chenqimiao.dao.repository.PlaylistRepository;
 import com.google.common.collect.Lists;
 import io.github.mocreates.Sequence;
 import jakarta.annotation.Resource;

@@ -1,4 +1,4 @@
-package com.github.chenqimiao.constant;
+package com.github.chenqimiao.dao.constant;
 
 import com.alibaba.fastjson2.TypeReference;
 

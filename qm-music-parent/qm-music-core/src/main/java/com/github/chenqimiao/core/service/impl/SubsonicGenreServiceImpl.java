@@ -1,15 +1,17 @@
 package com.github.chenqimiao.core.service.impl;
 
 import com.github.chenqimiao.core.dto.GenreStatisticsDTO;
-import com.github.chenqimiao.repository.AlbumRepository;
-import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.core.service.GenreService;
+import com.github.chenqimiao.dao.repository.AlbumRepository;
+import com.github.chenqimiao.dao.repository.SongRepository;
 import com.google.common.collect.Sets;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Qimiao Chen

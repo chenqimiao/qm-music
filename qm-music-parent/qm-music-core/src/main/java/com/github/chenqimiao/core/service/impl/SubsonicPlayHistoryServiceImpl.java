@@ -2,10 +2,10 @@ package com.github.chenqimiao.core.service.impl;
 
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.PlayHistoryDTO;
-import com.github.chenqimiao.repository.PlayHistoryRepository;
 import com.github.chenqimiao.core.request.PlayHistoryRequest;
-import com.github.chenqimiao.request.PlayHistorySaveRequest;
 import com.github.chenqimiao.core.service.PlayHistoryService;
+import com.github.chenqimiao.dao.repository.PlayHistoryRepository;
+import com.github.chenqimiao.dao.request.PlayHistorySaveRequest;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

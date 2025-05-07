@@ -1,4 +1,4 @@
-package com.github.chenqimiao.request;
+package com.github.chenqimiao.dao.request;
 
 import lombok.Getter;
 import lombok.Setter;

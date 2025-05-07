@@ -1,22 +1,22 @@
 package com.github.chenqimiao.core.service.complex.impl;
 
-import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.DO.ArtistRelationDO;
-import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.core.constant.CommonConstants;
 import com.github.chenqimiao.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.core.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.core.io.local.MusicFileReader;
 import com.github.chenqimiao.core.io.local.model.MusicAlbumMeta;
 import com.github.chenqimiao.core.io.local.model.MusicMeta;
-import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.core.service.complex.AlbumComplexService;
 import com.github.chenqimiao.core.service.complex.ArtistComplexService;
 import com.github.chenqimiao.core.service.complex.MediaFetcherService;
 import com.github.chenqimiao.core.service.complex.SongComplexService;
 import com.github.chenqimiao.core.util.FileUtils;
 import com.github.chenqimiao.core.util.FirstLetterUtil;
+import com.github.chenqimiao.dao.DO.AlbumDO;
+import com.github.chenqimiao.dao.DO.ArtistDO;
+import com.github.chenqimiao.dao.DO.ArtistRelationDO;
+import com.github.chenqimiao.dao.DO.SongDO;
+import com.github.chenqimiao.dao.repository.*;
 import io.github.mocreates.Sequence;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

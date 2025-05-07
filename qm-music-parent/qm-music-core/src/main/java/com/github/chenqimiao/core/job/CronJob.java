@@ -2,8 +2,8 @@ package com.github.chenqimiao.core.job;
 
 import com.github.chenqimiao.core.dto.UserDTO;
 import com.github.chenqimiao.core.service.PlayHistoryService;
-import com.github.chenqimiao.core.service.complex.SystemService;
 import com.github.chenqimiao.core.service.UserService;
+import com.github.chenqimiao.core.service.complex.SystemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

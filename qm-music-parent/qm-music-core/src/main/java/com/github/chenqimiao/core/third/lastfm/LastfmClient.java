@@ -3,7 +3,6 @@ package com.github.chenqimiao.core.third.lastfm;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.core.config.InsecureHttpClient;
 import com.github.chenqimiao.core.third.lastfm.model.*;
-import com.github.chenqimiao.third.lastfm.model.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;

@@ -1,4 +1,4 @@
-package com.github.chenqimiao.repository;
+package com.github.chenqimiao.dao.repository;
 
 /**
  * @author Qimiao Chen

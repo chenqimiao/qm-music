@@ -1,6 +1,6 @@
-package com.github.chenqimiao.repository;
+package com.github.chenqimiao.dao.repository;
 
-import com.github.chenqimiao.DO.SongDO;
+import com.github.chenqimiao.dao.DO.SongDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

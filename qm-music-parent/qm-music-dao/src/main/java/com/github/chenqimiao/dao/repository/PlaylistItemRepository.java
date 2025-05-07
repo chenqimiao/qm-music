@@ -1,6 +1,6 @@
-package com.github.chenqimiao.repository;
+package com.github.chenqimiao.dao.repository;
 
-import com.github.chenqimiao.DO.PlaylistItemDO;
+import com.github.chenqimiao.dao.DO.PlaylistItemDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;

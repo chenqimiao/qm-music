@@ -1,16 +1,15 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.DO.SongDO;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.*;
-import com.github.chenqimiao.dto.*;
-import com.github.chenqimiao.repository.AlbumRepository;
-import com.github.chenqimiao.repository.ArtistRepository;
-import com.github.chenqimiao.repository.SongRepository;
 import com.github.chenqimiao.core.request.SongSearchRequest;
 import com.github.chenqimiao.core.service.SongService;
+import com.github.chenqimiao.dao.DO.AlbumDO;
+import com.github.chenqimiao.dao.DO.ArtistDO;
+import com.github.chenqimiao.dao.DO.SongDO;
+import com.github.chenqimiao.dao.repository.AlbumRepository;
+import com.github.chenqimiao.dao.repository.ArtistRepository;
+import com.github.chenqimiao.dao.repository.SongRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;

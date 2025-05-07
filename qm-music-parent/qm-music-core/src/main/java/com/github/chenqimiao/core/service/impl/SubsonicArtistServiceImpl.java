@@ -1,8 +1,5 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.AlbumDO;
-import com.github.chenqimiao.DO.ArtistDO;
-import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.core.constant.CommonConstants;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.ArtistAggDTO;
@@ -10,11 +7,14 @@ import com.github.chenqimiao.core.dto.ArtistDTO;
 import com.github.chenqimiao.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.core.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.core.io.net.model.ArtistInfo;
-import com.github.chenqimiao.repository.AlbumRepository;
-import com.github.chenqimiao.repository.ArtistRelationRepository;
-import com.github.chenqimiao.repository.ArtistRepository;
 import com.github.chenqimiao.core.service.ArtistService;
 import com.github.chenqimiao.core.util.TransliteratorUtils;
+import com.github.chenqimiao.dao.DO.AlbumDO;
+import com.github.chenqimiao.dao.DO.ArtistDO;
+import com.github.chenqimiao.dao.DO.ArtistRelationDO;
+import com.github.chenqimiao.dao.repository.AlbumRepository;
+import com.github.chenqimiao.dao.repository.ArtistRelationRepository;
+import com.github.chenqimiao.dao.repository.ArtistRepository;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;

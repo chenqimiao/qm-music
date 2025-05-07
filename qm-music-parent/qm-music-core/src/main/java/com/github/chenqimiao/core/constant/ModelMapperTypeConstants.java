@@ -1,7 +1,6 @@
 package com.github.chenqimiao.core.constant;
 
 import com.github.chenqimiao.core.dto.*;
-import com.github.chenqimiao.dto.*;
 import org.modelmapper.TypeToken;
 
 import java.lang.reflect.Type;

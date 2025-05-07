@@ -1,12 +1,12 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.UserDO;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.UserDTO;
-import com.github.chenqimiao.repository.UserRepository;
 import com.github.chenqimiao.core.request.UserRequest;
 import com.github.chenqimiao.core.service.UserAuthService;
 import com.github.chenqimiao.core.service.UserService;
+import com.github.chenqimiao.dao.DO.UserDO;
+import com.github.chenqimiao.dao.repository.UserRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;

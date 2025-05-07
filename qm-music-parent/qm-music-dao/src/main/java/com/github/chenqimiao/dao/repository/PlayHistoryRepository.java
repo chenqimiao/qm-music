@@ -1,8 +1,8 @@
-package com.github.chenqimiao.repository;
+package com.github.chenqimiao.dao.repository;
 
-import com.github.chenqimiao.DO.PlayHistoryDO;
-import com.github.chenqimiao.constant.DateTimeFormatterConstants;
-import com.github.chenqimiao.request.PlayHistorySaveRequest;
+import com.github.chenqimiao.dao.DO.PlayHistoryDO;
+import com.github.chenqimiao.dao.constant.DateTimeFormatterConstants;
+import com.github.chenqimiao.dao.request.PlayHistorySaveRequest;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;

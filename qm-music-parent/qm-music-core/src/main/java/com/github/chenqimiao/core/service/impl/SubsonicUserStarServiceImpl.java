@@ -1,16 +1,15 @@
 package com.github.chenqimiao.core.service.impl;
 
-import com.github.chenqimiao.DO.UserStarDO;
 import com.github.chenqimiao.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.core.dto.UserStarDTO;
 import com.github.chenqimiao.core.enums.EnumStarActionType;
-
 import com.github.chenqimiao.core.enums.EnumUserStarType;
-import com.github.chenqimiao.repository.UserStarRepository;
 import com.github.chenqimiao.core.request.BatchStarInfoRequest;
 import com.github.chenqimiao.core.request.StarInfoRequest;
 import com.github.chenqimiao.core.request.StarOrNotRequest;
 import com.github.chenqimiao.core.service.UserStarService;
+import com.github.chenqimiao.dao.DO.UserStarDO;
+import com.github.chenqimiao.dao.repository.UserStarRepository;
 import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

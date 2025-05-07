@@ -1,15 +1,15 @@
 package com.github.chenqimiao.core.service.complex.impl;
 
-import com.github.chenqimiao.DO.ArtistRelationDO;
 import com.github.chenqimiao.core.dto.ArtistDTO;
 import com.github.chenqimiao.core.dto.ComplexArtistDTO;
 import com.github.chenqimiao.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.core.enums.EnumUserStarType;
-import com.github.chenqimiao.repository.*;
 import com.github.chenqimiao.core.request.BatchStarInfoRequest;
 import com.github.chenqimiao.core.service.ArtistService;
 import com.github.chenqimiao.core.service.UserStarService;
 import com.github.chenqimiao.core.service.complex.ArtistComplexService;
+import com.github.chenqimiao.dao.DO.ArtistRelationDO;
+import com.github.chenqimiao.dao.repository.*;
 import jakarta.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;

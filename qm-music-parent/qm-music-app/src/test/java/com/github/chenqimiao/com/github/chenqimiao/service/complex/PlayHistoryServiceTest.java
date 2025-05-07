@@ -1,6 +1,6 @@
 package com.github.chenqimiao.com.github.chenqimiao.service.complex;
 
-import com.github.chenqimiao.QmMusicApplication;
+import com.github.chenqimiao.app.QmMusicApplication;
 import com.github.chenqimiao.core.service.PlayHistoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

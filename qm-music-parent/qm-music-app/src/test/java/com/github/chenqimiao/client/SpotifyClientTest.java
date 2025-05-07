@@ -1,7 +1,7 @@
 package com.github.chenqimiao.client;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.github.chenqimiao.QmMusicApplication;
+import com.github.chenqimiao.app.QmMusicApplication;
 import com.github.chenqimiao.core.third.spotify.SpotifyClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

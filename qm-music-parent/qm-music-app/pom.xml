@@ -120,7 +120,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.github.chenqimiao.QmMusicApplication</mainClass>
+                            <mainClass>com.github.chenqimiao.app.QmMusicApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

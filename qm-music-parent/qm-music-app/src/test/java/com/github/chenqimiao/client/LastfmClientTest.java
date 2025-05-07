@@ -1,6 +1,6 @@
 package com.github.chenqimiao.client;
 
-import com.github.chenqimiao.QmMusicApplication;
+import com.github.chenqimiao.app.QmMusicApplication;
 import com.github.chenqimiao.core.third.lastfm.LastfmClient;
 import com.github.chenqimiao.core.third.lastfm.model.Artist;
 import com.github.chenqimiao.core.third.lastfm.model.Track;

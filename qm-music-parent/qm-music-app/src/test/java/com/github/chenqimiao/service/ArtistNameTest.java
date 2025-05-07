@@ -1,6 +1,6 @@
 package com.github.chenqimiao.service;
 
-import com.github.chenqimiao.QmMusicApplication;
+import com.github.chenqimiao.app.QmMusicApplication;
 import com.github.chenqimiao.core.constant.CommonConstants;
 import com.google.common.collect.Lists;
 import junit.framework.Assert;

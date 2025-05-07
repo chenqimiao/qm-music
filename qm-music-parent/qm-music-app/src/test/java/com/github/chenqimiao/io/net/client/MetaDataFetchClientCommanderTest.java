@@ -1,7 +1,7 @@
 package com.github.chenqimiao.io.net.client;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.github.chenqimiao.QmMusicApplication;
+import com.github.chenqimiao.app.QmMusicApplication;
 import com.github.chenqimiao.core.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.core.io.net.model.ArtistInfo;
 import lombok.extern.slf4j.Slf4j;

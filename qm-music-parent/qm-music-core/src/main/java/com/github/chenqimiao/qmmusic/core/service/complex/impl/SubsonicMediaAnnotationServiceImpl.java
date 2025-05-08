@@ -1,7 +1,6 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
 import com.github.chenqimiao.qmmusic.core.constant.ModelMapperTypeConstants;
-import com.github.chenqimiao.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.enums.EnumUserStarType;
 import com.github.chenqimiao.qmmusic.core.service.AlbumService;

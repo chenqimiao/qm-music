@@ -2,8 +2,8 @@ package com.github.chenqimiao.app.controller;
 
 import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicMusicFolder;
+import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
 import junit.framework.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

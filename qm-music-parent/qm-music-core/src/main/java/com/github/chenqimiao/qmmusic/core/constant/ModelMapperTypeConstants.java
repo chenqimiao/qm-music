@@ -1,6 +1,5 @@
 package com.github.chenqimiao.qmmusic.core.constant;
 
-import com.github.chenqimiao.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import org.modelmapper.TypeToken;
 

@@ -1,9 +1,6 @@
 package com.github.chenqimiao.qmmusic.app.controller.subsonic;
 
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.core.dto.UserDTO;
-import com.github.chenqimiao.qmmusic.core.enums.EnumYesOrNo;
-import com.github.chenqimiao.qmmusic.core.service.UserService;
 import com.github.chenqimiao.qmmusic.app.enums.EnumSubsonicErrorCode;
 import com.github.chenqimiao.qmmusic.app.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.qmmusic.app.request.subsonic.UserRequest;
@@ -12,6 +9,9 @@ import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicUser;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.UserResponse;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.UsersResponse;
 import com.github.chenqimiao.qmmusic.app.util.WebUtils;
+import com.github.chenqimiao.qmmusic.core.dto.UserDTO;
+import com.github.chenqimiao.qmmusic.core.enums.EnumYesOrNo;
+import com.github.chenqimiao.qmmusic.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

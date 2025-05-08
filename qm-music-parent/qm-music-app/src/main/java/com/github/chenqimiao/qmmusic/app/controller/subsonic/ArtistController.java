@@ -1,11 +1,11 @@
 package com.github.chenqimiao.qmmusic.app.controller.subsonic;
 
+import com.github.chenqimiao.qmmusic.app.response.subsonic.ArtistResponse;
+import com.github.chenqimiao.qmmusic.app.util.WebUtils;
 import com.github.chenqimiao.qmmusic.core.dto.ArtistAggDTO;
 import com.github.chenqimiao.qmmusic.core.dto.ComplexArtistDTO;
 import com.github.chenqimiao.qmmusic.core.service.ArtistService;
 import com.github.chenqimiao.qmmusic.core.service.complex.ArtistComplexService;
-import com.github.chenqimiao.qmmusic.app.response.subsonic.ArtistResponse;
-import com.github.chenqimiao.qmmusic.app.util.WebUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;

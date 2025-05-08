@@ -1,6 +1,5 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
-import com.github.chenqimiao.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.request.UpdatePlaylistRequest;
 import com.github.chenqimiao.qmmusic.core.service.PlaylistService;

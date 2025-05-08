@@ -1,7 +1,7 @@
 package com.github.chenqimiao.qmmusic.app.controller.opensubsonicext;
 
-import com.github.chenqimiao.qmmusic.core.enums.EnumOpenSubsonicExt;
 import com.github.chenqimiao.qmmusic.app.response.opensubsonic.OpenSubsonicExtensionsResponse;
+import com.github.chenqimiao.qmmusic.core.enums.EnumOpenSubsonicExt;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,10 +1,10 @@
 package com.github.chenqimiao.qmmusic.app.advice;
 
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.core.exception.ResourceDisappearException;
 import com.github.chenqimiao.qmmusic.app.enums.EnumSubsonicErrorCode;
 import com.github.chenqimiao.qmmusic.app.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicCommonErrorResponse;
+import com.github.chenqimiao.qmmusic.core.exception.ResourceDisappearException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

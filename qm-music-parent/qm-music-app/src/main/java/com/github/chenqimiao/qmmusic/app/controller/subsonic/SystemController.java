@@ -1,9 +1,6 @@
 package com.github.chenqimiao.qmmusic.app.controller.subsonic;
 
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.core.service.complex.SystemService;
-import com.github.chenqimiao.qmmusic.dao.repository.SongRepository;
-import com.github.chenqimiao.qmmusic.dao.repository.UserRepository;
 import com.github.chenqimiao.qmmusic.app.enums.EnumSubsonicErrorCode;
 import com.github.chenqimiao.qmmusic.app.exception.SubsonicCommonErrorException;
 import com.github.chenqimiao.qmmusic.app.request.subsonic.SubsonicRequest;
@@ -12,6 +9,9 @@ import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicLicenseRespon
 import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicResponse;
 import com.github.chenqimiao.qmmusic.app.util.WebUtils;
+import com.github.chenqimiao.qmmusic.core.service.complex.SystemService;
+import com.github.chenqimiao.qmmusic.dao.repository.SongRepository;
+import com.github.chenqimiao.qmmusic.dao.repository.UserRepository;
 import io.github.mocreates.Sequence;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

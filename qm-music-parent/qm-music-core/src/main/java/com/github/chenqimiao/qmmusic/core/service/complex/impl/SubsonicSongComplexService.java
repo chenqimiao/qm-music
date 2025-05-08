@@ -1,13 +1,11 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
 import com.github.chenqimiao.qmmusic.core.constant.CommonConstants;
-import com.github.chenqimiao.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.qmmusic.core.enums.EnumUserStarType;
 import com.github.chenqimiao.qmmusic.core.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.qmmusic.core.request.BatchStarInfoRequest;
-import com.github.chenqimiao.core.service.*;
 import com.github.chenqimiao.qmmusic.core.service.*;
 import com.github.chenqimiao.qmmusic.core.service.complex.SongComplexService;
 import com.github.chenqimiao.qmmusic.core.util.TransliteratorUtils;

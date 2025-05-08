@@ -1,7 +1,6 @@
 package com.github.chenqimiao.qmmusic.core.service.impl;
 
 import com.github.chenqimiao.qmmusic.core.constant.ModelMapperTypeConstants;
-import com.github.chenqimiao.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.request.SongSearchRequest;
 import com.github.chenqimiao.qmmusic.core.service.SongService;

@@ -1,8 +1,8 @@
 package com.github.chenqimiao.client;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.github.chenqimiao.app.QmMusicApplication;
-import com.github.chenqimiao.core.third.spotify.SpotifyClient;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.core.third.spotify.SpotifyClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

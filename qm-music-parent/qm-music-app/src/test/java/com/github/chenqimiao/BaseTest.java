@@ -1,6 +1,6 @@
 package com.github.chenqimiao;
 
-import com.github.chenqimiao.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**

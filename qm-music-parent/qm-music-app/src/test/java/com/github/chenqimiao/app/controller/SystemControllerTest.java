@@ -1,10 +1,10 @@
 package com.github.chenqimiao.app.controller;
 
-import com.github.chenqimiao.app.QmMusicApplication;
-import com.github.chenqimiao.app.constant.ServerConstants;
-import com.github.chenqimiao.core.util.MD5Utils;
-import com.github.chenqimiao.app.response.subsonic.SubsonicLicenseResponse;
-import com.github.chenqimiao.app.response.subsonic.SubsonicPong;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
+import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
+import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicLicenseResponse;
+import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicPong;
 import junit.framework.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

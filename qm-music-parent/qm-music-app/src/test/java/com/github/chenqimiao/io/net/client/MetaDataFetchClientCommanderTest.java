@@ -1,9 +1,9 @@
 package com.github.chenqimiao.io.net.client;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.github.chenqimiao.app.QmMusicApplication;
-import com.github.chenqimiao.core.io.net.client.MetaDataFetchClientCommander;
-import com.github.chenqimiao.core.io.net.model.ArtistInfo;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.core.io.net.client.MetaDataFetchClientCommander;
+import com.github.chenqimiao.qmmusic.core.io.net.model.ArtistInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

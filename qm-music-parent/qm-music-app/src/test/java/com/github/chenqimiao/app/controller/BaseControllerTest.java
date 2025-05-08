@@ -1,10 +1,10 @@
 package com.github.chenqimiao.app.controller;
 
-import com.github.chenqimiao.app.QmMusicApplication;
-import com.github.chenqimiao.core.util.MD5Utils;
-import com.github.chenqimiao.dao.DO.UserDO;
-import com.github.chenqimiao.dao.repository.UserRepository;
-import com.github.chenqimiao.app.request.subsonic.SubsonicRequest;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
+import com.github.chenqimiao.qmmusic.dao.DO.UserDO;
+import com.github.chenqimiao.qmmusic.dao.repository.UserRepository;
+import com.github.chenqimiao.qmmusic.app.request.subsonic.SubsonicRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,9 @@
 package com.github.chenqimiao.client;
 
-import com.github.chenqimiao.app.QmMusicApplication;
-import com.github.chenqimiao.core.third.lastfm.LastfmClient;
-import com.github.chenqimiao.core.third.lastfm.model.Artist;
-import com.github.chenqimiao.core.third.lastfm.model.Track;
+import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
+import com.github.chenqimiao.qmmusic.core.third.lastfm.LastfmClient;
+import com.github.chenqimiao.qmmusic.core.third.lastfm.model.Artist;
+import com.github.chenqimiao.qmmusic.core.third.lastfm.model.Track;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

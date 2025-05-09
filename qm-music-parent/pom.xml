@@ -109,7 +109,7 @@
             <dependency>
                 <groupId>io.github.mocreates</groupId>
                 <artifactId>uid-generator</artifactId>
-                <version>3.0.0-RELEASE</version>
+                <version>3.0.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>com.belerweb</groupId>

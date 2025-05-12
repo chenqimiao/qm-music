@@ -89,6 +89,8 @@ services:
   - `QM_LASTFM_ENABLE=false` 非必须 开启后，可以获得更多元数据支持 [LAST FM KEY 申请地址](https://www.last.fm/api#getting-started)
   - `QM_LASTFM_API_KEY` 非必须
   - `QM_REFRESH_AUTO` 非必须 定时刷新曲库开关 默认开启
+  - `QM_CLEAN_PLAY_HISTORY_AUTO` 非必须 定时清理播放记录开关 默认开启
+  - `QM_SAVE_PLAY_HISTORY_MONTH` 非必须 保留播放记录月份数 默认24
 - **卷挂载**  
   - `/data/qm-music/music_dir`：音乐文件存储目录
   - `/data/qm-music/db`：数据库及元数据存储目录（请勿存放其他文件）

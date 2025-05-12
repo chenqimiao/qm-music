@@ -8,8 +8,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Qimiao Chen
@@ -27,23 +26,30 @@ public class PrintEnvCommand implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Map<String, String> allProperties = new HashMap<>();
-
-        environment.getPropertySources().forEach(propertySource -> {
-            if (propertySource instanceof MapPropertySource) {
-                // 普通属性源（如 application.properties、系统变量等）
-                MapPropertySource mapSource = (MapPropertySource) propertySource;
-                mapSource.getSource().forEach((key, value) -> {
-                    if (key.toLowerCase().contains("qm")) {
-                        allProperties.put(key, String.valueOf(value));
-                    }
-                });
+        Set<String> allKeys = new TreeSet<>();
+        environment.getPropertySources().forEach(ps -> {
+            if (ps instanceof MapPropertySource) {
+                String[] propertyNames = ((MapPropertySource) ps).getPropertyNames();
+                allKeys.addAll(Arrays.asList(propertyNames));
             }
         });
 
+        // 2. 通过 environment.getProperty(key) 获取最终生效值
+        Map<String, String> effectiveProperties = new LinkedHashMap<>();
+        for (String key : allKeys) {
+            String value = environment.getProperty(key);
+            if (value != null) {
+                // 过滤敏感字段（如 password）
+                if (key.toLowerCase().contains("qm")) {
+                    effectiveProperties.put(key, value);
+                }
+
+            }
+        }
+
         // 转换为格式化 JSON
         String jsonOutput = JSONObject.toJSONString(
-                allProperties,
+                effectiveProperties,
                 JSONWriter.Feature.PrettyFormat
         );
 

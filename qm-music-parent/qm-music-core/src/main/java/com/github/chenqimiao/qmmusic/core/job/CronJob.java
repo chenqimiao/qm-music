@@ -33,6 +33,12 @@ public class CronJob {
     @Value("${qm.refresh.auto}")
     private Boolean autoRefresh;
 
+    @Value("${qm.clean.play.history.auto:true}")
+    private Boolean autoCleanPlayHistory;
+
+    @Value("${qm.save.play.history.month:24}")
+    private Integer savePlayHistoryMonth;
+
     @Scheduled(cron = "0 8 */2 * * *")
     public void refreshSongsCronJob() {
         UserDTO userDTO = userService.findByUsername(defaultUserName);
@@ -50,8 +56,11 @@ public class CronJob {
 
     @Scheduled(cron = "0 0 6 * * WED")
     public void cleanPlayHistory() {
+        if (Boolean.FALSE.equals(autoCleanPlayHistory)) {
+            return;
+        }
 
-        playHistoryService.cleanPlayHistory();
+        playHistoryService.cleanPlayHistory(savePlayHistoryMonth);
 
         log.info("clean play history ...");
     }

@@ -66,8 +66,8 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
     }
 
     @Override
-    public void cleanPlayHistory() {
-        LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+    public void cleanPlayHistory(Integer month) {
+        LocalDate sixMonthsAgo = LocalDate.now().minusMonths(month);
         long sixMonthsTimestamp = sixMonthsAgo.atStartOfDay(ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli();

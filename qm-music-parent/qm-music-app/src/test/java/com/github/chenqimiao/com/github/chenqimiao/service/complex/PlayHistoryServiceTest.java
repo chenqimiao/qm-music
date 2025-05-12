@@ -18,7 +18,7 @@ public class PlayHistoryServiceTest {
 
     @Test
     public void cleanPlayHistoryTest() {
-        playHistoryService.cleanPlayHistory();
+        playHistoryService.cleanPlayHistory(24);
     }
 
 }

@@ -17,7 +17,7 @@ public interface PlayHistoryService {
 
     List<PlayHistoryDTO> queryFrequentPlayHistoryList(Long userId, Integer offset, Integer size);
 
-    void cleanPlayHistory();
+    void cleanPlayHistory(Integer month);
 
     List<PlayHistoryDTO> queryUserSpecifiedSongPlayHistoryList(Long userId, List<Long> songIds);
 }

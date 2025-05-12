@@ -12,6 +12,7 @@ import com.github.chenqimiao.qmmusic.dao.repository.ArtistRepository;
 import com.github.chenqimiao.qmmusic.dao.repository.SongRepository;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class SubsonicSongServiceImpl implements SongService {
     @Override
     public AlbumAggDTO queryByAlbumId(Long albumId) {
 
-        List<SongDO> songs = songRepository.findByAlbumId(albumId);
+        List<SongDTO> songs = this.queryByAlbumIdOrderByTrack(albumId);
         AlbumDO album = albumRepository.findByAlbumId(albumId);
         AlbumDTO albumDTO = ucModelMapper.map(album, AlbumDTO.class);
 
@@ -56,9 +57,8 @@ public class SubsonicSongServiceImpl implements SongService {
             cache.put(albumDTO.getArtistId(), ucModelMapper.map(artistDO, ArtistDTO.class));
         }
 
-        List<SongAggDTO> songAggDTOS = songs.stream().map(n -> {
+        List<SongAggDTO> songAggDTOS = songs.stream().map(songDTO -> {
             SongAggDTO aggDTO = new SongAggDTO();
-            SongDTO songDTO = ucModelMapper.map(n, SongDTO.class);
             aggDTO.setSong(songDTO);
             if (songDTO != null && songDTO.getArtistId() != null) {
                 ArtistDTO artistDTO = cache.computeIfAbsent(songDTO.getArtistId(),
@@ -70,6 +70,28 @@ public class SubsonicSongServiceImpl implements SongService {
 
         return AlbumAggDTO.builder().album(albumDTO).songs(songAggDTOS).build();
 
+    }
+
+    @Override
+    public List<SongDTO> queryByAlbumIdOrderByTrack(Long albumId) {
+        List<SongDO> songs = songRepository.findByAlbumId(albumId);
+        songs.sort( (n1,n2) -> {
+            String track1 = n1.getTrack();
+            String track2 = n2.getTrack();
+            boolean digits1 = NumberUtils.isDigits(track1);
+            boolean digits2 = NumberUtils.isDigits(track2);
+            if(!digits1 && digits2) {
+                return NumberUtils.INTEGER_ONE;
+            }
+            if(digits1 && !digits2) {
+                return NumberUtils.INTEGER_MINUS_ONE;
+            }
+            if(!digits1 && !digits2) {
+                return NumberUtils.INTEGER_ZERO;
+            }
+            return Integer.parseInt(track1) - Integer.parseInt(track2);
+        });
+        return ucModelMapper.map(songs, ModelMapperTypeConstants.TYPE_LIST_SONG_DTO);
     }
 
     @Override

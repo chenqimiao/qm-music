@@ -34,7 +34,7 @@ public class SongRepository {
 
     public List<SongDO> findByAlbumId(Long alumId) {
         String sql = """
-                        select * from song where `album_id` = ? order by `track` asc , id desc
+                        select * from song where `album_id` = ?
                      """;
         return jdbcTemplate.query(sql, ROW_MAPPER_SONG, alumId);
     }

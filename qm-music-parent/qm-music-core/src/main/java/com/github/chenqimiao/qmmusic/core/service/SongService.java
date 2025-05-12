@@ -15,6 +15,7 @@ public interface SongService {
 
     AlbumAggDTO queryByAlbumId(Long albumId);
 
+    List<SongDTO> queryByAlbumIdOrderByTrack(Long albumId);
 
     List<SongDTO> searchByTitle(String songTitle, Integer pageSize, Integer offset);
 

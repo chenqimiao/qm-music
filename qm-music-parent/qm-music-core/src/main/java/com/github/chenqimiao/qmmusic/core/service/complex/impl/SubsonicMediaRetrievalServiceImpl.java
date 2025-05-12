@@ -161,7 +161,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
         List<Artwork> artworks = musicAlbumMeta.getArtworks();
         if (artworks.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return artworks;
     }

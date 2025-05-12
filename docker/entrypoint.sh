@@ -18,4 +18,4 @@ exec java $JAVA_OPTS -jar app.jar \
     "-Dqm.lastfm.api.key=${QM_LASTFM_API_KEY}" \
     "-Dqm.refresh.auto=${QM_REFRESH_AUTO}" \
     "-Dqm.clean.play.history.auto=${QM_CLEAN_PLAY_HISTORY_AUTO}" \
-    "-Dqm.save.play.history.month=${QM_CLEAN_PLAY_HISTORY_MONTH}"
+    "-Dqm.save.play.history.month=${QM_SAVE_PLAY_HISTORY_MONTH}"

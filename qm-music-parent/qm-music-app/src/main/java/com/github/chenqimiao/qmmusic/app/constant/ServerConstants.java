@@ -29,6 +29,6 @@ public abstract class ServerConstants {
 
     public static String OPEN_SUBSONIC_TYPE = "Qm-Music";
 
-    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.8.5";
+    public static String OPEN_SUBSONIC_SERVER_VERSION = "v1.8.6";
     
 }

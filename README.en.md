@@ -74,9 +74,9 @@ services:
     - `QM_SPOTIFY_CLIENT_SECRET` Not required
     - `QM_LASTFM_ENABLE=false` Enable for enhanced metadata support [LAST FM KEY Application](https://www.last.fm/api#getting-started)
     - `QM_LASTFM_API_KEY` Not required
-    - `QM_REFRESH_AUTO` Scheduled refresh music library switch is enabled by default
-    - `QM_CLEAN_PLAY_HISTORY_AUTO` Optional. Scheduled play history cleanup switch. Enabled by default.
-	- `QM_SAVE_PLAY_HISTORY_MONTH` Optional. Retention period for play history (in months). Default 24
+    - `QM_REFRESH_AUTO=true` Scheduled refresh music library switch is enabled by default
+    - `QM_CLEAN_PLAY_HISTORY_AUTO=true` Optional. Scheduled play history cleanup switch. Enabled by default.
+	- `QM_SAVE_PLAY_HISTORY_MONTH=24` Optional. Retention period for play history (in months). Default 24
 - **Volume Mounts**
     - `/data/qm-music/music_dir`: Music file storage directory.
     - `/data/qm-music/db`: Database and metadata storage directory (do not store other files here).

@@ -10,6 +10,7 @@ import com.github.chenqimiao.qmmusic.core.service.complex.AlbumComplexService;
 import com.github.chenqimiao.qmmusic.core.service.complex.ArtistComplexService;
 import com.github.chenqimiao.qmmusic.core.service.complex.MediaFetcherService;
 import com.github.chenqimiao.qmmusic.core.service.complex.SongComplexService;
+import com.github.chenqimiao.qmmusic.core.util.FFmpegStreamUtils;
 import com.github.chenqimiao.qmmusic.core.util.FileUtils;
 import com.github.chenqimiao.qmmusic.core.util.FirstLetterUtil;
 import com.github.chenqimiao.qmmusic.dao.DO.AlbumDO;
@@ -242,11 +243,11 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setAlbum_title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));
         songDO.setArtist_id(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getId() : null);
         songDO.setArtist_name(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getName() : null);
-        songDO.setDuration(musicMeta.getTrackLength());
         songDO.setSuffix(FileUtils.getFileExtension(path));
         songDO.setContent_type(AudioContentTypeDetector.mapFormatToMimeType(musicMeta.getFormat()));
         String filePath = path.toAbsolutePath().normalize().toString();
         songDO.setFile_path(filePath);
+        songDO.setDuration(musicMeta.getTrackLength() != null ? musicMeta.getTrackLength() : FFmpegStreamUtils.getAudioDuration(filePath));
         songDO.setFile_hash(String.valueOf(songId));
         songDO.setSize(Files.size(path));
         String releaseYear = StringUtils.isNotBlank(musicAlbumMeta.getYear()) ? musicAlbumMeta.getYear()

@@ -10,6 +10,7 @@ import com.github.chenqimiao.qmmusic.dao.DO.SongDO;
 import com.github.chenqimiao.qmmusic.dao.repository.AlbumRepository;
 import com.github.chenqimiao.qmmusic.dao.repository.ArtistRepository;
 import com.github.chenqimiao.qmmusic.dao.repository.SongRepository;
+import com.google.common.base.Objects;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -76,6 +77,11 @@ public class SubsonicSongServiceImpl implements SongService {
     public List<SongDTO> queryByAlbumIdOrderByTrack(Long albumId) {
         List<SongDO> songs = songRepository.findByAlbumId(albumId);
         songs.sort( (n1,n2) -> {
+            Integer discNumber1 = n1.getDisc_number();
+            Integer discNumber2 = n2.getDisc_number();
+            if (!Objects.equal(discNumber1, discNumber2)) {
+                return discNumber1 - discNumber2;
+            }
             String track1 = n1.getTrack();
             String track2 = n2.getTrack();
             boolean digits1 = NumberUtils.isDigits(track1);

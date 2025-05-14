@@ -127,12 +127,12 @@ public class SongRepository {
                                          artist_name, size, suffix, content_type,
                                          year, duration, bit_rate,file_path,
                                          file_hash, file_last_modified, genre, track,
-                                         sampling_rate, channels, bit_depth)
+                                         sampling_rate, channels, bit_depth, disc_number, total_discs)
                           values(:id, :parent, :title, :album_id, :album_title, :artist_id,
                                  :artist_name, :size, :suffix, :content_type, :year,
                                  :duration, :bit_rate, :file_path, :file_hash,
-                                 :file_last_modified,:genre, :track, 
-                                 :sampling_rate, :channels, :bit_depth)
+                                 :file_last_modified,:genre, :track,
+                                 :sampling_rate, :channels, :bit_depth, :disc_number, :total_discs)
                      """;
         namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(songDO));
     }

@@ -195,6 +195,9 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer bitDepth;
 
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer discNumber;
+
     }
     @Getter
     @Setter

@@ -58,6 +58,11 @@ public class SongDTO {
 
     private Integer bitDepth;
 
+
+    private Integer discNumber;
+
+    private Integer totalDiscs;
+
     public String getCoverArt() {
         if (id == null) {
             return null;

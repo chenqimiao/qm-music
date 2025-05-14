@@ -120,6 +120,8 @@ public class SongResponse extends OpenSubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private Integer bitDepth;
 
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer discNumber;
     }
 
 

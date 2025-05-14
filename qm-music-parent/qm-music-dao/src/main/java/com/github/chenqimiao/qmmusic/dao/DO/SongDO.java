@@ -38,6 +38,8 @@ public class SongDO {
     private Integer channels;
     private Integer bit_depth;
 
+    private Integer disc_number;
 
+    private Integer total_discs;
 
 }

@@ -174,6 +174,9 @@ public class AlbumResponse extends OpenSubsonicResponse {
         private Integer bitDepth;
 
         // private ReplayGain replayGain ;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer discNumber;
     }
 
 //    @Setter

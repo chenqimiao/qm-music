@@ -236,7 +236,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         SongDO songDO = new SongDO();
         long songId = sequence.nextId();
         songDO.setId(songId);
-        songDO.setParent(1L);
+        songDO.setParent(NumberUtils.LONG_ONE);
         songDO.setTitle(musicMeta.getTitle());
         songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(null));
         songDO.setAlbum_title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));

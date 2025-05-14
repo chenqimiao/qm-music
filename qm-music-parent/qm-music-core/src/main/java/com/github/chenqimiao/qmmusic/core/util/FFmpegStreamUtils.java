@@ -229,13 +229,14 @@ public abstract class FFmpegStreamUtils {
         double hours = Double.parseDouble(parts[0]);
         double minutes = Double.parseDouble(parts[1]);
         double seconds = Double.parseDouble(parts[2]);
-        return (int)(hours * 3600 + minutes * 60 + seconds);
+        double totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        return (int) Math.ceil(totalSeconds);
     }
 
 
     public static void main(String[] args) {
 
-        Integer audioDuration = getAudioDuration("/Users/chenqimiao/workspace/qm-music/qm-music-parent/music_dir/邓紫棋/1. 情人.flac");
+        Integer audioDuration = getAudioDuration("/Users/chenqimiao/workspace/qm-music/qm-music-parent/music_dir/邓紫棋/00 - First Track Pregap.flac");
         System.out.println(audioDuration);
     }
 

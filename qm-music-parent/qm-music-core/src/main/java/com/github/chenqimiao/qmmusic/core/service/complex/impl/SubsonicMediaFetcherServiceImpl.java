@@ -278,7 +278,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
             }
         }
         Integer discNumber = NumberUtils.toInt(discNoArr[0], NumberUtils.INTEGER_ONE);
-        Integer discTotal = StringUtils.isBlank(musicMeta.getDiscTotal()) ? NumberUtils.toInt(discNoArr[1], NumberUtils.INTEGER_ONE)
+        Integer discTotal = StringUtils.isBlank(musicMeta.getDiscTotal()) || musicMeta.getDiscTotal().equals("0")
+                ? NumberUtils.toInt(discNoArr[1], NumberUtils.INTEGER_ONE)
                 : NumberUtils.toInt(musicMeta.getDiscTotal(), NumberUtils.INTEGER_ONE);
         songDO.setDisc_number(discNumber);
         songDO.setTotal_discs(discTotal);

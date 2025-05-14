@@ -5,8 +5,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -170,12 +173,74 @@ public abstract class FFmpegStreamUtils {
         return bitToByte + metadataSize;
     }
 
+
+    /**
+     * 通用方法：获取音频时长
+     */
+    @SneakyThrows
+    public static Integer getAudioDuration(String filePath) {
+        String[] command = {
+                FFMPEG,
+                "-i",
+                filePath,
+                "-f",
+                "null",
+                "-"
+        };
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
+        InputStream inputStream = exec(processBuilder, filePath);
+        Process process = processBuilder.start();
+
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream))) {
+            String line;
+            String duration = null;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("Duration:")) {
+                    String[] parts = line.split("Duration:\\s*|,");
+                    if (parts.length >= 2) {
+                        duration = parts[1].trim().split("\\s+")[0];
+                        duration = duration.replace(",", "");
+                        break;
+                    }
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                log.error("{} FFmpeg 执行失败，退出码: {} ", filePath, exitCode);
+                return NumberUtils.INTEGER_ZERO;
+            }
+            if (duration == null) {
+                log.info("{} 未找到时长信息", filePath);
+                return NumberUtils.INTEGER_ZERO;
+            }
+            return convertToSeconds(duration);
+        }
+    }
+
+    /**
+     * 修正后的转为秒数方法（修复运算符错误）
+     */
+    public static int convertToSeconds(String duration) {
+        String[] parts = duration.split(":");
+        double hours = Double.parseDouble(parts[0]);
+        double minutes = Double.parseDouble(parts[1]);
+        double seconds = Double.parseDouble(parts[2]);
+        return (int)(hours * 3600 + minutes * 60 + seconds);
+    }
+
+
     public static void main(String[] args) {
 
-        String fFmpegCommand = getFFmpegCommand();
-
-        System.out.println(fFmpegCommand);
+        Integer audioDuration = getAudioDuration("/Users/chenqimiao/workspace/qm-music/qm-music-parent/music_dir/邓紫棋/1. 情人.flac");
+        System.out.println(audioDuration);
     }
+
+
+
 
 
 }

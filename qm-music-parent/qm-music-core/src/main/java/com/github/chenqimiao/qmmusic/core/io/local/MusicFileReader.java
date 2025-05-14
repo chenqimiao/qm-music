@@ -44,6 +44,11 @@ public abstract class MusicFileReader {
 
         }
 
+        String discNo = tag.getFirst(FieldKey.DISC_NO);
+        String discTotal = tag.getFirst(FieldKey.DISC_TOTAL);
+        String trackTotal = tag.getFirst(FieldKey.TRACK_TOTAL);
+
+
         return MusicMeta.builder().title(tag.getFirst(FieldKey.TITLE))
                 .musicAlbumMeta(MusicAlbumMeta.builder()
                         .album(tag.getFirst(FieldKey.ALBUM))
@@ -57,6 +62,7 @@ public abstract class MusicFileReader {
                         .genre(tag.getFirst("ALBUMGENRE"))
                         .albumPeak(tag.getFirst("TXXX:REPLAYGAIN_ALBUM_PEAK"))
                         .albumGain(tag.getFirst("TXXX:REPLAYGAIN_ALBUM_GAIN"))
+                        .trackTotal(trackTotal)
                         .build()
                 )
                 .artist(tag.getFirst(FieldKey.ARTIST))
@@ -70,8 +76,10 @@ public abstract class MusicFileReader {
                 .samplingRate(audioHeader.getSampleRate())
                 .channels(audioHeader.getChannels())
                 .bitDepth(audioHeader.getBitRate())
-                .trackPeak(trackGrain)
+                .trackPeak(trackPeak)
                 .trackGain(trackGrain)
+                .discNo(discNo)
+                .discTotal(discTotal)
                 .build();
     }
 

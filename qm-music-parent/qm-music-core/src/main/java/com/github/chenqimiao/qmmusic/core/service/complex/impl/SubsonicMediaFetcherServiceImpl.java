@@ -222,7 +222,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         : musicAlbumMeta.getOriginalYear();
                 albumDO.setRelease_year(MusicFileReader.beautifyReleaseYear(releaseYear));
                 albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
-                albumDO.setSong_count(0);
+                String trackTotal = musicAlbumMeta.getTrackTotal();
+                albumDO.setSong_count(NumberUtils.toInt(trackTotal, NumberUtils.INTEGER_ZERO));
                 albumDO.setDuration(1234);
                 albumDO.setArtist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getName).orElse(null));
                 albumDO.setFirst_letter_artist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getFirst_letter).orElse(CommonConstants.UN_KNOWN_FIRST_LETTER));
@@ -256,13 +257,30 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setGenre(musicMeta.getGenre());
 
         songDO.setFile_last_modified(FileUtils.getLastModified(path));
-        songDO.setTrack(StringUtils.isBlank(musicMeta.getTrack()) ? "1" : musicMeta.getTrack() );
+        String track = StringUtils.isBlank(musicMeta.getTrack()) ? "1"
+                : String.valueOf(NumberUtils.toInt(musicMeta.getTrack().split("/")[0], NumberUtils.INTEGER_ONE));
+        songDO.setTrack(track);
         int samplingRate = NumberUtils.toInt(musicMeta.getSamplingRate(), NumberUtils.INTEGER_ZERO);
         songDO.setSampling_rate(samplingRate);
         int channels = NumberUtils.toInt(musicMeta.getChannels(), NumberUtils.INTEGER_ZERO);
         songDO.setChannels(channels);
         int bitDepth = NumberUtils.toInt(musicMeta.getBitDepth(), NumberUtils.INTEGER_ZERO);
         songDO.setBit_depth(bitDepth);
+        String discNo = musicMeta.getDiscNo();
+        String[] discNoArr = {"1,","1"};
+        if (StringUtils.isNotBlank(discNo)) {
+            String[] split = discNo.split("/");
+            if (split.length == 2) {
+                discNoArr = split;
+            }else if (split.length == 1) {
+                discNoArr[0] = split[0];
+            }
+        }
+        Integer discNumber = NumberUtils.toInt(discNoArr[0], NumberUtils.INTEGER_ONE);
+        Integer discTotal = StringUtils.isBlank(musicMeta.getDiscTotal()) ? NumberUtils.toInt(discNoArr[1], NumberUtils.INTEGER_ONE)
+                : NumberUtils.toInt(musicMeta.getDiscTotal(), NumberUtils.INTEGER_ONE);
+        songDO.setDisc_number(discNumber);
+        songDO.setTotal_discs(discTotal);
         songRepository.save(songDO);
 
         // save relation

@@ -53,4 +53,7 @@ public class MusicMeta {
 
     private String trackGain;
     private String trackPeak;
+
+    private String discNo ;
+    private String discTotal;
 }

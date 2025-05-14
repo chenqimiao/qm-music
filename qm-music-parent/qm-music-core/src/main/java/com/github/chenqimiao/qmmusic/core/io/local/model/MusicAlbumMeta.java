@@ -37,7 +37,8 @@ public class MusicAlbumMeta {
 
     private String genre;
 
-     private String albumGain;
-     private String albumPeak;
+    private String albumGain;
+    private String albumPeak;
+    private String trackTotal;
 
 }

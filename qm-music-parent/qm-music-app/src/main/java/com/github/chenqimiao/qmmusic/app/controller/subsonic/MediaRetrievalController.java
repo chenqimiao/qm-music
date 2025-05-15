@@ -91,7 +91,8 @@ public class MediaRetrievalController {
     @RequestMapping(value = "/stream")
     @SneakyThrows
     public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Long songId,
-                                                      Integer maxBitRate, String format,
+                                                      Integer maxBitRate,
+                                                      @RequestParam(defaultValue = "mp3")String format,
                                                       @RequestParam(defaultValue = "false") Boolean estimateContentLength) {
 
         SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);

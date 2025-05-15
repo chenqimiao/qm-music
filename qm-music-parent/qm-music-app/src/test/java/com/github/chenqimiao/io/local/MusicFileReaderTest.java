@@ -23,4 +23,11 @@ public class MusicFileReaderTest {
                 .readMusicMeta("/Users/chenqimiao/workspace/qm-music/qm-music-parent/music_dir/BEYOND/Beyond-午夜怨曲.flac");
         log.info(JSONObject.toJSONString(musicMeta));
     }
+
+    @Test
+    public void calMetadataBytesSizeTest() {
+
+        long bytesSize = MusicFileReader.calMetadataBytesSize("/Users/chenqimiao/workspace/qm-music/qm-music-parent/music_dir/BEYOND/Beyond-午夜怨曲.flac");
+        log.info(JSONObject.toJSONString(bytesSize));
+    }
 }

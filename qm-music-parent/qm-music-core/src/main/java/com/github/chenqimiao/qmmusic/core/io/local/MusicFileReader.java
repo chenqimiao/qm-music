@@ -12,8 +12,10 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagField;
 
 import java.io.File;
+import java.util.Iterator;
 
 /**
  * Music local file reader
@@ -95,5 +97,19 @@ public abstract class MusicFileReader {
         }
         // maybe 2024-01-02
         return releaseYear.substring(0, 4);
+    }
+
+    @SneakyThrows
+    public static long calMetadataBytesSize(String musicFilePath) {
+        AudioFile audioFile = AudioFileIO.read(new File(musicFilePath));
+        Tag tag = audioFile.getTag();
+        Iterator<TagField> iterator = tag.getFields();
+
+        long totalSize = 0;
+        while (iterator.hasNext()) {
+            TagField next = iterator.next();
+            totalSize = totalSize + next.getRawContent().length;
+        }
+        return totalSize;
     }
 }

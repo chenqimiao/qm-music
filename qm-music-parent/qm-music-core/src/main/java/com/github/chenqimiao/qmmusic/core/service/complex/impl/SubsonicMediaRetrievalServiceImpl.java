@@ -521,7 +521,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         if (!Boolean.FALSE.equals(estimateContentLength)
                 && song.getDuration() != null
                 && maxBitRate != null ) {
-            targetSize = FFmpegStreamUtils.estimateSize(song.getDuration(), maxBitRate, 2048);
+            long metadataSize = MusicFileReader.calMetadataBytesSize(song.getFilePath());
+            targetSize = FFmpegStreamUtils.estimateSize(song.getDuration(), maxBitRate, metadataSize);
         }
 
         // 转码

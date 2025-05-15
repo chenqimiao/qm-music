@@ -13,6 +13,8 @@ public abstract class CommonConstants {
 
     public static final String ARTIST_DIR_SUFFIX = "artist";
 
+    public static final String WORD_CACHE_DIR_SUFFIX = "word";
+
     public static final String MULTI_ARTIST_SHOW_DELIMITER = "&";
 
     public static final String UN_KNOWN_FIRST_LETTER = "#";

@@ -71,8 +71,8 @@ public abstract class FileUtils {
         return audioExtensions.contains(StringUtils.lowerCase(fileExtension));
     }
 
-    public static String buildCoverArtPath(String baseDir, Long bizId, int size) {
-        return String.format("%s/%d/%d", baseDir, bizId, size);
+    public static String buildCoverArtPath(String baseDir, Object bizId, int size) {
+        return String.format("%s/%s/%d", baseDir, bizId, size);
     }
 
     public static void save(Path imagePath, byte[] data) {

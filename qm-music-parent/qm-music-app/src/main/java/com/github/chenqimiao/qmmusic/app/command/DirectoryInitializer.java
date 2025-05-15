@@ -27,7 +27,8 @@ public class DirectoryInitializer  implements CommandLineRunner {
     public void run(String... args) throws Exception {
         createDirectories(List.of(cacheDirectory + "/" + CommonConstants.ALBUM_DIR_SUFFIX
                 , cacheDirectory + "/" + CommonConstants.SONG_DIR_SUFFIX
-                , cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX));
+                , cacheDirectory + "/" + CommonConstants.ARTIST_DIR_SUFFIX
+                , cacheDirectory + "/" + CommonConstants.WORD_CACHE_DIR_SUFFIX));
     }
 
     private void createDirectories(List<String> directories) {

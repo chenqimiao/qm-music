@@ -166,7 +166,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         return artworks;
     }
 
-    private Path getCacheFile(Long bizId, int size, String path) {
+    private Path getCacheFile(Object bizId, int size, String path) {
         // 检查路径是否存在
         Path targetPath = Paths.get(FileUtils.buildCoverArtPath(path, bizId, size));
         if (!Files.exists(targetPath)) {
@@ -327,14 +327,39 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
     }
 
+    @SneakyThrows
     private CoverStreamDTO generateArtistCover(Long artistId, Integer size) {
-
 
         ArtistDO artistDO = artistRepository.findByArtistId(artistId);
 
-        byte[] bytes = HighPerformanceTextToImage.generateTextPngImage(size, size, Character.toString(artistDO.getName().charAt(0)));
+        String word = Character.toString(artistDO.getName().charAt(0));
 
-        return CoverStreamDTO.builder().cover(bytes).mimeType("image/png").build();
+        Path cacheFile = getCacheFile(word, size, cacheDirectory + "/" + CommonConstants.WORD_CACHE_DIR_SUFFIX);
+
+        if (cacheFile != null) {
+
+            byte[] bytes = Files.readAllBytes(cacheFile);
+
+            return CoverStreamDTO.builder()
+                    .cover(bytes)
+                    .mimeType(Files.probeContentType(cacheFile))
+                    .build();
+         }
+        // do gen
+
+        return this.doGenerateArtistCover(word, size);
+
+    }
+
+    private CoverStreamDTO doGenerateArtistCover(String word, Integer size) {
+
+        String dir = FileUtils.buildCoverArtPath(cacheDirectory + "/" + CommonConstants.WORD_CACHE_DIR_SUFFIX, word, size);
+
+        byte[] target = HighPerformanceTextToImage.generateTextPngImage(size, size, word);
+
+        FileUtils.save(Paths.get(dir, word + ".png"), target);
+
+        return CoverStreamDTO.builder().cover(target).mimeType("image/png").build();
     }
 
 

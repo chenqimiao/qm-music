@@ -323,7 +323,18 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         }
 
 
-        return null;
+        return this.generateArtistCover(artistId, size);
+
+    }
+
+    private CoverStreamDTO generateArtistCover(Long artistId, Integer size) {
+
+
+        ArtistDO artistDO = artistRepository.findByArtistId(artistId);
+
+        byte[] bytes = HighPerformanceTextToImage.generateTextPngImage(size, size, Character.toString(artistDO.getName().charAt(0)));
+
+        return CoverStreamDTO.builder().cover(bytes).mimeType("image/png").build();
     }
 
 

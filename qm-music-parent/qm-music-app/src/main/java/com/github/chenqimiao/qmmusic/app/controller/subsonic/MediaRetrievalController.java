@@ -55,9 +55,6 @@ public class MediaRetrievalController {
         }else if (id.startsWith(CoverArtPrefixConstants.ARTIST_ID_PREFIX)){
 
             songCoverStreamDTO = mediaRetrievalService.getArtistCoverStreamDTO(bizId, size);
-            if(songCoverStreamDTO == null){
-                 throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
-            }
 
         }else if (id.startsWith(CoverArtPrefixConstants.SONG_COVER_ART_PREFIX)) {
 

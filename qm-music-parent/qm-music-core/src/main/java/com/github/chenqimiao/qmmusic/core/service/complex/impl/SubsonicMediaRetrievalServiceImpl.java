@@ -506,13 +506,17 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                 ||  CollectionUtils.size(EnumAudioCodec.byFormat(format)) == NumberUtils.INTEGER_ZERO
                 || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
                         && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null
-                                    || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || song.getBitRate() == null) )
+                                    || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || song.getBitRate() == null || maxBitRate > song.getBitRate() ) )
             ) {
             return this.getRawSongStream(song);
         }
 
+
         Long targetSize = null;
-        //
+        // maxBitRate must less than current bitrate of the song
+        if (maxBitRate != null && song.getBitRate() != null) {
+            maxBitRate = Math.min(maxBitRate, song.getBitRate());
+        }
         if (!Boolean.FALSE.equals(estimateContentLength)
                 && song.getDuration() != null
                 && maxBitRate != null ) {

@@ -32,9 +32,9 @@ VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir", "/data/qm-music/cache"]
 # 安装时区/字体支持（用于后续动态配置）
 RUN apt-get update && \
     apt-get install -y tzdata && \
-    apt-get clean && \
     apt-get install -y fonts-wqy-microhei && \
     fc-cache -fv \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # 从构建阶段复制FFmpeg

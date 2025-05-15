@@ -20,7 +20,7 @@ public abstract class HighPerformanceTextToImage {
     // 基准字体大小（可根据需要调整）
     private static final float BASE_FONT_SIZE = 24f;
     // 默认字体（建议使用系统支持的中文字体）
-    private static final String DEFAULT_FONT_NAME = "Microsoft YaHei";
+    private static final String DEFAULT_FONT_NAME = "WenQuanYi Micro Hei";
 
     // 2. 缓存字体渲染上下文（线程安全）
     private static final FontRenderContext FONT_RENDER_CONTEXT = new FontRenderContext(null, true, true);

@@ -501,12 +501,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         }
         String filePath = song.getFilePath();
         String contentType = song.getContentType();
+        Integer bitRate = song.getBitRate();
 
         if (!Boolean.TRUE.equals(ffmpegEnable) || "raw".equals(format)  || StringUtils.isBlank(format)
                 ||  CollectionUtils.size(EnumAudioCodec.byFormat(format)) == NumberUtils.INTEGER_ZERO
                 || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
-                        && ((Objects.equals(song.getBitRate(), maxBitRate)) || maxBitRate == null
-                                    || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || song.getBitRate() == null || maxBitRate > song.getBitRate() ) )
+                        && ((Objects.equals(bitRate, maxBitRate)) || maxBitRate == null
+                                    || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || bitRate == null || maxBitRate > bitRate) )
             ) {
             return this.getRawSongStream(song);
         }
@@ -514,8 +515,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
 
         Long targetSize = null;
         // maxBitRate must less than current bitrate of the song
-        if (maxBitRate != null && song.getBitRate() != null) {
-            maxBitRate = Math.min(maxBitRate, song.getBitRate());
+        if (maxBitRate != null && bitRate != null) {
+            maxBitRate = Math.min(maxBitRate, bitRate);
         }
         if (!Boolean.FALSE.equals(estimateContentLength)
                 && song.getDuration() != null

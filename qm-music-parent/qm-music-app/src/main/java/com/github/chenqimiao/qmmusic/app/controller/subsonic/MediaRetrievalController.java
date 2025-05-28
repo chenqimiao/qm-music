@@ -41,13 +41,13 @@ public class MediaRetrievalController {
         CoverStreamDTO songCoverStreamDTO = null;
 
         if (split.length <= 0 ) {
-            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
         }
 
         long bizId = NumberUtils.toLong(split[split.length-1] , NumberUtils.LONG_ZERO);
 
         if (bizId <= NumberUtils.LONG_ZERO) {
-            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_10);
+            throw new SubsonicCommonErrorException(EnumSubsonicErrorCode.E_70);
         }
 
         if (id.startsWith(CoverArtPrefixConstants.ALBUM_ID_PREFIX)){

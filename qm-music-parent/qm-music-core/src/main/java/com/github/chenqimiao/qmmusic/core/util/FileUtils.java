@@ -19,7 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public abstract class FileUtils {
 
-    private static final Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a", "wma", "ape");
+    private static final Set<String> audioExtensions = Set.of("mp3", "wav", "aac", "flac", "ogg", "m4a", "wma", "ape"
+            , "oga", "m4p", "ra", "rm", "m4b", "aif", "aiff", "aifc", "dsf", "dff");
 
 
     private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(

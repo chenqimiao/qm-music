@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LyricsBySongIdResponse extends OpenSubsonicExtensionsResponse {
+public class LyricsBySongIdResponse extends OpenSubsonicResponse {
 
     @JacksonXmlProperty(localName = "lyricsList")
     @JSONField(name = "lyricsList")

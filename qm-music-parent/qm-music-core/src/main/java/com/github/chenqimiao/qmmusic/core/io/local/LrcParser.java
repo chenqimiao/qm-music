@@ -26,7 +26,7 @@ public abstract class LrcParser {
     );
 
     private static final Pattern LYRIC_LINE_PATTERN = Pattern.compile(
-            "(\\[\\d{2}:\\d{2}\\.\\d{2}\\])+\\s*(?<text>.+)"
+            "(\\[\\d{2}:\\d{2}\\.\\d{1,3}\\])+\\s*(?<text>.+)"
     );
 
     @Setter
@@ -131,9 +131,20 @@ public abstract class LrcParser {
         String[] parts = time.split("[:.]");
         int minutes = Integer.parseInt(parts[0]);
         int seconds = Integer.parseInt(parts[1]);
-        int hundredths = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+        int milliseconds = 0;
 
-        return (minutes * 60_000) + (seconds * 1_000) + (hundredths * 10);
+        if (parts.length > 2) {
+            String msPart = parts[2];
+            int msValue = Integer.parseInt(msPart);
+
+            // 根据毫秒位数动态转换
+            switch (msPart.length()) {
+                case 1 -> milliseconds = msValue * 100;  // 1位：十分之一秒 → 毫秒
+                case 2 -> milliseconds = msValue * 10;   // 2位：百分之一秒 → 毫秒
+                case 3 -> milliseconds = msValue;        // 3位：直接作为毫秒
+            }
+        }
+        return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
     }
 
 }

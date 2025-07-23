@@ -166,3 +166,24 @@ services:
 
 #### 质量保障
 - [ ] 单元测试覆盖率提升
+
+...
+
+## ☕ 赞助支持
+如果这个项目对您有帮助，请帮忙点个Star或打赏支持(请作者喝一杯快乐水(,,・ω・,,))！您的支持是我们持续维护和改进的动力！
+
+<div align="center" style="margin-top:30px">
+  <table>
+    <tr>
+      <th>微信赞赏</th>
+      <th>支付宝赞赏</th>
+    </tr>
+    <tr>
+      <td><img src="qm-music-parent/qm-music-app/src/main/resources/static/img/wechat_qr.webp" width="500"></td>
+      <td><img src="qm-music-parent/qm-music-app/src/main/resources/static/img/alipay_qr.webp" width="500"></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center" style="padding-top:20px">👉 您的支持将帮助我们持续改进 QM-Music</td>
+    </tr>
+  </table>
+</div>

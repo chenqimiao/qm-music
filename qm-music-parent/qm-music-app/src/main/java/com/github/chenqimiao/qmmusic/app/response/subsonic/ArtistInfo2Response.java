@@ -20,9 +20,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArtistInfoResponse extends SubsonicResponse {
+public class ArtistInfo2Response extends SubsonicResponse {
 
-    private ArtistInfo artistInfo;
+    private ArtistInfo2 artistInfo2;
 
 
     @Getter
@@ -30,7 +30,7 @@ public class ArtistInfoResponse extends SubsonicResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ArtistInfo {
+    public static class ArtistInfo2 {
         private String biography;
 
         private String musicBrainzId;

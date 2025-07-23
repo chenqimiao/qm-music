@@ -258,21 +258,21 @@ public class BrowsingController {
         }
     }
 
-    private static final Type TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST = new TypeToken<List<ArtistInfoResponse.Artist>>() {}.getType();
+    private static final Type TYPE_LIST_ARTIST_INFO2_RESPONSE_ARTIST = new TypeToken<List<ArtistInfo2Response.Artist>>() {}.getType();
 
     @RequestMapping(value = "/getArtistInfo2")
-    public ArtistInfoResponse getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
+    public ArtistInfo2Response getArtistInfo2 (ArtistInfoRequest artistInfoRequest) {
         RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.GET_ARTIST_INFO2_BY_REMOTE_LIMIT_KEY,
                 key -> RateLimiter.create(3));
 
         // 尝试获取令牌
         if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
-            return new ArtistInfoResponse();
+            return new ArtistInfo2Response();
         }
 
         List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(Lists.newArrayList(artistInfoRequest.getId()));
         if (CollectionUtils.isEmpty(artists)) {
-            return new ArtistInfoResponse();
+            return new ArtistInfo2Response();
         }
         ArtistDTO artistDTO = artists.getFirst();
         ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDTO.getName());
@@ -281,7 +281,7 @@ public class BrowsingController {
        // String musicBrainzId = metaDataFetchClientCommander.getMusicBrainzId(artistDTO.getName());
         String lastFmUrl = metaDataFetchClientCommander.getLastFmUrl(artistDTO.getName());
         List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
-        ArtistInfoResponse.ArtistInfo2 artistInfo2 = ArtistInfoResponse.ArtistInfo2.builder()
+        ArtistInfo2Response.ArtistInfo2 artistInfo2 = ArtistInfo2Response.ArtistInfo2.builder()
                 .biography(Optional.ofNullable(artistInfo).map(ArtistInfo::getBiography).orElse(null))
                 .musicBrainzId(musicBrainzId)
                 .lastFmUrl(lastFmUrl)
@@ -298,26 +298,95 @@ public class BrowsingController {
                 List<Long> artistIds = similarArtists.stream().map(ArtistDTO::getId).toList();
                 List<ComplexArtistDTO> complexArtists = artistComplexService.queryByArtistIds(artistIds, WebUtils.currentUserId());
                 localArtistNames.addAll(complexArtists.stream().map(ComplexArtistDTO::getName).toList());
-                artistInfo2.setSimilarArtists(modelMapper.map(complexArtists, TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST));
+                artistInfo2.setSimilarArtists(modelMapper.map(complexArtists, TYPE_LIST_ARTIST_INFO2_RESPONSE_ARTIST));
             }
 
             if (Boolean.TRUE.equals(artistInfoRequest.getIncludeNotPresent())) {
                 List<String> diffSimilarArtistsNames = similarArtistsName
                         .stream().filter(n -> !localArtistNames.contains(n)).toList();
-                List<ArtistInfoResponse.Artist> similarArtistsNotLocal = diffSimilarArtistsNames.stream().map(n -> {
-                    ArtistInfoResponse.Artist artist = new ArtistInfoResponse.Artist();
+                List<ArtistInfo2Response.Artist> similarArtistsNotLocal = diffSimilarArtistsNames.stream().map(n -> {
+                    ArtistInfo2Response.Artist artist = new ArtistInfo2Response.Artist();
                     artist.setName(n);
                     artist.setAlbumCount(0);
                     return artist;
                 }).toList();
-                artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);
+                if (artistInfo2.getSimilarArtists() == null) {
+                    artistInfo2.setSimilarArtists(similarArtistsNotLocal);
+                }else  {
+                    artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);
+                }
             }
 
         }
 
-        return new ArtistInfoResponse(artistInfo2);
+        return new ArtistInfo2Response(artistInfo2);
     }
 
+
+    private static final Type TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST = new TypeToken<List<ArtistInfoResponse.Artist>>() {}.getType();
+
+    @RequestMapping(value = "/getArtistInfo")
+    public ArtistInfoResponse getArtistInfo (ArtistInfoRequest artistInfoRequest) {
+        RateLimiter limiter = RateLimiterConstants.limiters.computeIfAbsent(RateLimiterConstants.GET_ARTIST_INFO_BY_REMOTE_LIMIT_KEY,
+                key -> RateLimiter.create(3));
+
+        // 尝试获取令牌
+        if (!limiter.tryAcquire(1, TimeUnit.MILLISECONDS)) {
+            return new ArtistInfoResponse();
+        }
+
+        List<ArtistDTO> artists = artistService.batchQueryArtistByArtistIds(Lists.newArrayList(artistInfoRequest.getId()));
+        if (CollectionUtils.isEmpty(artists)) {
+            return new ArtistInfoResponse();
+        }
+        ArtistDTO artistDTO = artists.getFirst();
+        ArtistInfo artistInfo = metaDataFetchClientCommander.fetchArtistInfo(artistDTO.getName());
+        String musicBrainzId = null;
+        // this is too slow
+        // String musicBrainzId = metaDataFetchClientCommander.getMusicBrainzId(artistDTO.getName());
+        String lastFmUrl = metaDataFetchClientCommander.getLastFmUrl(artistDTO.getName());
+        List<String> similarArtistsName = metaDataFetchClientCommander.scrapeSimilarArtists(artistDTO.getName());
+        ArtistInfoResponse.ArtistInfo subArtistInfo = ArtistInfoResponse.ArtistInfo.builder()
+                .biography(Optional.ofNullable(artistInfo).map(ArtistInfo::getBiography).orElse(null))
+                .musicBrainzId(musicBrainzId)
+                .lastFmUrl(lastFmUrl)
+                .smallImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getSmallImageUrl).orElse(null))
+                .mediumImageUrl(artistInfo != null ? StringUtils.isBlank(artistInfo.getMediumImageUrl()) ? artistInfo.getImageUrl() : artistInfo.getMediumImageUrl() : null)
+                .largeImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getLargeImageUrl).orElse(null))
+                .build();
+        if (CollectionUtils.isNotEmpty(similarArtistsName)) {
+            // similarArtistsName = Lists.partition(similarArtistsName, artistInfoRequest.getCount()).getFirst();
+            List<ArtistDTO> similarArtists = artistService.searchByNames(similarArtistsName);
+            List<String> localArtistNames = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(similarArtists)) {
+                similarArtists = Lists.partition(similarArtists, artistInfoRequest.getCount()).getFirst();
+                var artistIds = similarArtists.stream().map(ArtistDTO::getId).toList();
+                var complexArtists = artistComplexService.queryByArtistIds(artistIds, WebUtils.currentUserId());
+                localArtistNames.addAll(complexArtists.stream().map(ComplexArtistDTO::getName).toList());
+                subArtistInfo.setSimilarArtists(modelMapper.map(complexArtists, TYPE_LIST_ARTIST_INFO_RESPONSE_ARTIST));
+            }
+
+            if (Boolean.TRUE.equals(artistInfoRequest.getIncludeNotPresent())) {
+                var diffSimilarArtistsNames = similarArtistsName
+                        .stream().filter(n -> !localArtistNames.contains(n)).toList();
+                var similarArtistsNotLocal = diffSimilarArtistsNames.stream().map(n -> {
+                    var artist = new ArtistInfoResponse.Artist();
+                    artist.setName(n);
+                    artist.setAlbumCount(0);
+                    return artist;
+                }).toList();
+                if (subArtistInfo.getSimilarArtists() == null) {
+                    
+                    subArtistInfo.setSimilarArtists(similarArtistsNotLocal);
+                } else {
+                    subArtistInfo.getSimilarArtists().addAll(similarArtistsNotLocal);
+                }
+            }
+
+        }
+
+        return new ArtistInfoResponse(subArtistInfo);
+    }
     private static final Type TYPE_LIST_TOP_SONG = new TypeToken<List<TopSongsResponse.Song>>() {}.getType();
 
     @RequestMapping("/getTopSongs")

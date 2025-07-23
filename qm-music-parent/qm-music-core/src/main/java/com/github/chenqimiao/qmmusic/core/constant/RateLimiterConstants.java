@@ -17,6 +17,8 @@ public abstract class RateLimiterConstants {
 
     public static final String GET_ARTIST_INFO2_BY_REMOTE_LIMIT_KEY = "GET_ARTIST_INFO2_BY_REMOTE_LIMIT_KEY";
 
+    public static final String GET_ARTIST_INFO_BY_REMOTE_LIMIT_KEY = "GET_ARTIST_INFO_BY_REMOTE_LIMIT_KEY";
+
     public static final String SPOTIFY_API_LIMIT_KEY = "SPOTIFY_API_LIMIT_KEY";
 
     public static final String LAST_FM_API_LIMIT_KET = "LAST_FM_API_LIMIT_KET";

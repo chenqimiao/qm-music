@@ -310,7 +310,11 @@ public class BrowsingController {
                     artist.setAlbumCount(0);
                     return artist;
                 }).toList();
-                artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);
+                if (artistInfo2.getSimilarArtists() == null)  {
+                    artistInfo2.setSimilarArtists(similarArtistsNotLocal);
+                }else  {
+                    artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);
+                }
             }
 
         }
@@ -371,7 +375,12 @@ public class BrowsingController {
                     artist.setAlbumCount(0);
                     return artist;
                 }).toList();
-                subArtistInfo.getSimilarArtists().addAll(similarArtistsNotLocal);
+                if (subArtistInfo.getSimilarArtists() == null)  {
+                    
+                    subArtistInfo.setSimilarArtists(similarArtistsNotLocal);
+                }else {
+                    subArtistInfo.getSimilarArtists().addAll(similarArtistsNotLocal);
+                }
             }
 
         }

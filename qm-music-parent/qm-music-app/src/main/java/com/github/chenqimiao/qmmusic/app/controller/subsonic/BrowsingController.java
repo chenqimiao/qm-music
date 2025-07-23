@@ -310,7 +310,7 @@ public class BrowsingController {
                     artist.setAlbumCount(0);
                     return artist;
                 }).toList();
-                if (artistInfo2.getSimilarArtists() == null)  {
+                if (artistInfo2.getSimilarArtists() == null) {
                     artistInfo2.setSimilarArtists(similarArtistsNotLocal);
                 }else  {
                     artistInfo2.getSimilarArtists().addAll(similarArtistsNotLocal);

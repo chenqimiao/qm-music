@@ -378,7 +378,7 @@ public class BrowsingController {
                 if (subArtistInfo.getSimilarArtists() == null) {
                     
                     subArtistInfo.setSimilarArtists(similarArtistsNotLocal);
-                }else {
+                } else {
                     subArtistInfo.getSimilarArtists().addAll(similarArtistsNotLocal);
                 }
             }

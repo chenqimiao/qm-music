@@ -351,7 +351,7 @@ public class BrowsingController {
                 .musicBrainzId(musicBrainzId)
                 .lastFmUrl(lastFmUrl)
                 .smallImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getSmallImageUrl).orElse(null))
-                .mediumImageUrl(artistInfo != null ? StringUtils.isBlank(artistInfo.getMediumImageUrl())? artistInfo.getImageUrl():artistInfo.getMediumImageUrl() : null)
+                .mediumImageUrl(artistInfo != null ? StringUtils.isBlank(artistInfo.getMediumImageUrl()) ? artistInfo.getImageUrl() : artistInfo.getMediumImageUrl() : null)
                 .largeImageUrl(Optional.ofNullable(artistInfo).map(ArtistInfo::getLargeImageUrl).orElse(null))
                 .build();
         if (CollectionUtils.isNotEmpty(similarArtistsName)) {

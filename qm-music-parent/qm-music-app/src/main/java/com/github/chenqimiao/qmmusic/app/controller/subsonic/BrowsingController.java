@@ -375,7 +375,7 @@ public class BrowsingController {
                     artist.setAlbumCount(0);
                     return artist;
                 }).toList();
-                if (subArtistInfo.getSimilarArtists() == null)  {
+                if (subArtistInfo.getSimilarArtists() == null) {
                     
                     subArtistInfo.setSimilarArtists(similarArtistsNotLocal);
                 }else {

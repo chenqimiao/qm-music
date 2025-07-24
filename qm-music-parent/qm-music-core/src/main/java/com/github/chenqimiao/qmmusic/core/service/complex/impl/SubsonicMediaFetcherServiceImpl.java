@@ -225,7 +225,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                 albumDO.setGenre(StringUtils.isNotBlank(musicAlbumMeta.getGenre()) ? musicAlbumMeta.getGenre() : musicMeta.getGenre());
                 String trackTotal = musicAlbumMeta.getTrackTotal();
                 albumDO.setSong_count(NumberUtils.toInt(trackTotal, NumberUtils.INTEGER_ZERO));
-                albumDO.setDuration(1234);
+                albumDO.setDuration(2025); // QM birth year
                 albumDO.setArtist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getName).orElse(null));
                 albumDO.setFirst_letter_artist_name(Optional.ofNullable(albumArtist).map(ArtistDO::getFirst_letter).orElse(CommonConstants.UN_KNOWN_FIRST_LETTER));
                 albumDO.setFirst_letter_title(FirstLetterUtil.getFirstLetter(musicAlbumMeta.getAlbum()));

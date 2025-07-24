@@ -3,6 +3,7 @@ package com.github.chenqimiao.qmmusic.core.dto;
 import com.github.chenqimiao.qmmusic.core.constant.CoverArtPrefixConstants;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * @author Qimiao Chen
@@ -26,5 +27,12 @@ public class AlbumDTO {
             return null;
         }
         return CoverArtPrefixConstants.ALBUM_ID_PREFIX + id;
+    }
+
+    public Integer getYear() {
+        if (NumberUtils.isDigits(releaseYear)) {
+            return Integer.parseInt(releaseYear);
+        }
+       return 2025 ; // Qm-Music birth year !
     }
 }

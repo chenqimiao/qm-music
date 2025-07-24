@@ -96,7 +96,7 @@ public class SearchResult3Response extends OpenSubsonicResponse {
         private List<AlbumArtist> albumArtists;
 
         @JacksonXmlProperty(isAttribute = true)
-        private String year;
+        private Integer year;
         @JacksonXmlProperty(isAttribute = true)
         private String displayArtist;
     }

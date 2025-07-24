@@ -68,6 +68,7 @@ public class LyricsBySongIdResponse extends OpenSubsonicResponse {
         private Integer start;
 
         @JacksonXmlText
+        @JSONField(name = "value")
         private String text;
     }
 }

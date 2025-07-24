@@ -62,5 +62,7 @@ public class AlbumList2Response extends SubsonicResponse {
         private String artistName;
         @JacksonXmlProperty(isAttribute = true)
         private String artistId;
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer year;
     }
 }

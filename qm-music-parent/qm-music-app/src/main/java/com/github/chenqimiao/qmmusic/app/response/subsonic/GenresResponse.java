@@ -42,6 +42,7 @@ public class GenresResponse extends SubsonicResponse {
         private Integer songCount;
 
         @JacksonXmlText
+        @JSONField(name = "value")
         private String name;
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.github.chenqimiao.qmmusic.app.response.opensubsonic.OpenSubsonicResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import java.util.List;
  **/
 @Setter
 @Getter
-public class GenresResponse extends SubsonicResponse {
+public class GenresResponse extends OpenSubsonicResponse {
 
 
     private Genres genres;
@@ -42,6 +43,7 @@ public class GenresResponse extends SubsonicResponse {
         private Integer songCount;
 
         @JacksonXmlText
+        @JSONField(name = "value")
         private String name;
     }
 }

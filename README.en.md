@@ -90,7 +90,7 @@ services:
 3. Immediately change the default password on the homepage.
 4. Navigate to **Library Management** and click the **[Refresh Library]** button.
 5. Wait for metadata parsing to complete (check progress via logs).
-6. Use the following connection parameters in client apps (StreamMusic/Amperfy/substreamer/music-assistant, etc.):
+6. Use the following connection parameters in client apps (StreamMusic/feishin/Amperfy/substreamer/music-assistant, etc.):
    ```properties
    Server URL: http://[Server IP]:6688
    Username: Updated admin username

@@ -32,8 +32,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>3.5.7</spring-boot.version>
         <lombok.version>1.18.42</lombok.version>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <fastjson.version>2.0.56</fastjson.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <fastjson.version>2.0.59</fastjson.version>
     </properties>
     <modules>
         <module>qm-music-app</module>
@@ -88,7 +88,7 @@
             <dependency>
                 <groupId>org.xerial</groupId>
                 <artifactId>sqlite-jdbc</artifactId>
-                <version>3.49.1.0</version>
+                <version>3.51.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.flywaydb</groupId>
@@ -98,7 +98,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
+                <version>3.19.0</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -114,17 +114,17 @@
             <dependency>
                 <groupId>com.belerweb</groupId>
                 <artifactId>pinyin4j</artifactId>
-                <version>2.5.0</version>
+                <version>2.5.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.5.0-M3</version>
+                <version>4.5.0</version>
             </dependency>
             <dependency>
                 <groupId>org.modelmapper</groupId>
                 <artifactId>modelmapper</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.6</version>
             </dependency>
             <dependency>
                 <groupId>net.jthink</groupId>
@@ -134,32 +134,32 @@
             <dependency>
                 <groupId>net.coobird</groupId>
                 <artifactId>thumbnailator</artifactId>
-                <version>0.4.20</version>
+                <version>0.4.21</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.4.6-jre</version>
+                <version>33.5.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.19.1</version>
+                <version>1.21.2</version>
             </dependency>
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
-                <version>2.9.0</version>
+                <version>2.10.0</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm.icu</groupId>
                 <artifactId>icu4j</artifactId>
-                <version>77.1</version>
+                <version>78.1</version>
             </dependency>
             <dependency>
                 <groupId>se.michaelthelin.spotify</groupId>
                 <artifactId>spotify-web-api-java</artifactId>
-                <version>9.2.0</version>
+                <version>9.4.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

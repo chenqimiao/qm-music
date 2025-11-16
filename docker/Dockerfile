@@ -1,6 +1,6 @@
 # docker/Dockerfile
 # 第一阶段：构建Java应用及准备FFmpeg
-FROM --platform=$BUILDPLATFORM eclipse-temurin:21-jdk-jammy AS builder
+FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jdk-jammy AS builder
 
 # 安装构建工具
 RUN apt-get update && \
@@ -24,7 +24,7 @@ RUN chmod +x download-ffmpeg.sh && \
     rm download-ffmpeg.sh
 
 # 第二阶段：最终镜像
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 
 # 声明数据卷
 VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir", "/data/qm-music/cache"]

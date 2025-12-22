@@ -72,3 +72,7 @@ music_dir
 
 */cache
 cache
+
+# Maven flatten plugin
+.flattened-pom.xml
+*/.flattened-pom.xml

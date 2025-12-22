@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.chenqimiao</groupId>
     <artifactId>qm-music-parent</artifactId>
-    <version>1.0-RELEASE</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
     <name>qm-music</name>
     <description>Your Private Music Service</description>
@@ -34,6 +34,7 @@
         <lombok.version>1.18.42</lombok.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <fastjson.version>2.0.59</fastjson.version>
+        <revision>1.0-RELEASE</revision>
     </properties>
     <modules>
         <module>qm-music-app</module>
@@ -164,6 +165,33 @@
         </dependencies>
     </dependencyManagement>
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.3</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>

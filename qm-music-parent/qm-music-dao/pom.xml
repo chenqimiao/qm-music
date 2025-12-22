@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.chenqimiao</groupId>
         <artifactId>qm-music-parent</artifactId>
-        <version>1.0-RELEASE</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

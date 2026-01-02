@@ -1,6 +1,7 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
 import com.github.chenqimiao.qmmusic.core.constant.CommonConstants;
+import com.github.chenqimiao.qmmusic.core.constant.UnknownConstant;
 import com.github.chenqimiao.qmmusic.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.qmmusic.core.io.local.AudioContentTypeDetector;
 import com.github.chenqimiao.qmmusic.core.io.local.MusicFileReader;
@@ -123,6 +124,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         Path root = Paths.get(rootPath); // 根目录
 
         try (var stream = Files.walk(root)) {
+            final AlbumDO unknownAlbum = albumRepository.findByAlbumId(UnknownConstant.UN_KNOWN_ALBUM_ID);
+            final ArtistDO unknownArtist = artistRepository.findByArtistId(UnknownConstant.UN_KNOWN_ARTIST_ID);
             stream.parallel(). // 启用并行流加速
                 filter(Files::isRegularFile) // 只保留普通文件
                     .filter(FileUtils::isVideo) //仅扫描video
@@ -136,7 +139,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                             if (musicMeta == null) {
                                 return;
                             }
-                            this.save(musicMeta, path);
+                            this.save(musicMeta, path, unknownArtist, unknownAlbum);
                             songCount.incrementAndGet();
                         }catch (Exception e) {
                             log.error("traverse file exception: {} ", path, e);
@@ -173,7 +176,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
     }
 
     @SneakyThrows
-    private void save(MusicMeta musicMeta, Path path) {
+    private void save(MusicMeta musicMeta, Path path, final ArtistDO unknownArtist, final AlbumDO unknownAlbum) {
         String delimiterRegx = CommonConstants.ARTIST_NAME_DELIMITER_REGX;
         MusicAlbumMeta musicAlbumMeta = musicMeta.getMusicAlbumMeta();
 
@@ -188,9 +191,12 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         artistDO.setName(n);
                         artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
                         return artistDO;
-                    }).toList();
+                    }).collect(Collectors.toList());
 
             songArtists = artistRepository.saveAndReturn(songArtists);
+        }
+        if (CollectionUtils.isEmpty(songArtists)) {
+            songArtists.add(unknownArtist);
         }
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
@@ -202,10 +208,14 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         artistDO.setName(n);
                         artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
                         return artistDO;
-                    }).toList();
+                    }).collect(Collectors.toList());
 
             albumArtists = artistRepository.saveAndReturn(albumArtists);
 
+        }
+
+        if (CollectionUtils.isEmpty(albumArtists)) {
+            albumArtists.add(unknownArtist);
         }
 
 
@@ -239,8 +249,8 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         songDO.setId(songId);
         songDO.setParent(NumberUtils.LONG_ONE);
         songDO.setTitle(musicMeta.getTitle());
-        songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(null));
-        songDO.setAlbum_title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(null));
+        songDO.setAlbum_id(Optional.ofNullable(albumDO).map(AlbumDO::getId).orElse(unknownAlbum.getId()));
+        songDO.setAlbum_title(Optional.ofNullable(albumDO).map(AlbumDO::getTitle).orElse(unknownAlbum.getTitle()));
         songDO.setArtist_id(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getId() : null);
         songDO.setArtist_name(CollectionUtils.isNotEmpty(songArtists) ? songArtists.getFirst().getName() : null);
         songDO.setSuffix(FileUtils.getFileExtension(path));

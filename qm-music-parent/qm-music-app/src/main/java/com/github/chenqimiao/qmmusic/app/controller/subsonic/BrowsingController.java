@@ -7,6 +7,7 @@ import com.github.chenqimiao.qmmusic.app.request.subsonic.ArtistsRequest;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.*;
 import com.github.chenqimiao.qmmusic.app.util.WebUtils;
 import com.github.chenqimiao.qmmusic.core.constant.RateLimiterConstants;
+import com.github.chenqimiao.qmmusic.core.constant.UnknownConstant;
 import com.github.chenqimiao.qmmusic.core.dto.*;
 import com.github.chenqimiao.qmmusic.core.enums.EnumArtistRelationType;
 import com.github.chenqimiao.qmmusic.core.enums.EnumUserStarType;
@@ -145,7 +146,7 @@ public class BrowsingController {
                         .starred(modelMapper.map(complexArtistDTO.getStarred(), Date.class))
                         .build();
 
-            }).collect(Collectors.toList());
+            }).filter(n -> !Objects.equals(n.getId(), UnknownConstant.UN_KNOWN_ARTIST_ID.toString())).collect(Collectors.toList());
 
             ArtistsResponse.Index index = ArtistsResponse.Index
                     .builder()

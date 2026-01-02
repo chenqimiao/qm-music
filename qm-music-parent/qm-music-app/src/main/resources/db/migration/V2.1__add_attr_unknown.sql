@@ -18,3 +18,7 @@ WHERE artist_id IS NULL;
 UPDATE song
 SET album_id = '2026', album_title = 'Unknown Album'
 WHERE album_id IS NULL;
+
+update album
+set artist_id = '2026', artist_name = 'Unknown Artist'
+where artist_id is null;

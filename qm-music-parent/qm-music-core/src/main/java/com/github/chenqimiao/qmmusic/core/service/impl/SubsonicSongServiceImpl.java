@@ -141,4 +141,17 @@ public class SubsonicSongServiceImpl implements SongService {
         params.put("genre", searchRequest.getGenre());
         return songRepository.search(params);
     }
+
+    @Override
+    public int sumDurationBySongIds(List<Long> songIds) {
+
+        if (CollectionUtils.isEmpty(songIds)) {
+            return NumberUtils.INTEGER_ZERO;
+        }
+        Integer duration = songRepository.sumDurationBySongIds(songIds);
+        if (duration != null) {
+            return duration;
+        }
+        return NumberUtils.INTEGER_ZERO;
+    }
 }

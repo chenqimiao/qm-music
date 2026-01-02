@@ -24,4 +24,6 @@ public class PlaylistItemDO {
     private Timestamp gmt_create;
 
     private Timestamp gmt_modify;
+
+    private Integer duration;
 }

@@ -139,4 +139,22 @@ public class PlaylistItemRepository {
         param.put("songIds", songIds);
         return namedParameterJdbcTemplate.query(sql, param,ROW_MAPPER_PLAY_LIST_ITEM);
     }
+
+    public List<PlaylistItemDO> queryByPlaylistIdAndIndexes(Long playlistId, List<Long> songIndex) {
+        String sql = """
+                   SELECT *
+                   FROM (
+                       SELECT
+                           *,
+                           ROW_NUMBER() OVER (ORDER BY sort_order DESC) AS rank
+                       FROM playlist_item where playlist_id = :playlistId
+                   )
+                   WHERE rank IN (:ranks);
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("playlistId", playlistId);
+        paramMap.put("ranks", songIndex.stream().map(n -> n + 1L).toList());
+        return namedParameterJdbcTemplate.query(sql, paramMap, ROW_MAPPER_PLAY_LIST_ITEM);
+    }
 }

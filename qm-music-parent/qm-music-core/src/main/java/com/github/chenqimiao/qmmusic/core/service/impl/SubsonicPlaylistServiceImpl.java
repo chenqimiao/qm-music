@@ -5,10 +5,13 @@ import com.github.chenqimiao.qmmusic.core.dto.PlaylistDTO;
 import com.github.chenqimiao.qmmusic.core.dto.PlaylistItemDTO;
 import com.github.chenqimiao.qmmusic.core.enums.EnumPlayListVisibility;
 import com.github.chenqimiao.qmmusic.core.service.PlaylistService;
+import com.github.chenqimiao.qmmusic.core.service.SongService;
 import com.github.chenqimiao.qmmusic.dao.DO.PlaylistDO;
 import com.github.chenqimiao.qmmusic.dao.DO.PlaylistItemDO;
+import com.github.chenqimiao.qmmusic.dao.DO.SongDO;
 import com.github.chenqimiao.qmmusic.dao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.qmmusic.dao.repository.PlaylistRepository;
+import com.github.chenqimiao.qmmusic.dao.repository.SongRepository;
 import com.google.common.collect.Lists;
 import io.github.mocreates.Sequence;
 import jakarta.annotation.Resource;
@@ -78,6 +81,7 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
         playlistDO.setCover_art("");
         playlistDO.setVisibility(EnumPlayListVisibility.PRIVATE.getCode());
         playlistDO.setSong_count(NumberUtils.INTEGER_ZERO);
+        playlistDO.setDuration(NumberUtils.INTEGER_ZERO);
         playlistRepository.save(playlistDO);
         return this.queryPlaylistByPlaylistId(id);
     }
@@ -90,7 +94,7 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveSongToPlaylist(Long songId, Long userId, Long playlistId) {
+    public void saveSongToPlaylist(Long songId, Integer duration, Long userId, Long playlistId) {
         PlaylistItemDO playlistItemDO = new PlaylistItemDO();
         playlistItemDO.setId(sequence.nextId());
         playlistItemDO.setPlaylist_id(playlistId);
@@ -98,29 +102,14 @@ public class SubsonicPlaylistServiceImpl implements PlaylistService {
         playlistItemRepository.save(playlistItemDO);
 
         playlistRepository.incrSongCount(playlistId, 1);
+        if (duration != null) {
+            playlistRepository.incrDuration(playlistId, duration);
+        }
     }
 
     @Override
     public List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId) {
         List<PlaylistItemDTO> playlistItems = this.queryPlaylistItemsByPlaylistIds(Lists.newArrayList(playlistId));
         return playlistItems;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void deleteItemsBySongIds(List<Long> songIds) {
-        List<PlaylistItemDO> playlistItems = playlistItemRepository.queryBySongIds(songIds);
-        if (CollectionUtils.isEmpty(playlistItems)) {
-            return;
-        }
-        Map<Long, Long> songCountMap =
-                playlistItems.stream().collect(Collectors.groupingBy(PlaylistItemDO::getPlaylist_id, Collectors.counting()));
-
-        songCountMap.forEach((k, v) -> {
-            playlistRepository.incrSongCount(k, -v.intValue());
-        });
-
-        playlistItemRepository.delBySongIds(songIds);
-
     }
 }

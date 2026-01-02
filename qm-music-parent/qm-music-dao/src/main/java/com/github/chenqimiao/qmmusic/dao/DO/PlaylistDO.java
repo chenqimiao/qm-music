@@ -25,4 +25,6 @@ public class PlaylistDO {
     private Timestamp gmt_modify;
 
     private Integer song_count;
+
+    private Integer duration;
 }

@@ -7,6 +7,7 @@ import com.github.chenqimiao.qmmusic.core.enums.EnumUserStarType;
 import com.github.chenqimiao.qmmusic.core.io.net.client.MetaDataFetchClientCommander;
 import com.github.chenqimiao.qmmusic.core.request.BatchStarInfoRequest;
 import com.github.chenqimiao.qmmusic.core.service.*;
+import com.github.chenqimiao.qmmusic.core.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.qmmusic.core.service.complex.SongComplexService;
 import com.github.chenqimiao.qmmusic.core.util.TransliteratorUtils;
 import com.github.chenqimiao.qmmusic.dao.DO.ArtistRelationDO;
@@ -70,6 +71,8 @@ public class SubsonicSongComplexService implements SongComplexService {
     private PlayHistoryRepository playHistoryRepository;
     @Autowired
     private PlayHistoryService playHistoryService;
+    @Autowired
+    private PlaylistComplexService playlistComplexService;
 
 
     @Override
@@ -181,7 +184,7 @@ public class SubsonicSongComplexService implements SongComplexService {
     @Override
     public void cleanSongs(List<Long> songIds) {
         userStarRepository.delByRelationIdsAndStartType(songIds, EnumUserStarType.SONG.getCode());
-        playlistService.deleteItemsBySongIds(songIds);
+        playlistComplexService.deleteItemsBySongIds(songIds);
         songRepository.deleteByIds(songIds);
         playHistoryRepository.deleteBySongIds(songIds);
 

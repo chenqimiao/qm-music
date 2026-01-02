@@ -82,13 +82,14 @@ public class PlaylistsController {
             Long uId = n.getUserId();
             playlist.setOwner(userMap.get(uId).getUsername());
             playlist.set_public(EnumPlayListVisibility.PUBLIC.getCode().equals(n.getVisibility()));
-
             playlist.setAllowedUsers(Lists.newArrayList(new PlaylistsResponse.User(currentUser.getUsername())));
 
             return playlist;
         }).toList();
 
-        return new PlaylistsResponse(PlaylistsResponse.Playlists.builder().playlists(playlistList).build());
+        return new PlaylistsResponse(PlaylistsResponse.Playlists.builder()
+                .songCount(playlistList.size())
+                .playlists(playlistList).build());
     }
 
 

@@ -24,9 +24,7 @@ public interface PlaylistService {
 
     int updatePlaylistNameByPlaylistId(String name, Long playlistId);
 
-    void saveSongToPlaylist(Long songId, Long userId, Long id);
+    void saveSongToPlaylist(Long songId, Integer duration, Long userId, Long id);
 
     List<PlaylistItemDTO> queryPlaylistItemsByPlaylistId(Long playlistId);
-
-    void deleteItemsBySongIds(List<Long> songIds);
 }

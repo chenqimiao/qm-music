@@ -23,4 +23,6 @@ public class PlaylistDTO {
     private Long gmtModify;
 
     private Integer songCount;
+
+    private Integer duration;
 }

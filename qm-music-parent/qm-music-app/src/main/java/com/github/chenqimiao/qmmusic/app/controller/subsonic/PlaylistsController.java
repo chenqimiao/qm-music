@@ -88,11 +88,8 @@ public class PlaylistsController {
         }).toList();
 
         return new PlaylistsResponse(PlaylistsResponse.Playlists.builder()
-                .songCount(playlistList.size())
                 .playlists(playlistList).build());
     }
-
-
     @RequestMapping(value = "/getPlaylist")
     public PlaylistResponse getPlaylist(@RequestParam() Long id) {
         List<ComplexPlaylistDTO> complexPlaylists =

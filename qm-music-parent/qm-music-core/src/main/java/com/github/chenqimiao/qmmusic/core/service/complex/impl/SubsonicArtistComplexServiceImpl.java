@@ -1,5 +1,6 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
+import com.github.chenqimiao.qmmusic.core.constant.UnknownConstant;
 import com.github.chenqimiao.qmmusic.core.dto.ArtistDTO;
 import com.github.chenqimiao.qmmusic.core.dto.ComplexArtistDTO;
 import com.github.chenqimiao.qmmusic.core.enums.EnumArtistRelationType;
@@ -142,6 +143,7 @@ public class SubsonicArtistComplexServiceImpl implements ArtistComplexService {
         if (CollectionUtils.isNotEmpty(toBeRemoveArtistRelationIds)) {
             artistRelationRepository.delByIds(toBeRemoveArtistRelationIds);
         }
+        toRemoveArtistIds = toRemoveArtistIds.stream().filter(n -> !Objects.equals(n, UnknownConstant.UN_KNOWN_ARTIST_ID)).toList();
         if (CollectionUtils.isNotEmpty(toRemoveArtistIds)) {
             userStarRepository.delByRelationIdsAndStartType(toRemoveArtistIds,
                     EnumUserStarType.ARTIST.getCode());

@@ -1,6 +1,7 @@
 package com.github.chenqimiao.qmmusic.core.service.complex.impl;
 
 import com.github.chenqimiao.qmmusic.core.constant.ModelMapperTypeConstants;
+import com.github.chenqimiao.qmmusic.core.constant.UnknownConstant;
 import com.github.chenqimiao.qmmusic.core.dto.AlbumDTO;
 import com.github.chenqimiao.qmmusic.core.dto.PlayHistoryDTO;
 import com.github.chenqimiao.qmmusic.core.dto.SongDTO;
@@ -91,6 +92,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
         // 1 clean star
         userStarRepository.delByRelationIdsAndStartType(toBeCleanAlbumIds, EnumUserStarType.ALBUM.getCode());
         // 2 clean album
+        toBeCleanAlbumIds = toBeCleanAlbumIds.stream().filter(n -> !Objects.equals(n, UnknownConstant.UN_KNOWN_ALBUM_ID)).toList();
         albumRepository.delByIds(toBeCleanAlbumIds);
     }
 

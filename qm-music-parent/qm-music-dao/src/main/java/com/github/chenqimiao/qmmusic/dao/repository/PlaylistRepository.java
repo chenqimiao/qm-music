@@ -27,8 +27,8 @@ public class PlaylistRepository {
 
     public int save(PlaylistDO playlistDO) {
         String sql = """
-                    insert into playlist (id, user_id, name, description, visibility, song_count)
-                    values (:id, :user_id, :name, :description, :visibility, :song_count)
+                    insert into playlist (id, user_id, name, description, visibility, song_count, duration)
+                    values (:id, :user_id, :name, :description, :visibility, :song_count, :duration)
                 """;
 
         return namedParameterJdbcTemplate.update(sql, new BeanPropertySqlParameterSource(playlistDO));
@@ -127,5 +127,19 @@ public class PlaylistRepository {
 
         return namedParameterJdbcTemplate.update(sqlSb.toString(), paramMap);
 
+    }
+
+    public void incrDuration(Long playlistId, Integer duration) {
+        String sql = """
+                   update playlist set duration = 
+                       case when duration + :duration < 0 then 0 
+                       else duration + :duration end
+                   where id = :id
+                """;
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", playlistId);
+        paramMap.put("duration", duration);
+
+        namedParameterJdbcTemplate.update(sql, paramMap);
     }
 }

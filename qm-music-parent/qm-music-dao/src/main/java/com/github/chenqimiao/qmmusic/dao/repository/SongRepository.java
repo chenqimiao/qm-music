@@ -254,4 +254,15 @@ public class SongRepository {
             return resultMap;
         });
     }
+
+    public Integer sumDurationBySongIds(List<Long> songIds) {
+        String sql = """
+                   select coalesce(sum(duration), 0) from song where id in(:ids)
+                """;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", songIds);
+
+        return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+    }
 }

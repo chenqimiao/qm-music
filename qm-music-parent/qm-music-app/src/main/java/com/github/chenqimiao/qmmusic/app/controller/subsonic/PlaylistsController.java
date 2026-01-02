@@ -82,16 +82,14 @@ public class PlaylistsController {
             Long uId = n.getUserId();
             playlist.setOwner(userMap.get(uId).getUsername());
             playlist.set_public(EnumPlayListVisibility.PUBLIC.getCode().equals(n.getVisibility()));
-
             playlist.setAllowedUsers(Lists.newArrayList(new PlaylistsResponse.User(currentUser.getUsername())));
 
             return playlist;
         }).toList();
 
-        return new PlaylistsResponse(PlaylistsResponse.Playlists.builder().playlists(playlistList).build());
+        return new PlaylistsResponse(PlaylistsResponse.Playlists.builder()
+                .playlists(playlistList).build());
     }
-
-
     @RequestMapping(value = "/getPlaylist")
     public PlaylistResponse getPlaylist(@RequestParam() Long id) {
         List<ComplexPlaylistDTO> complexPlaylists =
@@ -160,8 +158,8 @@ public class PlaylistsController {
         updatePlaylistRequest.setPlaylistId(playlistId);
         updatePlaylistRequest.setName(name);
         updatePlaylistRequest.setDescription(comment);
-        updatePlaylistRequest.setSongIdToAdd(songIdsToAdd);
-        updatePlaylistRequest.setSongIndexToRemove(songIndexesToRemove);
+        updatePlaylistRequest.setSongIdsToAdd(songIdsToAdd);
+        updatePlaylistRequest.setSongIndexesToRemove(songIndexesToRemove);
         if (_public != null) {
             updatePlaylistRequest.setVisibility(Boolean.TRUE.equals(_public)? EnumPlayListVisibility.PUBLIC.getCode()
                     : EnumPlayListVisibility.PRIVATE.getCode());

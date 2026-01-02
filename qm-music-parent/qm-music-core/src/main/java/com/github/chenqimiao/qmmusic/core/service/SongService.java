@@ -30,4 +30,6 @@ public interface SongService {
 
     List<Long> search(SongSearchRequest searchRequest);
 
+    int sumDurationBySongIds(List<Long> songIds);
+
 }

@@ -20,4 +20,6 @@ public interface PlaylistComplexService {
     void deletePlaylistByPlaylistId(Long playlistId);
 
     void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest);
+
+    void deleteItemsBySongIds(List<Long> songIds);
 }

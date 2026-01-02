@@ -222,17 +222,12 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         playlistItems.stream().map(PlaylistItemDO::getPlaylist_id).distinct().forEach(playlistId -> {
             playlistItemRepository.queryByPlaylistIdAndIndexes(playlistId, Lists.newArrayList(NumberUtils.LONG_ZERO)).stream()
                     .findFirst()
-                    .ifPresentOrElse(
-                            item -> {
-                                Map<String, Object> paramMap = new HashMap<>();
-                                paramMap.put("playlistId", playlistId);
-                                paramMap.put("coverArt", item.getSong_id());
-                                playlistRepository.updateByPlaylistId(paramMap);
-                            },
-                            () -> {
-                               ///  do nothing
-                            }
-                    );
+                    .ifPresent(item -> {
+                        Map<String, Object> paramMap = new HashMap<>();
+                        paramMap.put("playlistId", playlistId);
+                        paramMap.put("coverArt", item.getSong_id());
+                        playlistRepository.updateByPlaylistId(paramMap);
+                    });
         });
     }
 

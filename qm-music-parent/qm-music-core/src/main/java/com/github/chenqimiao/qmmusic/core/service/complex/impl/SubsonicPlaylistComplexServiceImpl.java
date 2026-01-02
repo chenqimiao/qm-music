@@ -129,9 +129,9 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     @Transactional
     public void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest) {
         Long playlistId = updatePlaylistRequest.getPlaylistId();
-        List<Long> songIdToAdd = updatePlaylistRequest.getSongIdsToAdd();
-        if (CollectionUtils.isNotEmpty(songIdToAdd)) {
-            songIdToAdd.forEach(songId -> {
+        List<Long> songIdsToAdd = updatePlaylistRequest.getSongIdsToAdd();
+        if (CollectionUtils.isNotEmpty(songIdsToAdd)) {
+            songIdsToAdd.forEach(songId -> {
                 PlaylistItemDO playlistItem = new PlaylistItemDO();
                 playlistItem.setPlaylist_id(playlistId);
                 playlistItem.setSong_id(songId);
@@ -146,7 +146,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
         }
 
-        int incrNum = CollectionUtils.size(songIdToAdd) - CollectionUtils.size(songIndexToRemove);
+        int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIndexToRemove);
 
         if (incrNum != 0) {
             playlistRepository.incrSongCount(playlistId, incrNum);
@@ -157,14 +157,14 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         String description = updatePlaylistRequest.getDescription();
 
         if (name != null || description != null || visibility != null
-                || CollectionUtils.isNotEmpty(songIdToAdd)) {
+                || CollectionUtils.isNotEmpty(songIdsToAdd)) {
             Map<String, Object> paramMap = new HashMap<>();
             paramMap.put("playlistId", playlistId);
             paramMap.put("name", name);
             paramMap.put("description", description);
             paramMap.put("visibility", visibility);
-            Long coverArt = CollectionUtils.isNotEmpty(songIdToAdd)
-                    ? songIdToAdd.get(songIdToAdd.size() - 1)
+            Long coverArt = CollectionUtils.isNotEmpty(songIdsToAdd)
+                    ? songIdsToAdd.get(songIdsToAdd.size() - 1)
                     : null;
             paramMap.put("coverArt", coverArt);
             playlistRepository.updateByPlaylistId(paramMap);
@@ -172,7 +172,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
 
         int durationToRemove = songService.sumDurationBySongIds(songIdsToRemove);
 
-        int durationToAdd = songService.sumDurationBySongIds(songIdToAdd);
+        int durationToAdd = songService.sumDurationBySongIds(songIdsToAdd);
 
         int durationToIncr = durationToAdd - durationToRemove;
 

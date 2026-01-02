@@ -163,7 +163,10 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             paramMap.put("name", name);
             paramMap.put("description", description);
             paramMap.put("visibility", visibility);
-            paramMap.put("coverArt", Optional.ofNullable(songIdToAdd).map(List::getLast).orElse(null));
+            Long coverArt = CollectionUtils.isNotEmpty(songIdToAdd)
+                    ? songIdToAdd.get(songIdToAdd.size() - 1)
+                    : null;
+            paramMap.put("coverArt", coverArt);
             playlistRepository.updateByPlaylistId(paramMap);
         }
 

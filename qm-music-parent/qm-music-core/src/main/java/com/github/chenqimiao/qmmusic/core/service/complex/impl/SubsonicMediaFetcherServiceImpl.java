@@ -191,7 +191,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         artistDO.setName(n);
                         artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
                         return artistDO;
-                    }).toList();
+                    }).collect(Collectors.toList());
 
             songArtists = artistRepository.saveAndReturn(songArtists);
         }
@@ -208,7 +208,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                         artistDO.setName(n);
                         artistDO.setFirst_letter(FirstLetterUtil.getFirstLetter(n));
                         return artistDO;
-                    }).toList();
+                    }).collect(Collectors.toList());
 
             albumArtists = artistRepository.saveAndReturn(albumArtists);
 

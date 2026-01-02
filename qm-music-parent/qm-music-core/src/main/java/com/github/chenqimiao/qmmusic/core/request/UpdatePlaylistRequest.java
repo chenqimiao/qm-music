@@ -15,7 +15,7 @@ public class UpdatePlaylistRequest {
     private Long playlistId;
     private String name;
     private String description;
-    private List<Long> songIdToAdd;
-    private List<Long> songIndexToRemove;
+    private List<Long> songIdsToAdd;
+    private List<Long> songIndexesToRemove;
     private Integer visibility;
 }

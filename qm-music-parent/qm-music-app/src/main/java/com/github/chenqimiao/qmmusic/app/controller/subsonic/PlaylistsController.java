@@ -158,8 +158,8 @@ public class PlaylistsController {
         updatePlaylistRequest.setPlaylistId(playlistId);
         updatePlaylistRequest.setName(name);
         updatePlaylistRequest.setDescription(comment);
-        updatePlaylistRequest.setSongIdToAdd(songIdsToAdd);
-        updatePlaylistRequest.setSongIndexToRemove(songIndexesToRemove);
+        updatePlaylistRequest.setSongIdsToAdd(songIdsToAdd);
+        updatePlaylistRequest.setSongIndexesToRemove(songIndexesToRemove);
         if (_public != null) {
             updatePlaylistRequest.setVisibility(Boolean.TRUE.equals(_public)? EnumPlayListVisibility.PUBLIC.getCode()
                     : EnumPlayListVisibility.PRIVATE.getCode());

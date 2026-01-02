@@ -129,7 +129,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     @Transactional
     public void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest) {
         Long playlistId = updatePlaylistRequest.getPlaylistId();
-        List<Long> songIdToAdd = updatePlaylistRequest.getSongIdToAdd();
+        List<Long> songIdToAdd = updatePlaylistRequest.getSongIdsToAdd();
         if (CollectionUtils.isNotEmpty(songIdToAdd)) {
             songIdToAdd.forEach(songId -> {
                 PlaylistItemDO playlistItem = new PlaylistItemDO();
@@ -138,11 +138,11 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
                 playlistItemRepository.save(playlistItem);
             });
         }
-        List<Long> songIndexToRemove = updatePlaylistRequest.getSongIndexToRemove();
+        List<Long> songIndexToRemove = updatePlaylistRequest.getSongIndexesToRemove();
         List<Long> songIdsToRemove = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(songIndexToRemove)) {
-            List<PlaylistItemDO> playlistItemToRemove = playlistItemRepository.queryByPlaylistIdAndIndexes(playlistId, songIndexToRemove);
-            songIdsToRemove.addAll(playlistItemToRemove.stream().map(PlaylistItemDO::getSong_id).toList());
+            List<PlaylistItemDO> playlistItemsToRemove = playlistItemRepository.queryByPlaylistIdAndIndexes(playlistId, songIndexToRemove);
+            songIdsToRemove.addAll(playlistItemsToRemove.stream().map(PlaylistItemDO::getSong_id).toList());
             playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
         }
 

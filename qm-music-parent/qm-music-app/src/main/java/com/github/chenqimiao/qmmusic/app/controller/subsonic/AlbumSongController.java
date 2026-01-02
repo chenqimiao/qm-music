@@ -9,6 +9,7 @@ import com.github.chenqimiao.qmmusic.app.request.subsonic.SongsByGenreRequest;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.*;
 import com.github.chenqimiao.qmmusic.app.util.WebUtils;
 import com.github.chenqimiao.qmmusic.core.constant.CoverArtPrefixConstants;
+import com.github.chenqimiao.qmmusic.core.constant.UnknownConstant;
 import com.github.chenqimiao.qmmusic.core.dto.AlbumDTO;
 import com.github.chenqimiao.qmmusic.core.dto.ComplexSongDTO;
 import com.github.chenqimiao.qmmusic.core.dto.SongDTO;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Qimiao Chen
@@ -97,6 +99,8 @@ public class AlbumSongController {
         AlbumList2Response albumList2Response = new AlbumList2Response();
 
         List<AlbumList2Response.Album> albumList = modelMapper.map(albums, TYPE_LIST_ALBUM);
+        albumList = albumList.stream().filter(n -> !Objects.equals(n.getId()
+                , UnknownConstant.UN_KNOWN_ALBUM_ID.toString())).toList();
         if (CollectionUtils.isNotEmpty(albumList)) {
             albumList2Response.setAlbumList2(AlbumList2Response.AlbumList.builder()
                     .albums(albumList).build());

@@ -454,7 +454,10 @@
             </div>
         </div>
     </div>
-    <!-- 新增支持信息区块 -->
+    <!-- 页脚版本信息 -->
+    <div style="text-align: center; margin: 1rem 0; color: #718096; font-size: 0.85rem;">
+        QM-Music 版本：{{ serverVersion || '加载中...' }}
+    </div>
 </div>
 <script>
     const { createApp } = Vue;
@@ -477,13 +480,13 @@
                 scanning: false,
                 statusInterval: null,
                 statsInterval: null,
-                githubStars: '1.2k' // 实际应从API获取
+                githubStars: '1.2k', // 实际应从API获取
+                serverVersion: ''     // 从 /rest/getUser 读取的服务端版本
             }
         },
         async mounted() {
             if (!this.verifyLogin()) return;
             await this.checkPasswordStatus();
-            await this.loadUsers();
             await this.loadLibraryStats();
             this.statsInterval = setInterval(this.loadLibraryStats, 300000);
         },
@@ -532,7 +535,14 @@
                 const params = this.buildBaseParams();
                 params.append('username', localStorage.getItem('u'));
                 const res = await axios.get(`/rest/getUser?${params}`);
-                if (res.data['subsonic-response'].user?.forcePasswordChange) {
+                const resp = res.data['subsonic-response'];
+
+                // 复用 getUser 响应：设置版本号
+                if (resp && resp.serverVersion) {
+                    this.serverVersion = resp.serverVersion;
+                }
+
+                if (resp.user?.forcePasswordChange) {
                     this.forcePasswordChange = true;
                 } else {
                     await this.loadUsers();

@@ -56,7 +56,7 @@ public class AlbumResponse extends OpenSubsonicResponse {
         private String artistId;
         @JacksonXmlProperty(isAttribute = true, localName = "year")
         @JSONField(name = "year")
-        private String releaseYear;
+        private Integer releaseYear;
 
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "song")
@@ -140,9 +140,9 @@ public class AlbumResponse extends OpenSubsonicResponse {
 
         // subsonic support
         @JacksonXmlProperty(isAttribute = true)
-        private String year;
+        private Integer year;
         @JacksonXmlProperty(isAttribute = true)
-        private String track;
+        private Integer track;
         @JacksonXmlProperty(isAttribute = true)
         private String displayArtist;
         @JacksonXmlProperty(isAttribute = true)

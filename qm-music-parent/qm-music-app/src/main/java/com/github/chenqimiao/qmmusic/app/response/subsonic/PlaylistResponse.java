@@ -133,8 +133,10 @@ public class PlaylistResponse extends SubsonicResponse {
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;
         @JacksonXmlProperty(isAttribute = true)
-        private String track;
+        private Integer track;
         @JacksonXmlProperty(isAttribute = true)
-        private String year;
+        private Integer year;
+        @JacksonXmlProperty(isAttribute = true)
+        private String genre;
     }
 }

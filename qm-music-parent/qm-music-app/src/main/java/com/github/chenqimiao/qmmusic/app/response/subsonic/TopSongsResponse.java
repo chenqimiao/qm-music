@@ -96,7 +96,7 @@ public class TopSongsResponse extends SubsonicResponse {
         private Date starred;
 
         @JacksonXmlProperty(isAttribute = true)
-        private String year;
+        private Integer year;
 
         @JacksonXmlProperty(isAttribute = true)
         private Integer playCount;

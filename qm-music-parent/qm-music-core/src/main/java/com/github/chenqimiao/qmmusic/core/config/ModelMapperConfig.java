@@ -61,6 +61,34 @@ public class ModelMapperConfig {
         }
     };
 
+    private final Converter<String, Integer> stringToIntegerConverter = new AbstractConverter<>() {
+        @Override
+        protected Integer convert(String str) {
+            if (str == null) {
+                return null;
+            }
+            try {
+                return Integer.parseInt(str);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    };
+
+    private final Converter<String, Long> stringToLongConverter = new AbstractConverter<>() {
+        @Override
+        protected Long convert(String str) {
+            if (str == null) {
+                return null;
+            }
+            try {
+                return Long.parseLong(str);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    };
+
 
     public static class NullSafeModelMapper extends ModelMapper {
 
@@ -115,6 +143,10 @@ public class ModelMapperConfig {
         modelMapper.addConverter(longToDateConverter);
 
         modelMapper.addConverter(longToStringConverter);
+
+        modelMapper.addConverter(stringToIntegerConverter);
+
+        modelMapper.addConverter(stringToLongConverter);
 
         return modelMapper;
     }

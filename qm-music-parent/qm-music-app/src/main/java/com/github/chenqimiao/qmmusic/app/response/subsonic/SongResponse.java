@@ -83,14 +83,14 @@ public class SongResponse extends OpenSubsonicResponse {
         private Date starred;
 
         @JacksonXmlProperty(isAttribute = true)
-        private String year;
+        private Integer year;
 
         @JacksonXmlProperty(isAttribute = true)
         private Integer playCount;
 
         // open subsonic
         @JacksonXmlProperty(isAttribute = true)
-        private String track;
+        private Integer track;
         @JacksonXmlProperty(isAttribute = true)
         private String displayArtist;
         @JacksonXmlProperty(isAttribute = true)

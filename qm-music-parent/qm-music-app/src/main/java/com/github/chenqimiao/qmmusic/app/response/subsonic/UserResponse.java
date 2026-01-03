@@ -1,5 +1,6 @@
 package com.github.chenqimiao.qmmusic.app.response.subsonic;
 
+import com.github.chenqimiao.qmmusic.app.response.opensubsonic.OpenSubsonicResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse extends SubsonicResponse {
+public class UserResponse extends OpenSubsonicResponse {
 
     private SubsonicUser user;
 }

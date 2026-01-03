@@ -94,7 +94,7 @@ public class ArtistResponse extends SubsonicResponse {
         @JacksonXmlProperty(isAttribute = true)
         private String genre;
         @JacksonXmlProperty(isAttribute = true ,localName = "year")
-        private String releaseYear;
+        private Integer releaseYear;
         @Builder.Default
         @JacksonXmlProperty(isAttribute = true)
         private Boolean isVideo = false;

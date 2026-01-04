@@ -658,7 +658,7 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
             return lyrics;
         }
 
-        String lrcFile = FileUtils.replaceFileExtension(filePath, ".lrc");
+        String lrcFile = FileUtils.replaceFileExtension(filePath, "lrc");
         Path path = Paths.get(lrcFile);
         if (Files.exists(path)) {
             lyrics = Files.readString(path);

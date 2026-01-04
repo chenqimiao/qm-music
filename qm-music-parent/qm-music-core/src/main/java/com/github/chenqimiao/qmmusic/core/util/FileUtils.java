@@ -44,10 +44,9 @@ public abstract class FileUtils {
     public static String replaceFileExtension(String fileName, String newExtension) {
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
-            return fileName.replace(fileName.substring(lastDotIndex + 1)
-                    , newExtension) ;
+            return fileName.substring(0, lastDotIndex) + newExtension;
         }
-        return fileName + "." + newExtension;
+        return fileName + newExtension;
     }
 
     public static long getLastModified(Path path) {

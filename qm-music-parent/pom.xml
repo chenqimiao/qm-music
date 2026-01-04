@@ -34,7 +34,7 @@
         <lombok.version>1.18.42</lombok.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <fastjson.version>2.0.59</fastjson.version>
-        <revision>1.0-RELEASE</revision>
+        <revision>1.1-RELEASE</revision>
     </properties>
     <modules>
         <module>qm-music-app</module>

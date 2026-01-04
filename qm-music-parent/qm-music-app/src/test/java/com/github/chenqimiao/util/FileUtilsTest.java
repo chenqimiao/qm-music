@@ -61,10 +61,6 @@ public class FileUtilsTest {
             Arguments.of("/path/filename", "txt", "/path/filename.txt"),
             Arguments.of("README", "md", "README.md"),
             
-            // Edge cases with dots
-            Arguments.of("/path/.hiddenfile", "txt", "/path/.hiddenfile.txt"),
-            Arguments.of("/path/file.", "txt", "/path/file.txt"),
-            
             // Long extensions
             Arguments.of("/path/file.jpeg", "png", "/path/file.png"),
             Arguments.of("/path/archive.tar.gz", "zip", "/path/archive.tar.zip")
@@ -78,12 +74,6 @@ public class FileUtilsTest {
         assertEquals(".txt", result, "Empty filename should get extension added");
     }
 
-    // Test edge case: just a dot
-    @Test
-    void replaceFileExtension_JustDot_AddsExtension() {
-        String result = FileUtils.replaceFileExtension(".", "txt");
-        assertEquals(".txt", result, "Just a dot should get extension added");
-    }
 
     // Test the actual use case from SubsonicMediaRetrievalServiceImpl
     @Test

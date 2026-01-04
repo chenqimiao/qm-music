@@ -43,7 +43,7 @@ public abstract class FileUtils {
 
     public static String replaceFileExtension(String fileName, String newExtension) {
         int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+        if (lastDotIndex > 0) {
             return fileName.replace(fileName.substring(lastDotIndex + 1)
                     , newExtension) ;
         }

@@ -185,7 +185,6 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         if (StringUtils.isNotBlank(musicMeta.getArtist())) {
             songArtists = Arrays.stream(musicMeta.getArtist().split(delimiterRegx))
                     .filter(StringUtils::isNotBlank)
-                    .distinct()
                     .map(String::trim)
                     .distinct()
                     .map(n -> {
@@ -205,7 +204,6 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
             albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(delimiterRegx))
                     .filter(StringUtils::isNotBlank)
-                    .distinct()
                     .map(String::trim)
                     .distinct()
                     .map(n -> {

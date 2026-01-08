@@ -113,11 +113,13 @@ public class AlbumSongController {
     private void wrapAlbumArtists(List<AlbumList2Response.Album> albums) {
         if (CollectionUtils.isEmpty(albums)) return;
         albums.forEach(album -> {
-            var artist = new AlbumList2Response.AlbumArtist();
-            artist.setId(album.getArtistId());
-            artist.setName(album.getArtistName());
-            album.setAlbumArtists(Lists.newArrayList(artist));
-            album.setDisplayArtist(album.getArtistName());
+            if (album.getArtistId() != null && album.getArtistName() != null) {
+                var artist = new AlbumList2Response.AlbumArtist();
+                artist.setId(album.getArtistId());
+                artist.setName(album.getArtistName());
+                album.setAlbumArtists(Lists.newArrayList(artist));
+                album.setDisplayArtist(album.getArtistName());
+            }
         });
     }
 

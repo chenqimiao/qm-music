@@ -77,6 +77,7 @@ public class AlbumList2Response extends SubsonicResponse {
 
     @Setter
     @Getter
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AlbumArtist {

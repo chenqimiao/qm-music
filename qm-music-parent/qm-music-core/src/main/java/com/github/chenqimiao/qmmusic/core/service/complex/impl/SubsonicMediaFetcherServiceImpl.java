@@ -184,7 +184,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
         List<ArtistDO> albumArtists = new ArrayList<>();
         if (StringUtils.isNotBlank(musicMeta.getArtist())) {
             songArtists = Arrays.stream(musicMeta.getArtist().split(delimiterRegx))
-                    .map(String::trim).distinct()
+                    .filter(StringUtils::isNotBlank)
+                    .map(String::trim)
+                    .distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
                         artistDO.setId(sequence.nextId());
@@ -201,7 +203,9 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
 
         if (StringUtils.isNotBlank(musicAlbumMeta.getAlbumArtist())) {
             albumArtists = Arrays.stream(musicAlbumMeta.getAlbumArtist().split(delimiterRegx))
-                    .map(String::trim).distinct()
+                    .filter(StringUtils::isNotBlank)
+                    .map(String::trim)
+                    .distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
                         artistDO.setId(sequence.nextId());
@@ -213,6 +217,11 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
             albumArtists = artistRepository.saveAndReturn(albumArtists);
 
         }
+
+        if (CollectionUtils.isEmpty(albumArtists) && CollectionUtils.isNotEmpty(songArtists)) {
+            albumArtists.add(songArtists.getFirst());
+        }
+
 
         if (CollectionUtils.isEmpty(albumArtists)) {
             albumArtists.add(unknownArtist);

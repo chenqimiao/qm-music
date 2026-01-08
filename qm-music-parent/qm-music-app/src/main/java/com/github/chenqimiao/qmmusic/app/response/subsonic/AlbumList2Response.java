@@ -64,5 +64,25 @@ public class AlbumList2Response extends SubsonicResponse {
         private String artistId;
         @JacksonXmlProperty(isAttribute = true)
         private Integer year;
+
+        // open subsonic ext
+        @JacksonXmlElementWrapper(useWrapping = false)
+        @JacksonXmlProperty(localName = "artists")
+        @JSONField(name = "artists")
+        private List<AlbumArtist> albumArtists;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String displayArtist;
+    }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AlbumArtist {
+        @JacksonXmlProperty(isAttribute = true)
+        private String id;
+        @JacksonXmlProperty(isAttribute = true)
+        private String name;
     }
 }

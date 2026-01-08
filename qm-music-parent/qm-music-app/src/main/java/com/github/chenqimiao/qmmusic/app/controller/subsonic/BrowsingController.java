@@ -188,16 +188,22 @@ public class BrowsingController {
         SongResponse response = new SongResponse();
         SongResponse.Song song = modelMapper.map(complexSongs.getFirst(), SongResponse.Song.class);
         song.setArtistName(complexSongs.stream().findFirst().map(ComplexSongDTO::getArtistsName).orElse(""));
-        wrapOpenSubsonic(song);
+        
+        // Get album information for album artists
+        ComplexSongDTO complexSongDTO = complexSongs.getFirst();
+        AlbumDTO albumDTO = null;
+        if (complexSongDTO.getAlbumId() != null) {
+            albumDTO = albumService.queryAlbumByAlbumId(complexSongDTO.getAlbumId());
+        }
+        
+        wrapOpenSubsonic(song, albumDTO);
         response.setSong(song);
         return response;
     }
 
-    private void wrapOpenSubsonic(SongResponse.Song song) {
+    private void wrapOpenSubsonic(SongResponse.Song song, AlbumDTO albumDTO) {
         if (song == null) return;
         song.setDisplayArtist(song.getArtistName());
-        song.setDisplayAlbumArtist(song.getArtistName());
-        song.setAlbumArtists(song.getArtists());
         song.setSortName(song.getTitle());
 
         var artist = new SongResponse.Artist();
@@ -206,7 +212,19 @@ public class BrowsingController {
         song.setDisplayArtist(song.getArtistName());
         ArrayList<SongResponse.Artist> artists = Lists.newArrayList(artist);
         song.setArtists(artists);
-        song.setAlbumArtists(artists);
+        
+        // Set album artists from album information
+        if (albumDTO != null && albumDTO.getArtistId() != null) {
+            var albumArtist = new SongResponse.Artist();
+            albumArtist.setId(String.valueOf(albumDTO.getArtistId()));
+            albumArtist.setName(albumDTO.getArtistName());
+            song.setAlbumArtists(Lists.newArrayList(albumArtist));
+            song.setDisplayAlbumArtist(albumDTO.getArtistName());
+        } else {
+            // Fallback to song artist if no album info
+            song.setAlbumArtists(artists);
+            song.setDisplayAlbumArtist(song.getArtistName());
+        }
 
     }
 
@@ -247,7 +265,7 @@ public class BrowsingController {
         if (album != null && album.getSongs() != null) {
             album.getSongs().stream().filter(n -> album.getArtistId() != null).forEach(n -> {
                 n.setDisplayArtist(n.getArtistName());
-                n.setDisplayAlbumArtist(n.getArtistName());
+                n.setDisplayAlbumArtist(album.getArtistName());
                 n.setAlbumArtists(album.getArtists());
                 n.setSortName(n.getTitle());
                 var artist = new AlbumResponse.Artist();

@@ -102,11 +102,23 @@ public class AlbumSongController {
         albumList = albumList.stream().filter(n -> !Objects.equals(n.getId()
                 , UnknownConstant.UN_KNOWN_ALBUM_ID.toString())).toList();
         if (CollectionUtils.isNotEmpty(albumList)) {
+            this.wrapAlbumArtists(albumList);
             albumList2Response.setAlbumList2(AlbumList2Response.AlbumList.builder()
                     .albums(albumList).build());
         }
 
         return albumList2Response;
+    }
+
+    private void wrapAlbumArtists(List<AlbumList2Response.Album> albums) {
+        if (CollectionUtils.isEmpty(albums)) return;
+        albums.forEach(album -> {
+            var artist = new AlbumList2Response.AlbumArtist();
+            artist.setId(album.getArtistId());
+            artist.setName(album.getArtistName());
+            album.setAlbumArtists(Lists.newArrayList(artist));
+            album.setDisplayArtist(album.getArtistName());
+        });
     }
 
     private static final Type TYPE_STAR_LIST_ALBUM = new TypeToken<List<StarredResponse.Album>>() {}.getType();

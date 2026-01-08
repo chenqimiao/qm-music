@@ -187,6 +187,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                     .filter(StringUtils::isNotBlank)
                     .distinct()
                     .map(String::trim)
+                    .distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
                         artistDO.setId(sequence.nextId());
@@ -206,6 +207,7 @@ public class SubsonicMediaFetcherServiceImpl implements MediaFetcherService {
                     .filter(StringUtils::isNotBlank)
                     .distinct()
                     .map(String::trim)
+                    .distinct()
                     .map(n -> {
                         ArtistDO artistDO  = new ArtistDO();
                         artistDO.setId(sequence.nextId());

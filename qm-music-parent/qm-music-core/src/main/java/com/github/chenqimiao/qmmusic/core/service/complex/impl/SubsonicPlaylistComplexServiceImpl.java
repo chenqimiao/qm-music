@@ -126,10 +126,18 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest) {
         Long playlistId = updatePlaylistRequest.getPlaylistId();
         List<Long> songIdsToAdd = updatePlaylistRequest.getSongIdsToAdd();
+        List<Long> songIndexToRemove = updatePlaylistRequest.getSongIndexesToRemove();
+        List<Long> songIdsToRemove = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(songIndexToRemove)) {
+            List<PlaylistItemDO> playlistItemsToRemove = playlistItemRepository.queryByPlaylistIdAndIndexes(playlistId, songIndexToRemove);
+            songIdsToRemove.addAll(playlistItemsToRemove.stream().map(PlaylistItemDO::getSong_id).toList());
+            playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
+        }
+        // 先执行删除，再执行添加，避免位置索引冲突
         if (CollectionUtils.isNotEmpty(songIdsToAdd)) {
             songIdsToAdd.forEach(songId -> {
                 PlaylistItemDO playlistItem = new PlaylistItemDO();
@@ -138,15 +146,8 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
                 playlistItemRepository.save(playlistItem);
             });
         }
-        List<Long> songIndexToRemove = updatePlaylistRequest.getSongIndexesToRemove();
-        List<Long> songIdsToRemove = Lists.newArrayList();
-        if (CollectionUtils.isNotEmpty(songIndexToRemove)) {
-            List<PlaylistItemDO> playlistItemsToRemove = playlistItemRepository.queryByPlaylistIdAndIndexes(playlistId, songIndexToRemove);
-            songIdsToRemove.addAll(playlistItemsToRemove.stream().map(PlaylistItemDO::getSong_id).toList());
-            playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
-        }
 
-        int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIndexToRemove);
+        int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIdsToRemove);
 
         if (incrNum != 0) {
             playlistRepository.incrSongCount(playlistId, incrNum);
@@ -164,7 +165,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             paramMap.put("description", description);
             paramMap.put("visibility", visibility);
             Long coverArt = CollectionUtils.isNotEmpty(songIdsToAdd)
-                    ? songIdsToAdd.get(songIdsToAdd.size() - 1)
+                    ? songIdsToAdd.getLast()
                     : null;
             paramMap.put("coverArt", coverArt);
             playlistRepository.updateByPlaylistId(paramMap);

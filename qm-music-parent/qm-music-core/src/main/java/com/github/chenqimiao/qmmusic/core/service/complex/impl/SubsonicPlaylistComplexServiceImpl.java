@@ -137,7 +137,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             songIdsToRemove.addAll(playlistItemsToRemove.stream().map(PlaylistItemDO::getSong_id).toList());
             playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
         }
-        // 先执行删除，在执行添加，避免位置索引冲突
+        // 先执行删除，再执行添加，避免位置索引冲突
         if (CollectionUtils.isNotEmpty(songIdsToAdd)) {
             songIdsToAdd.forEach(songId -> {
                 PlaylistItemDO playlistItem = new PlaylistItemDO();

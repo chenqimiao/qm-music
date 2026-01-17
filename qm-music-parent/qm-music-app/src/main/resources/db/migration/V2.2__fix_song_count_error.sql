@@ -1,5 +1,5 @@
 -- Fix song_count in playlist table
-update set playlist p
+update playlist p
 set song_count = (
     select count(1)
     from playlist_item pi

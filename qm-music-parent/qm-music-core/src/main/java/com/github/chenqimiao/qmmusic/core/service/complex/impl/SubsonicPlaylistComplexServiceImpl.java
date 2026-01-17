@@ -126,7 +126,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest) {
         Long playlistId = updatePlaylistRequest.getPlaylistId();
         List<Long> songIdsToAdd = updatePlaylistRequest.getSongIdsToAdd();
@@ -146,7 +146,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             playlistItemRepository.deleteByPlaylistIdAndPositionIndex(playlistId, songIndexToRemove);
         }
 
-        int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIndexToRemove);
+        int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIdsToRemove);
 
         if (incrNum != 0) {
             playlistRepository.incrSongCount(playlistId, incrNum);
@@ -164,7 +164,7 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
             paramMap.put("description", description);
             paramMap.put("visibility", visibility);
             Long coverArt = CollectionUtils.isNotEmpty(songIdsToAdd)
-                    ? songIdsToAdd.get(songIdsToAdd.size() - 1)
+                    ? songIdsToAdd.getLast()
                     : null;
             paramMap.put("coverArt", coverArt);
             playlistRepository.updateByPlaylistId(paramMap);

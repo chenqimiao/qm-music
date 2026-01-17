@@ -78,21 +78,21 @@ public class SubsonicMediaAnnotationServiceImpl implements MediaAnnotationServic
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.SONG.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
-        songWithStars = songWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
+        songWithStars = songWithStars.stream().sorted((n1, n2) -> Long.compare(n2.getStarred(), n1.getStarred())).toList();
 
         albumWithStars.forEach(n -> {
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ALBUM.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
 
-        albumWithStars = albumWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
+        albumWithStars = albumWithStars.stream().sorted((n1, n2) -> Long.compare(n2.getStarred(), n1.getStarred())).toList();
 
         artistWithStars.forEach(n -> {
             UserStarDTO userStarDTO = userStarMap.get(this.buildUniqueKey(EnumUserStarType.ARTIST.getCode(), n.getId()));
             n.setStarred(userStarDTO.getGmtCreate());
         });
 
-        artistWithStars = artistWithStars.stream().sorted((n1, n2) -> (int)(n2.getStarred()- n1.getStarred())).toList();
+        artistWithStars = artistWithStars.stream().sorted((n1, n2) -> Long.compare(n2.getStarred(), n1.getStarred())).toList();
 
 
         return UserStarResourceDTO.builder().userId(userId)

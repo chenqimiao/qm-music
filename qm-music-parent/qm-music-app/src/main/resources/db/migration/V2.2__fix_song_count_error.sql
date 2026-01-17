@@ -5,3 +5,7 @@ set song_count = (
     from playlist_item pi
     where p.id = pi.playlist_id
 );
+
+
+
+CREATE INDEX idx_relation_id_type ON artist_relation(relation_id, type);

@@ -1,6 +1,7 @@
 package com.github.chenqimiao.qmmusic.core.service.complex;
 
 import com.github.chenqimiao.qmmusic.core.dto.AlbumDTO;
+import com.github.chenqimiao.qmmusic.core.dto.ComplexAlbumDTO;
 import com.github.chenqimiao.qmmusic.core.request.AlbumSearchRequest;
 
 import java.util.List;
@@ -18,4 +19,7 @@ public interface AlbumComplexService {
     List<AlbumDTO> getAlbumList2(AlbumSearchRequest albumSearchRequest);
 
     List<AlbumDTO> searchAlbumByArtist(Long artistId);
+
+    List<ComplexAlbumDTO> getComplexAlbumList2(AlbumSearchRequest albumSearchRequest);
+
 }

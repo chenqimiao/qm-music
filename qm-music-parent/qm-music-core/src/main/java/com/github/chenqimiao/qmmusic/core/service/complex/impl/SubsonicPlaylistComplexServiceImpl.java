@@ -139,12 +139,22 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
         }
         // 先执行删除，再执行添加，避免位置索引冲突
         if (CollectionUtils.isNotEmpty(songIdsToAdd)) {
+            // Filter out songs that already exist in the playlist
+            Set<Long> existingSongIds = playlistItemRepository.queryByPlaylistIds(Lists.newArrayList(playlistId))
+                    .stream()
+                    .map(PlaylistItemDO::getSong_id)
+                    .collect(Collectors.toSet());
+            songIdsToAdd = songIdsToAdd.stream()
+                    .filter(songId -> !existingSongIds.contains(songId)).distinct()
+                    .toList();
+
             songIdsToAdd.forEach(songId -> {
-                PlaylistItemDO playlistItem = new PlaylistItemDO();
-                playlistItem.setPlaylist_id(playlistId);
-                playlistItem.setSong_id(songId);
-                playlistItemRepository.save(playlistItem);
-            });
+                    PlaylistItemDO playlistItem = new PlaylistItemDO();
+                    playlistItem.setPlaylist_id(playlistId);
+                    playlistItem.setSong_id(songId);
+                    playlistItemRepository.save(playlistItem);
+                }
+            );
         }
 
         int incrNum = CollectionUtils.size(songIdsToAdd) - CollectionUtils.size(songIdsToRemove);

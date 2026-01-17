@@ -74,6 +74,15 @@ public class AlbumList2Response extends SubsonicResponse {
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;
 
+        // mock: 私人乐库喜欢才收藏
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        private Integer userRating = 5;
+
+        @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        // mock: 私人乐库喜欢才收藏
+        private Integer averageRating = 5;
 
     }
 }

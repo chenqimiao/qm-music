@@ -69,7 +69,7 @@ public class AlbumList2Response extends SubsonicResponse {
         private String genre;
 
 
-        @JacksonXmlProperty(isAttribute = true )
+        @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;

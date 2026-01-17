@@ -95,9 +95,38 @@ public class GetSimilarSongs2Response extends SubsonicResponse{
         private Integer userRating = 5;
 
         @JacksonXmlProperty(isAttribute = true)
+        @Builder.Default
+        // mock: 私人乐库喜欢才收藏
+        private Integer averageRating = 5;
+
+        @JacksonXmlProperty(isAttribute = true)
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // jackson xml or json format
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         private Date starred;
+
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer year;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private String genre;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer discNumber;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer track;
+
+        @JacksonXmlProperty(isAttribute = true, localName = "channelCount")
+        @JSONField(name = "channelCount")
+        private Integer channels;
+
+        // 采样率 (samplingRate)
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer samplingRate;
+
+        @JacksonXmlProperty(isAttribute = true)
+        private Integer bitDepth;
 
     }
 }

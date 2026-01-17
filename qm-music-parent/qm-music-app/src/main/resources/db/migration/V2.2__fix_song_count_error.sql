@@ -1,9 +1,9 @@
 -- Fix song_count in playlist table
-update playlist p
-set song_count = (
-    select count(1)
-    from playlist_item pi
-    where p.id = pi.playlist_id
+UPDATE playlist
+SET song_count = (
+    SELECT COUNT(*)
+    FROM playlist_item pi
+    WHERE pi.playlist_id = playlist.id
 );
 
 

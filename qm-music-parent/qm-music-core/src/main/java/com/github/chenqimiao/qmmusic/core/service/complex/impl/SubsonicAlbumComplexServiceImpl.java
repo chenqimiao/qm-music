@@ -70,7 +70,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
     private ModelMapper modelMapper;
 
 
-    private static final Type TYPE_STAR_LIST_COMPLEX_ALBUM = new TypeToken<List<ComplexAlbumDTO>>() {}.getType();
+    private static final Type TYPE_LIST_COMPLEX_ALBUM = new TypeToken<List<ComplexAlbumDTO>>() {}.getType();
 
 
 
@@ -193,7 +193,7 @@ public class SubsonicAlbumComplexServiceImpl implements AlbumComplexService {
             return Collections.emptyList();
         }
         List<Long> albumIds = albumList.stream().map(AlbumDTO::getId).toList();
-        List<ComplexAlbumDTO> complexAlbums = modelMapper.map(albumList, TYPE_STAR_LIST_COMPLEX_ALBUM);
+        List<ComplexAlbumDTO> complexAlbums = modelMapper.map(albumList, TYPE_LIST_COMPLEX_ALBUM);
         if (userId != null) {
             BatchStarInfoRequest request = BatchStarInfoRequest.builder().userId(userId)
                     .startType(EnumUserStarType.ALBUM)

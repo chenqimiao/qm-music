@@ -121,7 +121,7 @@ public class UserStarRepository {
     public List<UserStarDO> queryUserStarByUserId(Long userId) {
         var sql = """
                     select * from user_star where
-                    user_id = :user_id;
+                    user_id = :user_id order by id desc;
                 """;
         Map<String, Object> param = new HashMap<>();
         param.put("user_id", userId);

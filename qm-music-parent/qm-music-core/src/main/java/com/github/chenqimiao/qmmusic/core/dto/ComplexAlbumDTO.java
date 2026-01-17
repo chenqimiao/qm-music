@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Extends {@link AlbumDTO} with additional fields for star/favorite information.
+ *
  * @author Qimiao Chen
  * @date 2026/1/17 15:53
- * @description
+ * @description Extends AlbumDTO with star status and count for the album.
  */
 @Getter
 @Setter

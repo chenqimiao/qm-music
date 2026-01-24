@@ -24,7 +24,7 @@
 </details>
 
 <details open>
-<summary>🖥️ <a href="https://github.com/jeffvli/feishin">Feishin</a></summary>
+<summary>🖥️ <a href="https://github.com/jeffvli/feishin">feishin</a></summary>
 <div style="display: flex; flex-direction: column; gap: 10px;">
   <img src="docs/assets/feishin/index.jpg" width="100%" />
   <img src="docs/assets/feishin/song.png" width="100%" />

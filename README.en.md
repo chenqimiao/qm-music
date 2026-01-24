@@ -11,7 +11,7 @@
 <div style="display: flex; flex-direction: column; gap: 10px;">
   <img src="docs/assets/feishin/en/index.jpg" width="100%" />
   <img src="docs/assets/feishin/en/song.png" width="100%" />
-  <img src="docs/assets/feishin/en/song_relation.png" width="100%" />
+  <img src="docs/assets/feishin/en/song_relation_1.png" width="100%" />
 </div>
 </details>
 

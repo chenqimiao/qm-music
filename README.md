@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 **QM-Music** 是一个基于 Subsonic 构建的轻量级私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Amperfy/substreamer/feishin/music-assistant），让您随时随地安全访问个人音乐库。
-<details>
+<details open>
 <summary>📱 音流</summary>
 <div style="display: flex; flex-wrap: wrap; gap: 5px;">
   <img src="docs/assets/stream/433026310-55019589-116b-4afd-ba90-dc0b7a704520.png" width="24%" />
@@ -23,7 +23,7 @@
 </div>
 </details>
 
-<details>
+<details open>
 <summary>🖥️ <a href="https://github.com/jeffvli/feishin">Feishin</a></summary>
 <div style="display: flex; flex-direction: column; gap: 10px;">
   <img src="docs/assets/feishin/index.jpg" width="100%" />

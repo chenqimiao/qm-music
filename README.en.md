@@ -6,6 +6,14 @@
 
 **QM-Music** is a private cloud music server based on Subsonic, designed as a lightweight high-performance solution for music enthusiasts. Supports one-click Docker deployment and provides full compatibility with Subsonic ecosystem clients (e.g. StreamMusic/feishin/Amperfy/substreamer/music-assistant), enabling secure access to your personal music library anytime, anywhere.
 
+<details open>
+<summary>🖥️ <a href="https://github.com/jeffvli/feishin">feishin</a></summary>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+  <img src="docs/assets/feishin/en/index.jpg" width="100%" />
+  <img src="docs/assets/feishin/en/song.png" width="100%" />
+  <img src="docs/assets/feishin/en/song_relation.png" width="100%" />
+</div>
+</details>
 
 ## 🌟 Core Features
 

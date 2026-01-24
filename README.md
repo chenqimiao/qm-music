@@ -4,7 +4,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/qmmusic/qm-music)](https://hub.docker.com/r/qmmusic/qm-music)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**QM-Music** 是一个基于 Subsonic 构建的轻量级私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/Amperfy/substreamer/feishin/music-assistant），让您随时随地安全访问个人音乐库。
+**QM-Music** 是一个基于 Subsonic 构建的轻量级私有云音乐服务器，专为音乐爱好者设计的轻量级高性能解决方案。支持 Docker 一键部署，完美兼容 Subsonic 生态客户端（如音流/feishin/Amperfy/substreamer/music-assistant），让您随时随地安全访问个人音乐库。
 <details open>
 <summary>📱 音流</summary>
 <div style="display: flex; flex-wrap: wrap; gap: 5px;">

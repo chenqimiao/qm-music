@@ -18,9 +18,9 @@
   <img src="docs/assets/stream/IMG118.jpg" style="width:25%" />
   <img src="docs/assets/stream/IMG119.jpg" style="width:25%" />
   <img src="docs/assets/stream/IMG120.jpg" style="width:25%" />
-  <img src="docs/assets/feishin/index.jpg" style="width:25%" />
-  <img src="docs/assets/feishin/song.png" style="width:25%" />
-  <img src="docs/assets/feishin/song_relation.png" style="width:25%" />
+  <img src="docs/assets/feishin/index.jpg" style="width:75%" />
+  <img src="docs/assets/feishin/song.png" style="width:75%" />
+  <img src="docs/assets/feishin/song_relation.png" style="width:75%" />
 </div>
 
 

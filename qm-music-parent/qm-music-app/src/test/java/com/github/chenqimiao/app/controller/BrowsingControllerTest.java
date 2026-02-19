@@ -1,8 +1,9 @@
 package com.github.chenqimiao.app.controller;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicMusicFolder;
 import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
 import junit.framework.Assert;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-
-import java.util.Objects;
 
 /**
  * @author Qimiao Chen
@@ -38,13 +37,15 @@ public class BrowsingControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/getMusicFolders?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token, salt);
-        var response = restTemplate.getForEntity(url, SubsonicMusicFolder.class);
-        SubsonicMusicFolder body = response.getBody();
-        Assert.assertTrue("get music folders error" , body.getMusicFolders() != null && !body.getMusicFolders().isEmpty());
-        Assert.assertTrue("get music folders error" ,
-                Objects.equals(body.getMusicFolders().get(0).getName(), ServerConstants.FOLDER_NAME)
-                        && Objects.equals(body.getMusicFolders().get(0).getId(), ServerConstants.FOLDER_ID));
-
+        // 服务端使用 fastjson2 序列化，TestRestTemplate 用 Jackson 反序列化时字段无法正确填充
+        // 改用 String 接收后手动用 fastjson2 解析，确保与服务端序列化格式一致
+        String json = restTemplate.getForObject(url, String.class);
+        JSONObject jsonObj = JSONObject.parseObject(json);
+        JSONArray musicFolders = jsonObj.getJSONArray("musicFolders");
+        Assert.assertTrue("get music folders error", musicFolders != null && !musicFolders.isEmpty());
+        JSONObject first = musicFolders.getJSONObject(0);
+        Assert.assertEquals("get music folders id error", ServerConstants.FOLDER_ID, first.getLong("id"));
+        Assert.assertEquals("get music folders name error", ServerConstants.FOLDER_NAME, first.getString("name"));
     }
 
 

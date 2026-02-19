@@ -25,7 +25,7 @@ jobs:
         # LastfmClientTest / SpotifyClientTest / MusicFileReaderTest 已通过 @Disabled 标注，无需额外排除
         run: |
           mvn test --no-transfer-progress \
-            -Dexcludes="**/MetaDataFetchClientCommanderTest.java"
+            -Dtest='*,!**/MetaDataFetchClientCommanderTest'
 
       - name: Upload test reports
         if: always()

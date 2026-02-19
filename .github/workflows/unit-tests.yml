@@ -21,11 +21,13 @@ jobs:
 
       - name: Run tests
         working-directory: qm-music-parent
-        # MetaDataFetchClientCommanderTest 依赖外部 API，在 CI 中跳过
-        # LastfmClientTest / SpotifyClientTest / MusicFileReaderTest 已通过 @Disabled 标注，无需额外排除
+        # MetaDataFetchClientCommanderTest 依赖外部网络 API，CI 中排除
+        # LastfmClientTest / SpotifyClientTest / MusicFileReaderTest 已通过 @Disabled 标注，自动跳过
+        # -Dsurefire.failIfNoSpecifiedTests=false：防止无测试的子模块（dao/core）报错
         run: |
           mvn test --no-transfer-progress \
-            -Dtest='*,!**/MetaDataFetchClientCommanderTest'
+            -Dexcludes="**/MetaDataFetchClientCommanderTest.java" \
+            -Dsurefire.failIfNoSpecifiedTests=false
 
       - name: Upload test reports
         if: always()

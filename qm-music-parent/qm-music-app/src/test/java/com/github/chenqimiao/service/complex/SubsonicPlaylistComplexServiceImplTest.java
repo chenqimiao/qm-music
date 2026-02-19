@@ -131,7 +131,6 @@ public class SubsonicPlaylistComplexServiceImplTest {
         PlaylistDTO existingPlaylist = buildPlaylistDTO(playlistId, "Old Name", userId);
         PlaylistDTO updatedPlaylist = buildPlaylistDTO(playlistId, "New Name", userId);
 
-        when(playlistService.queryPlaylistByPlaylistId(playlistId)).thenReturn(existingPlaylist);
         when(playlistService.queryPlaylistByPlaylistId(playlistId))
             .thenReturn(existingPlaylist)
             .thenReturn(updatedPlaylist);

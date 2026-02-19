@@ -117,15 +117,16 @@ public class TransliteratorUtilsTest {
     void detectChineseType_SimplifiedChinese_ReturnsSimplified() {
         // "爱"是简体字
         TransliteratorUtils.ChineseType type = TransliteratorUtils.detectChineseType("爱");
-        // 简体检测
-        assertNotEquals(TransliteratorUtils.ChineseType.NOT_CHINESE, type);
+        // 简体检测：应明确为 SIMPLIFIED
+        assertEquals(TransliteratorUtils.ChineseType.SIMPLIFIED, type);
     }
 
     @Test
     void detectChineseType_TraditionalChinese_ReturnsTraditional() {
         // "愛"是繁体字
         TransliteratorUtils.ChineseType type = TransliteratorUtils.detectChineseType("愛");
-        assertNotEquals(TransliteratorUtils.ChineseType.NOT_CHINESE, type);
+        // 繁体检测：应明确为 TRADITIONAL
+        assertEquals(TransliteratorUtils.ChineseType.TRADITIONAL, type);
     }
 
     // ===== reverseSimpleTraditional 测试 =====

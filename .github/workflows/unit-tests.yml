@@ -1,6 +1,7 @@
 name: Unit Tests
 
 on:
+  push:
   pull_request:
 
 jobs:
@@ -21,14 +22,11 @@ jobs:
 
       - name: Run tests
         working-directory: qm-music-parent
-        # 排除依赖本地文件或外部 API 的测试（仅适合本地环境运行）
+        # MetaDataFetchClientCommanderTest 依赖外部 API，在 CI 中跳过
+        # LastfmClientTest / SpotifyClientTest / MusicFileReaderTest 已通过 @Disabled 标注，无需额外排除
         run: |
           mvn test --no-transfer-progress \
-            -Dexcludes="\
-              **/MusicFileReaderTest.java,\
-              **/MetaDataFetchClientCommanderTest.java,\
-              **/LastfmClientTest.java,\
-              **/SpotifyClientTest.java"
+            -Dexcludes="**/MetaDataFetchClientCommanderTest.java"
 
       - name: Upload test reports
         if: always()

@@ -5,6 +5,7 @@ import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.core.io.local.MusicFileReader;
 import com.github.chenqimiao.qmmusic.core.io.local.model.MusicMeta;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author Qimiao Chen
  * @since 2025/4/27
  **/
+@Disabled("依赖本地硬编码的音乐文件路径，仅在开发机上手动运行")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = QmMusicApplication.class)
 @Slf4j
 public class MusicFileReaderTest {

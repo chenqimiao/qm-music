@@ -95,7 +95,7 @@ public class TransliteratorUtilsTest {
     void toSimplified_AlreadySimplified_ReturnsSameOrEqual() {
         // 已是简体的字符应该保持不变（"中国"均为共通用字）
         String simplified = "中国";
-        assertNotNull(TransliteratorUtils.toSimplified(simplified));
+        assertEquals(simplified, TransliteratorUtils.toSimplified(simplified));
     }
 
     @Test

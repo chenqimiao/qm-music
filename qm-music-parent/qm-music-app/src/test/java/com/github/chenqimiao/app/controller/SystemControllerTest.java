@@ -65,11 +65,11 @@ public class SystemControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token + "123", salt);
-        // Jackson 无法正确反序列化 fastjson2 输出的 JSON（@JacksonXmlProperty 不适用于 JSON），
-        // 改用 String 接收后手动解析，避免字段默认值干扰断言
+        // DynamicResponseWrapper 将 JSON 响应包装为 {"subsonic-response":{...}}，
+        // 需从 subsonic-response 层取 status 字段
         String json = restTemplate.getForObject(url, String.class);
-        JSONObject jsonObj = JSONObject.parseObject(json);
-        Assert.assertEquals("auth ok with incorrect token and salt", ServerConstants.STATUS_FAIL, jsonObj.getString("status"));
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        Assert.assertEquals("auth ok with incorrect token and salt", ServerConstants.STATUS_FAIL, inner.getString("status"));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class SystemControllerTest {
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", "dasdongs", token, salt);
         String json = restTemplate.getForObject(url, String.class);
-        JSONObject jsonObj = JSONObject.parseObject(json);
-        Assert.assertEquals("auth failed with not exist username", ServerConstants.STATUS_FAIL, jsonObj.getString("status"));
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        Assert.assertEquals("auth failed with not exist username", ServerConstants.STATUS_FAIL, inner.getString("status"));
     }
 
 
@@ -110,8 +110,8 @@ public class SystemControllerTest {
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/getLicense?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token, salt);
         String json = restTemplate.getForObject(url, String.class);
-        JSONObject jsonObj = JSONObject.parseObject(json);
-        JSONObject license = jsonObj.getJSONObject("license");
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        JSONObject license = inner.getJSONObject("license");
         Assert.assertNotNull("get license is null", license);
         Assert.assertEquals("get license error", Boolean.TRUE, license.getBoolean("valid"));
         Assert.assertTrue("get license email is null or empty",

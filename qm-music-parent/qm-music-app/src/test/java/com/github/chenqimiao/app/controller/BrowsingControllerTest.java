@@ -37,11 +37,10 @@ public class BrowsingControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/getMusicFolders?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token, salt);
-        // 服务端使用 fastjson2 序列化，TestRestTemplate 用 Jackson 反序列化时字段无法正确填充
-        // 改用 String 接收后手动用 fastjson2 解析，确保与服务端序列化格式一致
+        // DynamicResponseWrapper 将 JSON 包装为 {"subsonic-response":{...}}，需先取内层
         String json = restTemplate.getForObject(url, String.class);
-        JSONObject jsonObj = JSONObject.parseObject(json);
-        JSONArray musicFolders = jsonObj.getJSONArray("musicFolders");
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        JSONArray musicFolders = inner.getJSONArray("musicFolders");
         Assert.assertTrue("get music folders error", musicFolders != null && !musicFolders.isEmpty());
         JSONObject first = musicFolders.getJSONObject(0);
         Assert.assertEquals("get music folders id error", ServerConstants.FOLDER_ID, first.getLong("id"));

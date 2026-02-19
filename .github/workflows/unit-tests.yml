@@ -19,15 +19,19 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Create runtime directories
+        # dev-db/ 和 music_dir/ 在 .gitignore 中不入库，但 SQLite 建文件时目录必须存在
+        run: |
+          mkdir -p qm-music-parent/dev-db
+          mkdir -p qm-music-parent/music_dir
+
       - name: Run tests
         working-directory: qm-music-parent
-        # test profile：使用内存 SQLite，避免依赖 dev-db/ 目录（该目录在 .gitignore 中，CI 不存在）
         # MetaDataFetchClientCommanderTest 依赖外部网络 API，CI 中排除
         # LastfmClientTest / SpotifyClientTest / MusicFileReaderTest 已通过 @Disabled 标注，自动跳过
         # -Dsurefire.failIfNoSpecifiedTests=false：防止无测试的子模块（dao/core）报错
         run: |
           mvn test --no-transfer-progress \
-            -Dspring.profiles.active=test \
             -Dexcludes="**/MetaDataFetchClientCommanderTest.java" \
             -Dsurefire.failIfNoSpecifiedTests=false
 

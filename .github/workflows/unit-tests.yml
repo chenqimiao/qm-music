@@ -1,0 +1,40 @@
+name: Unit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Run Unit Tests (Java 25)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run tests
+        working-directory: qm-music-parent
+        # 排除依赖本地文件或外部 API 的测试（仅适合本地环境运行）
+        run: |
+          mvn test --no-transfer-progress \
+            -Dexcludes="\
+              **/MusicFileReaderTest.java,\
+              **/MetaDataFetchClientCommanderTest.java,\
+              **/LastfmClientTest.java,\
+              **/SpotifyClientTest.java"
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: qm-music-parent/qm-music-app/target/surefire-reports/
+          retention-days: 7

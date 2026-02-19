@@ -1,8 +1,8 @@
 package com.github.chenqimiao.app.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicLicenseResponse;
 import com.github.chenqimiao.qmmusic.app.response.subsonic.SubsonicPong;
 import com.github.chenqimiao.qmmusic.core.util.MD5Utils;
 import junit.framework.Assert;
@@ -51,8 +51,13 @@ public class SystemControllerTest {
         Assert.assertEquals("auth failed with correct token and salt" ,body.getVersion(), ServerConstants.VERSION);
 
         var response1 = restTemplate.getForEntity(url, String.class);
-        String expectedStr = "<subsonic-response xmlns=\"" + ServerConstants.XMLNS + "\" status=\"" + ServerConstants.STATUS_OK + "\" version=\"" + ServerConstants.VERSION+ "\"/>";
-        Assert.assertEquals("auth failed with correct token and salt" ,response1.getBody(), expectedStr);
+        // SubsonicPong 继承 OpenSubsonicResponse，XML 含 serverVersion 和 openSubsonic 属性
+        // 注意：Jackson XML 不序列化 localName="type" 的属性，故期望串中不含 type
+        String expectedStr = "<subsonic-response xmlns=\"" + ServerConstants.XMLNS + "\" status=\"" + ServerConstants.STATUS_OK
+                + "\" version=\"" + ServerConstants.VERSION
+                + "\" serverVersion=\"" + ServerConstants.OPEN_SUBSONIC_SERVER_VERSION
+                + "\" openSubsonic=\"true\"/>";
+        Assert.assertEquals("auth failed with correct token and salt", expectedStr, response1.getBody());
 
     }
 
@@ -61,9 +66,11 @@ public class SystemControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token + "123", salt);
-        var response = restTemplate.getForEntity(url, SubsonicPong.class);
-        SubsonicPong body = response.getBody();
-        Assert.assertEquals("auth ok with incorrect token and salt" ,body.getStatus(), ServerConstants.STATUS_FAIL);
+        // DynamicResponseWrapper 将 JSON 响应包装为 {"subsonic-response":{...}}，
+        // 需从 subsonic-response 层取 status 字段
+        String json = restTemplate.getForObject(url, String.class);
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        Assert.assertEquals("auth ok with incorrect token and salt", ServerConstants.STATUS_FAIL, inner.getString("status"));
     }
 
     @Test
@@ -82,9 +89,9 @@ public class SystemControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/ping.view?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", "dasdongs", token, salt);
-        var response = restTemplate.getForEntity(url, SubsonicPong.class);
-        SubsonicPong body = response.getBody();
-        Assert.assertEquals("auth failed with not exist username" ,body.getStatus(), ServerConstants.STATUS_FAIL);
+        String json = restTemplate.getForObject(url, String.class);
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        Assert.assertEquals("auth failed with not exist username", ServerConstants.STATUS_FAIL, inner.getString("status"));
     }
 
 
@@ -103,10 +110,12 @@ public class SystemControllerTest {
         String salt = "my_salt";
         String token = MD5Utils.md5(defaultPassword + salt);
         String url = String.format("/rest/getLicense?u=%s&t=%s&s=%s&v=1.12.0&c=myapp&f=json", defaultUserName, token, salt);
-        var response = restTemplate.getForEntity(url, SubsonicLicenseResponse.class);
-        SubsonicLicenseResponse body = response.getBody();
-        Assert.assertEquals("get license error" , body.getLicense().getValid(), Boolean.TRUE);
-        Assert.assertTrue("get license email is null or empty" , body.getLicense().getEmail() != null && !body.getLicense().getEmail().isEmpty());
-
+        String json = restTemplate.getForObject(url, String.class);
+        JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
+        JSONObject license = inner.getJSONObject("license");
+        Assert.assertNotNull("get license is null", license);
+        Assert.assertEquals("get license error", Boolean.TRUE, license.getBoolean("valid"));
+        Assert.assertTrue("get license email is null or empty",
+                license.getString("email") != null && !license.getString("email").isEmpty());
     }
 }

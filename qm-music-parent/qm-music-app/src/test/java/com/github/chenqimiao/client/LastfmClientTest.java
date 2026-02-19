@@ -5,6 +5,7 @@ import com.github.chenqimiao.qmmusic.core.third.lastfm.LastfmClient;
 import com.github.chenqimiao.qmmusic.core.third.lastfm.model.Artist;
 import com.github.chenqimiao.qmmusic.core.third.lastfm.model.Track;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author Qimiao Chen
  * @since 2025/4/15 13:41
  **/
+@Disabled("需要 qm.lastfm.enable=true 及有效的 Last.fm API Key 才能运行")
 @SpringBootTest(classes = QmMusicApplication.class)
 @Rollback
 @Slf4j

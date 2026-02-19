@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.core.third.spotify.SpotifyClient;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
  * @author Qimiao Chen
  * @since 2025/4/15 10:22
  **/
+@Disabled("需要 qm.spotify.enable=true 及有效的 Spotify client_id/client_secret 才能运行")
 @SpringBootTest(classes = QmMusicApplication.class)
 @Rollback
 @Slf4j

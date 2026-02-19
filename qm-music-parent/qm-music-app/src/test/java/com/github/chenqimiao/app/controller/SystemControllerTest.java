@@ -51,11 +51,11 @@ public class SystemControllerTest {
         Assert.assertEquals("auth failed with correct token and salt" ,body.getVersion(), ServerConstants.VERSION);
 
         var response1 = restTemplate.getForEntity(url, String.class);
-        // SubsonicPong 继承 OpenSubsonicResponse，XML 含 serverVersion 和 openSubsonic 属性
+        // SubsonicPong 继承 OpenSubsonicResponse，XML 含 serverVersion、openSubsonic 和 type 属性
         String expectedStr = "<subsonic-response xmlns=\"" + ServerConstants.XMLNS + "\" status=\"" + ServerConstants.STATUS_OK
                 + "\" version=\"" + ServerConstants.VERSION
                 + "\" serverVersion=\"" + ServerConstants.OPEN_SUBSONIC_SERVER_VERSION
-                + "\" openSubsonic=\"true\"/>";
+                + "\" openSubsonic=\"true\" type=\"" + ServerConstants.OPEN_SUBSONIC_TYPE + "\"/>";
         Assert.assertEquals("auth failed with correct token and salt", expectedStr, response1.getBody());
 
     }

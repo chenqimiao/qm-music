@@ -65,7 +65,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(subsonicAuthInterceptor)
                 .addPathPatterns("/rest/**")
-                .excludePathPatterns("/rest/getOpenSubsonicExtensions", "/rest/getOpenSubsonicExtensions.*");
+                .excludePathPatterns("/rest/getOpenSubsonicExtensions", "/rest/getOpenSubsonicExtensions.view");
     }
 
 

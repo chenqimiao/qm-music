@@ -4,11 +4,14 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.chenqimiao.qmmusic.app.QmMusicApplication;
 import com.github.chenqimiao.qmmusic.app.constant.ServerConstants;
-import junit.framework.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = QmMusicApplication.class)
 public class OpenSubsonicExtSystemControllerTest {
@@ -20,18 +23,21 @@ public class OpenSubsonicExtSystemControllerTest {
     void getOpenSubsonicExtensionsWithoutAuthReturnJson() {
         String json = restTemplate.getForObject("/rest/getOpenSubsonicExtensions?f=json", String.class);
         JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
-        Assert.assertEquals(ServerConstants.STATUS_OK, inner.getString("status"));
-        Assert.assertEquals(Boolean.TRUE, inner.getBoolean("openSubsonic"));
+        assertEquals(ServerConstants.STATUS_OK, inner.getString("status"));
+        assertEquals(Boolean.TRUE, inner.getBoolean("openSubsonic"));
         JSONArray extensions = inner.getJSONArray("openSubsonicExtensions");
-        Assert.assertNotNull("openSubsonicExtensions should not be null", extensions);
-        Assert.assertFalse("openSubsonicExtensions should not be empty", extensions.isEmpty());
+        assertNotNull(extensions, "openSubsonicExtensions should not be null");
+        assertFalse(extensions.isEmpty(), "openSubsonicExtensions should not be empty");
     }
 
     @Test
     void getOpenSubsonicExtensionsViewWithoutAuthReturnJson() {
         String json = restTemplate.getForObject("/rest/getOpenSubsonicExtensions.view?f=json", String.class);
         JSONObject inner = JSONObject.parseObject(json).getJSONObject(ServerConstants.SUBSONIC_RESPONSE_ROOT_WRAP);
-        Assert.assertEquals(ServerConstants.STATUS_OK, inner.getString("status"));
-        Assert.assertEquals(Boolean.TRUE, inner.getBoolean("openSubsonic"));
+        assertEquals(ServerConstants.STATUS_OK, inner.getString("status"));
+        assertEquals(Boolean.TRUE, inner.getBoolean("openSubsonic"));
+        JSONArray extensions = inner.getJSONArray("openSubsonicExtensions");
+        assertNotNull(extensions, "openSubsonicExtensions should not be null");
+        assertFalse(extensions.isEmpty(), "openSubsonicExtensions should not be empty");
     }
 }

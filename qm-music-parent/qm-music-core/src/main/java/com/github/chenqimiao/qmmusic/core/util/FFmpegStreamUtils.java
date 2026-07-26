@@ -10,6 +10,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -98,23 +100,46 @@ public abstract class FFmpegStreamUtils {
     public static InputStream streamByOutFFmpeg(String inputPath, Integer maxBitRate,
                                             String outputFormat) {
 
-        if (maxBitRate == null) {
-            return streamByOutFFmpeg(inputPath, outputFormat);
+        return streamByOutFFmpeg(inputPath, maxBitRate, outputFormat, null);
+
+    }
+
+    /**
+     * 启动转码并实时获取流
+     * @param inputPath 输入文件路径
+     * @param maxBitRate 目标比特率（kbps），为空则不限制
+     * @param outputFormat 目标格式（如 "mp3", "aac"）
+     * @param timeOffset 起始偏移（秒），为空或小于等于 0 则从头开始
+     */
+    @SneakyThrows
+    public static InputStream streamByOutFFmpeg(String inputPath, Integer maxBitRate,
+                                                String outputFormat, Integer timeOffset) {
+
+        List<String> command = new ArrayList<>();
+        command.add(FFMPEG);
+        if (timeOffset != null && timeOffset > NumberUtils.INTEGER_ZERO) {
+            // -ss 放在 -i 之前，按关键帧快速定位
+            command.add("-ss");
+            command.add(String.valueOf(timeOffset));
         }
+        command.add("-i");
+        command.add(inputPath);       // 输入文件
+        command.add("-vn");           // 禁用视频
+        command.add("-f");
+        command.add(outputFormat);    // 强制输出格式
+        command.add("-codec:a");
+        command.add(EnumAudioCodec.byFormat(outputFormat).getFirst().getName());
+        if (maxBitRate != null) {
+            command.add("-b:a");
+            command.add(maxBitRate + "k");  // 比特率
+        }
+        command.add("-threads");
+        command.add("0");             // 自动线程数
+        command.add("-loglevel");
+        command.add("error");         // 仅显示错误日志
+        command.add("-");             // 输出到标准输出
 
-        ProcessBuilder pb = new ProcessBuilder(
-                FFMPEG,
-                "-i", inputPath,       // 输入文件
-                "-vn",                // 禁用视频
-                "-f", outputFormat,          // 强制输出格式为MP3
-                "-codec:a", EnumAudioCodec.byFormat(outputFormat).getFirst().getName(),
-                "-b:a", maxBitRate + "k",       // 比特率
-                "-threads", "0",      // 自动线程数
-                "-loglevel", "error", // 仅显示错误日志
-                "-"                   // 输出到标准输出
-        );
-
-        return exec(pb, inputPath);
+        return exec(new ProcessBuilder(command), inputPath);
 
     }
 
@@ -122,18 +147,8 @@ public abstract class FFmpegStreamUtils {
     @SneakyThrows
     public static InputStream streamByOutFFmpeg(String inputPath,
                                                 String outputFormat) {
-        ProcessBuilder pb = new ProcessBuilder(
-                FFMPEG,
-                "-i", inputPath,       // 输入文件
-                "-vn",                // 禁用视频
-                "-f", outputFormat,          // 强制输出格式为MP3
-                "-codec:a", EnumAudioCodec.byFormat(outputFormat).getFirst().getName(),
-                "-threads", "0",      // 自动线程数
-                "-loglevel", "error", // 仅显示错误日志
-                "-"                   // 输出到标准输出
-        );
 
-        return exec(pb, inputPath);
+        return streamByOutFFmpeg(inputPath, null, outputFormat, null);
 
     }
 

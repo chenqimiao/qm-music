@@ -90,9 +90,10 @@ public class MediaRetrievalController {
     public ResponseEntity<InputStreamResource> stream(@RequestParam("id") Long songId,
                                                       Integer maxBitRate,
                                                       @RequestParam(defaultValue = "mp3")String format,
-                                                      @RequestParam(defaultValue = "false") Boolean estimateContentLength) {
+                                                      @RequestParam(defaultValue = "false") Boolean estimateContentLength,
+                                                      @RequestParam(required = false) Integer timeOffset) {
 
-        SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength);
+        SongStreamDTO songStream = mediaRetrievalService.getSongStream(songId, maxBitRate, format, estimateContentLength, timeOffset);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf(songStream.getMimeType()));
         if (songStream.getSize() != null) {

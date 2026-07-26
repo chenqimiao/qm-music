@@ -530,7 +530,8 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
     public SongStreamDTO getSongStream(Long songId,
                                        Integer maxBitRate,
                                        String format,
-                                       Boolean estimateContentLength) {
+                                       Boolean estimateContentLength,
+                                       Integer timeOffset) {
         SongDTO song = songService.queryBySongId(songId);
         if (song == null) {
             throw new ResourceDisappearException("song do not exist");
@@ -539,9 +540,13 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
         String contentType = song.getContentType();
         Integer bitRate = song.getBitRate();
 
+        // opensubsonic transcodeOffset 扩展：指定了 timeOffset 时必须走转码，从偏移处开始输出
+        boolean seekRequested = timeOffset != null && timeOffset > NumberUtils.INTEGER_ZERO;
+
         if (!Boolean.TRUE.equals(ffmpegEnable) || "raw".equals(format)  || StringUtils.isBlank(format)
                 ||  CollectionUtils.size(EnumAudioCodec.byFormat(format)) == NumberUtils.INTEGER_ZERO
-                || ( Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
+                || ( !seekRequested
+                        && Objects.equals(contentType, AudioContentTypeDetector.mapFormatToMimeType(format))
                         && ((Objects.equals(bitRate, maxBitRate)) || maxBitRate == null
                                     || Objects.equals(maxBitRate, NumberUtils.INTEGER_ZERO) || bitRate == null || maxBitRate > bitRate) )
             ) {
@@ -558,14 +563,18 @@ public class SubsonicMediaRetrievalServiceImpl implements MediaRetrievalService 
                 && song.getDuration() != null
                 && maxBitRate != null ) {
             long metadataSize = MusicFileReader.calMetadataBytesSize(song.getFilePath());
-            targetSize = FFmpegStreamUtils.estimateSize(song.getDuration(), maxBitRate, metadataSize);
+            double remainingDuration = seekRequested
+                    ? Math.max(song.getDuration() - timeOffset, NumberUtils.INTEGER_ZERO)
+                    : song.getDuration();
+            targetSize = FFmpegStreamUtils.estimateSize(remainingDuration, maxBitRate, metadataSize);
         }
 
         // 转码
         return SongStreamDTO.builder()
                 .songStream(FFmpegStreamUtils.streamByOutFFmpeg(filePath
                         , maxBitRate
-                        , format))
+                        , format
+                        , timeOffset))
                 .filePath(filePath)
                 .size(targetSize)
                 .mimeType(AudioContentTypeDetector.mapFormatToMimeType(format))

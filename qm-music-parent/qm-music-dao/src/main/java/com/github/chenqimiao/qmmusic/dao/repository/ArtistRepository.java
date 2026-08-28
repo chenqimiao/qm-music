@@ -17,6 +17,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Qimiao Chen
@@ -125,7 +128,11 @@ public class ArtistRepository {
         }
         this.save(artistList);
         List<String> names = artistList.stream().map(ArtistDO::getName).toList();
-        return this.queryByUniqueKeys(names);
+        // in 查询的返回顺序是索引序，需按入参（标签书写序）重排，首位即主艺术家
+        Map<String, ArtistDO> artistMap = this.queryByUniqueKeys(names).stream()
+                .collect(Collectors.toMap(ArtistDO::getName, Function.identity(), (a, b) -> a));
+        return names.stream().map(artistMap::get).filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public List<Long> findAllArtistIds() {

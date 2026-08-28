@@ -83,13 +83,13 @@ public class AlbumRepository {
         return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER_ALBUM_ITEM);
     }
 
-    public AlbumDO queryByUniqueKey(String albumName) {
+    public AlbumDO queryByUniqueKey(String albumName, Long artistId) {
         String sql = """
-                        select * from album where `title` = ?
+                        select * from album where `title` = ? and `artist_id` = ?
                      """;
         try {
             return jdbcTemplate.queryForObject(sql, ROW_MAPPER_ALBUM_ITEM,
-                    albumName);
+                    albumName, artistId);
         }catch (EmptyResultDataAccessException e){
             return null;
         }
@@ -138,7 +138,7 @@ public class AlbumRepository {
 
         this.save(albumDO);
 
-        return this.queryByUniqueKey(albumDO.getTitle());
+        return this.queryByUniqueKey(albumDO.getTitle(), albumDO.getArtist_id());
     }
 
     public List<Long> queryAllAlbumId() {

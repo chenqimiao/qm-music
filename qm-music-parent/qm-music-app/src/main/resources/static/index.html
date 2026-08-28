@@ -462,13 +462,17 @@
 <script>
     // 会话失效（如修改密码后旧 token 失效）时，自动清理本地登录态并跳转登录页
     let redirectingToLogin = false;
+    function redirectToLogin() {
+        if (redirectingToLogin) return;
+        redirectingToLogin = true;
+        ['u', 'v', 'c', 't', 's', 'f'].forEach(key => localStorage.removeItem(key));
+        alert('登录状态已失效，请重新登录');
+        window.location.href = 'login.html';
+    }
     axios.interceptors.response.use(response => {
         const error = response.data?.['subsonic-response']?.error;
-        if (error && String(error.code) === '40' && !redirectingToLogin) {
-            redirectingToLogin = true;
-            ['u', 'v', 'c', 't', 's', 'f'].forEach(key => localStorage.removeItem(key));
-            alert('登录状态已失效，请重新登录');
-            window.location.href = 'login.html';
+        if (error && String(error.code) === '40') {
+            redirectToLogin();
         }
         if (redirectingToLogin) {
             // 页面即将跳转，挂起后续响应，避免调用方 catch 再次弹窗
@@ -524,8 +528,7 @@
             verifyLogin() {
                 const requiredKeys = ['u', 'v', 'c','t','s'];
                 if (requiredKeys.some(key => !localStorage.getItem(key))) {
-                    alert('登录状态已失效，请重新登录');
-                    window.location.href = 'login.html';
+                    redirectToLogin();
                     return false;
                 }
                 return true;
@@ -592,8 +595,7 @@
             },
             handleMissingParam(key) {
                 console.error(`缺失参数: ${key}`);
-                alert('系统参数错误，请重新登录');
-                window.location.href = 'login.html';
+                redirectToLogin();
             },
             encryptPassword(pwd) {
                 const hex = Array.from(new TextEncoder().encode(pwd))

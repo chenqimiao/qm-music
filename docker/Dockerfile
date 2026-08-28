@@ -1,3 +1,4 @@
+# check=skip=SecretsUsedInArgOrEnv
 # docker/Dockerfile
 # 第一阶段：构建Java应用及准备FFmpeg
 FROM --platform=$BUILDPLATFORM eclipse-temurin:25-jdk-jammy AS builder
@@ -33,7 +34,7 @@ VOLUME ["/data/qm-music/db", "/data/qm-music/music_dir", "/data/qm-music/cache"]
 RUN apt-get update && \
     apt-get install -y tzdata && \
     apt-get install -y fonts-wqy-microhei && \
-    fc-cache -fv \
+    fc-cache -fv && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

@@ -23,11 +23,11 @@ INSERT INTO album_new (id, title, artist_id, release_year, genre, song_count, du
                        artist_name, cover_art, gmt_create, gmt_modify,
                        first_letter_title, first_letter_artist_name)
 SELECT id, title, COALESCE(artist_id, 2026), release_year, genre, song_count, duration,
-       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND artist_name IS NULL
+       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND TRIM(COALESCE(artist_name, '')) = ''
             THEN 'Unknown Artist' ELSE artist_name END,
        cover_art, gmt_create, gmt_modify,
        first_letter_title,
-       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND artist_name IS NULL
+       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND TRIM(COALESCE(artist_name, '')) = ''
             THEN 'U' ELSE first_letter_artist_name END
 FROM album;
 
@@ -41,7 +41,7 @@ CREATE INDEX idx_album_genre_year ON album(genre, release_year);
 CREATE INDEX idx_album_release_year ON album(release_year);
 CREATE INDEX idx_album_gmt_create ON album(gmt_create);
 
--- 触发器与 V1.2__change_trigger.sql 统一的实现保持一致（带毫秒的mei shi本地时间字符串）
+-- 触发器与 V1.2__change_trigger.sql 统一的实现保持一致（带毫秒的本地时间字符串）
 CREATE TRIGGER IF NOT EXISTS update_album_gmt_modify
     AFTER UPDATE ON album
 BEGIN

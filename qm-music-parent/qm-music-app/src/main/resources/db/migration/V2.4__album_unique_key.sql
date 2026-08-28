@@ -16,13 +16,19 @@ CREATE TABLE album_new (
                        first_letter_artist_name VARCHAR(1)
 );
 
--- 旧约束保证 title 全局唯一，(title, artist_id) 必然不冲突；COALESCE 防御手工改库产生的 NULL
+-- 旧约束保证 title 全局唯一，(title, artist_id) 必然不冲突
+-- artist_id 为 NULL 的历史行（v2.1.3 之前无回退逻辑的扫描产物）统一归到 Unknown Artist(2026)，
+-- artist_name/first_letter_artist_name 同步补齐，保持 id 与 name 成对一致
 INSERT INTO album_new (id, title, artist_id, release_year, genre, song_count, duration,
                        artist_name, cover_art, gmt_create, gmt_modify,
                        first_letter_title, first_letter_artist_name)
 SELECT id, title, COALESCE(artist_id, 2026), release_year, genre, song_count, duration,
-       artist_name, cover_art, gmt_create, gmt_modify,
-       first_letter_title, first_letter_artist_name
+       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND artist_name IS NULL
+            THEN 'Unknown Artist' ELSE artist_name END,
+       cover_art, gmt_create, gmt_modify,
+       first_letter_title,
+       CASE WHEN COALESCE(artist_id, 2026) = 2026 AND artist_name IS NULL
+            THEN 'U' ELSE first_letter_artist_name END
 FROM album;
 
 DROP TABLE album;
@@ -35,7 +41,7 @@ CREATE INDEX idx_album_genre_year ON album(genre, release_year);
 CREATE INDEX idx_album_release_year ON album(release_year);
 CREATE INDEX idx_album_gmt_create ON album(gmt_create);
 
--- 触发器与 V1.2__change_trigger.sql 统一的实现保持一致（带毫秒的本地时间字符串）
+-- 触发器与 V1.2__change_trigger.sql 统一的实现保持一致（带毫秒的mei shi本地时间字符串）
 CREATE TRIGGER IF NOT EXISTS update_album_gmt_modify
     AFTER UPDATE ON album
 BEGIN

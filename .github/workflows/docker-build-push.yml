@@ -47,6 +47,8 @@ jobs:
           file: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
+          # 阿里云 ACR 不支持 OCI attestation manifest（application/vnd.oci.empty.v1+json）
+          provenance: false
           tags: |
             ${{ env.REGISTRY_ALIYUN }}/${{ secrets.ALIYUN_NAME_SPACE }}/${{ env.IMAGE_NAME }}:${{ inputs.image_version }}
 
@@ -65,5 +67,7 @@ jobs:
           file: ./docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
+          # 与 Aliyun 步骤保持产物一致
+          provenance: false
           tags: |
             ${{ env.DOCKER_HUB_NAME_SPACE }}/${{ env.IMAGE_NAME }}:${{ inputs.image_version }}

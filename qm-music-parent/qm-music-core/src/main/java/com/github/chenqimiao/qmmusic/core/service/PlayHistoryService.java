@@ -20,4 +20,9 @@ public interface PlayHistoryService {
     void cleanPlayHistory(Integer month);
 
     List<PlayHistoryDTO> queryUserSpecifiedSongPlayHistoryList(Long userId, List<Long> songIds);
+
+    /**
+     * 删除用户的全部播放历史（删除用户时清理）
+     */
+    void deleteByUserId(Long userId);
 }

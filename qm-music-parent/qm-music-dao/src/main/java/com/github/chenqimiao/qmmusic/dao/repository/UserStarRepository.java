@@ -118,6 +118,15 @@ public class UserStarRepository {
 
     }
 
+    public int delByUserId(Long userId) {
+        var sql = """
+                    delete from user_star where user_id = :user_id;
+                """;
+        Map<String, Object> param = new HashMap<>();
+        param.put("user_id", userId);
+        return namedParameterJdbcTemplate.update(sql, param);
+    }
+
     public List<UserStarDO> queryUserStarByUserId(Long userId) {
         var sql = """
                     select * from user_star where

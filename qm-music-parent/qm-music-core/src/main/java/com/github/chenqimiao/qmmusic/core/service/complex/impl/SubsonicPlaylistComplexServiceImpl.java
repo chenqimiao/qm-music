@@ -7,6 +7,7 @@ import com.github.chenqimiao.qmmusic.core.service.SongService;
 import com.github.chenqimiao.qmmusic.core.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.qmmusic.core.service.complex.SongComplexService;
 import com.github.chenqimiao.qmmusic.dao.DO.PlaylistItemDO;
+import com.github.chenqimiao.qmmusic.dao.DO.PlaylistDO;
 import com.github.chenqimiao.qmmusic.dao.repository.PlaylistItemRepository;
 import com.github.chenqimiao.qmmusic.dao.repository.PlaylistRepository;
 import com.google.common.collect.Lists;
@@ -123,6 +124,18 @@ public class SubsonicPlaylistComplexServiceImpl implements PlaylistComplexServic
     public void deletePlaylistByPlaylistId(Long playlistId) {
         playlistItemRepository.deleteByPlaylistId(playlistId);
         playlistRepository.delById(playlistId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePlaylistsByUserId(Long userId) {
+        List<Long> playlistIds = playlistRepository.getPlaylists(userId).stream()
+                .map(PlaylistDO::getId).toList();
+        if (CollectionUtils.isEmpty(playlistIds)) {
+            return;
+        }
+        playlistItemRepository.deleteByPlaylistIds(playlistIds);
+        playlistRepository.delByUserId(userId);
     }
 
     @Override

@@ -41,6 +41,17 @@ public class PlayHistoryRepository {
         return namedParameterJdbcTemplate.update(sql, beanPropertySqlParameterSource);
     }
 
+    public int deleteByUserId(Long userId) {
+        var sql = """
+                   delete from play_history where user_id = :userId
+                """;
+
+        Map<String,Object> params = Maps.newHashMapWithExpectedSize(NumberUtils.INTEGER_ONE);
+        params.put("userId", userId);
+
+        return namedParameterJdbcTemplate.update(sql, params);
+    }
+
     public int deleteBySongIds(List<Long> songIds) {
         var sql = """
                    delete from play_history where song_id in (:songIds)

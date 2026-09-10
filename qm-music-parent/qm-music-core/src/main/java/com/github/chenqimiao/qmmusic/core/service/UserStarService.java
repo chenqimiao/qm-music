@@ -31,4 +31,9 @@ public interface UserStarService {
 
      List<UserStarDTO> queryUserStarByUserIdAndType(Long userId, EnumUserStarType type);
 
+     /**
+      * 删除用户的全部收藏（删除用户时清理）
+      */
+     void deleteByUserId(Long userId);
+
 }

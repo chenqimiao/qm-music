@@ -73,6 +73,17 @@ public class PlaylistItemRepository {
         return namedParameterJdbcTemplate.update(sql, paramMap);
     }
 
+    public int deleteByPlaylistIds(List<Long> playlistIds) {
+        String sql = """
+                    delete from playlist_item where playlist_id in (:playlistIds)
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("playlistIds", playlistIds);
+
+        return namedParameterJdbcTemplate.update(sql, paramMap);
+    }
+
     public int deleteByPlaylistIdAndSortOrders(Long playlistId, List<Integer> sortOrders) {
         String sql = """
                 

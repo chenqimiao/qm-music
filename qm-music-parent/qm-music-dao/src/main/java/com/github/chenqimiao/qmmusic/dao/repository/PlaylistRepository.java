@@ -60,6 +60,17 @@ public class PlaylistRepository {
         return namedParameterJdbcTemplate.update(sql, paramMap);
     }
 
+    public int delByUserId(Long userId) {
+        String sql = """
+                    delete from playlist where user_id = :userId
+                """;
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("userId", userId);
+
+        return namedParameterJdbcTemplate.update(sql, paramMap);
+    }
+
 
     public List<PlaylistDO> getPlaylistsByIds(List<Long> ids) {
         String sql = """

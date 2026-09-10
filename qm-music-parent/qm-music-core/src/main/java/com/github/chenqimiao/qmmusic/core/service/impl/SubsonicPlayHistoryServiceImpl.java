@@ -82,4 +82,9 @@ public class SubsonicPlayHistoryServiceImpl implements PlayHistoryService {
         return ucModelMapper.map(playHistoryRepository.queryByCondition(params)
                 , ModelMapperTypeConstants.TYPE_LIST_PLAY_HISTORY_DTO);
     }
+
+    @Override
+    public void deleteByUserId(Long userId) {
+        playHistoryRepository.deleteByUserId(userId);
+    }
 }

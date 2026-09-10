@@ -77,6 +77,11 @@ public class SubsonicUserStarServiceImpl implements UserStarService {
         return ucModelMapper.map(userStars, ModelMapperTypeConstants.TYPE_LIST_USER_STAR_DTO);
     }
 
+    @Override
+    public void deleteByUserId(Long userId) {
+        userStarRepository.delByUserId(userId);
+    }
+
     private void doUnStar(StarOrNotRequest starOrNotRequest) {
 
         userStarRepository.delByUnique(starOrNotRequest.getUserId()

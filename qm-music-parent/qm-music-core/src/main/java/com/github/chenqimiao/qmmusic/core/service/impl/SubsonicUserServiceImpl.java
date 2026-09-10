@@ -3,6 +3,10 @@ package com.github.chenqimiao.qmmusic.core.service.impl;
 import com.github.chenqimiao.qmmusic.core.constant.ModelMapperTypeConstants;
 import com.github.chenqimiao.qmmusic.core.dto.UserDTO;
 import com.github.chenqimiao.qmmusic.core.request.UserRequest;
+import com.github.chenqimiao.qmmusic.core.service.PlayHistoryService;
+import com.github.chenqimiao.qmmusic.core.service.PlayQueueService;
+import com.github.chenqimiao.qmmusic.core.service.UserStarService;
+import com.github.chenqimiao.qmmusic.core.service.complex.PlaylistComplexService;
 import com.github.chenqimiao.qmmusic.core.service.UserAuthService;
 import com.github.chenqimiao.qmmusic.core.service.UserService;
 import com.github.chenqimiao.qmmusic.dao.DO.UserDO;
@@ -12,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +37,18 @@ public class SubsonicUserServiceImpl implements UserService {
 
     @Resource
     private ModelMapper ucModelMapper;
+
+    @Autowired
+    private PlayQueueService playQueueService;
+
+    @Autowired
+    private PlaylistComplexService playlistComplexService;
+
+    @Autowired
+    private UserStarService userStarService;
+
+    @Autowired
+    private PlayHistoryService playHistoryService;
 
     @Override
     public UserDTO findByUsername(String username) {
@@ -89,8 +106,19 @@ public class SubsonicUserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delByUsername(String username) {
+        UserDO userDO = userRepository.findByUsername(username);
+        if (userDO == null) {
+            return;
+        }
+        Long userId = userDO.getId();
         userRepository.deleteByUsername(username);
+        // 级联清理该用户的关联数据
+        playlistComplexService.deletePlaylistsByUserId(userId);
+        userStarService.deleteByUserId(userId);
+        playHistoryService.deleteByUserId(userId);
+        playQueueService.deleteByUserId(userId);
     }
 
 

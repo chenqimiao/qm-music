@@ -19,6 +19,11 @@ public interface PlaylistComplexService {
 
     void deletePlaylistByPlaylistId(Long playlistId);
 
+    /**
+     * 删除用户的全部歌单及歌单项（删除用户时清理）
+     */
+    void deletePlaylistsByUserId(Long userId);
+
     void updatePlaylist(UpdatePlaylistRequest updatePlaylistRequest);
 
     void deleteItemsBySongIds(List<Long> songIds);

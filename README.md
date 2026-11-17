@@ -123,6 +123,10 @@ services:
    密码: 修改后的管理员密码
    ```
 
+## ☁️ 一键部署
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/QM%20Music/)
+
 ## 📜 开源协议
 本项目基于 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 开源协议发布，您可以：
 - 二次开发时需保留原始版权声明
